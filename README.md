@@ -6,7 +6,7 @@
 | ----------- | ------ | --------------- |
 | [Tegen Hilker Readman] | [hilkerre] | [@tegen-ux]     |
 | [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
-| [Full Name] | [CCID] | [@username]     |
+| [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
