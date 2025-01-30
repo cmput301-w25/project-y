@@ -7,7 +7,7 @@
 | [Tegen Hilker Readman] | [hilkerre] | [@tegen-ux]     |
 | [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
 | [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
-| [Full Name] | [CCID] | [@username]     |
+| [Adwiti Baranwal] | [adwiti] | [@adwiti]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 
