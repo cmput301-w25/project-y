@@ -8,7 +8,7 @@
 | [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
 | [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
 | [Adwiti Baranwal] | [adwiti] | [@adwiti]     |
-| [Full Name] | [CCID] | [@username]     |
+| [Justin Trottier] | [jjtrotti] | [@jjtrotti]     |
 | [Full Name] | [CCID] | [@username]     |
 
 ## Project Description
