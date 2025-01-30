@@ -9,7 +9,7 @@
 | [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
 | [Adwiti Baranwal] | [adwiti] | [@adwiti]     |
 | [Justin Trottier] | [jjtrotti] | [@jjtrotti]     |
-| [Full Name] | [CCID] | [@username]     |
+| [Ankriti Sharma] | [ankriti] | [@ANKRITIS]     |
 
 ## Project Description
 
