@@ -1,11 +1,11 @@
-# CMPUT 301 W25 - Team [Team Name]
+# CMPUT 301 W25 - Team Y
 
 ## Team Members
 
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
 | [Tegen Hilker Readman] | [hilkerre] | [@tegen-ux]     |
-| [Full Name] | [CCID] | [@username]     |
+| [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
