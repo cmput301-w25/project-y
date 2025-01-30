@@ -7,7 +7,7 @@
 | [Tegen Hilker Readman] | [hilkerre] | [@tegen-ux]     |
 | [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
 | [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
-| [Adwiti Baranwal] | [adwiti] | [@adwiti]     |
+| [Adwiti Baranwal] | [adwiti] | [@Adwiti1]     |
 | [Justin Trottier] | [jjtrotti] | [@jjtrotti]     |
 | [Ankriti Sharma] | [ankriti] | [@ANKRITIS]     |
 
