@@ -1,15 +1,15 @@
 # CMPUT 301 W25 - Team Y
 
 ## Team Members
-
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
-| [Tegen Hilker Readman] | [hilkerre] | [@tegen-ux]     |
-| [Tomas Ordonez Gonzalez] | [ordonezg] | [@tomasordonezg]     |
-| [Anmol Rastogi] | [arastog1] | [@rastogi-anmol]     |
-| [Adwiti Baranwal] | [adwiti] | [@Adwiti1]     |
-| [Justin Trottier] | [jjtrotti] | [@jjtrotti]     |
-| [Ankriti Sharma] | [ankriti] | [@ANKRITIS]     |
+| Tegen Hilker Readman | hilkerre | tegen-ux     |
+| Tomas Ordonez Gonzalez | ordonezg | tomasordonezg     |
+| Anmol Rastogi | arastog1 | rastogi-anmol     |
+| Adwiti Baranwal | adwiti | Adwiti1     |
+| Justin Trottier | jjtrotti | jjtrotti     |
+| Ankriti Sharma | ankriti | ANKRITIS     |
+
 
 ## Project Description
 
