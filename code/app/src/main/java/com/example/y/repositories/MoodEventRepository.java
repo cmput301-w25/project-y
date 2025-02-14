@@ -23,7 +23,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      * @param moodEvent
      *      Mood event to be added.
      * @param onSuccess
-     *      Success callback function.
+     *      Success callback function to which the added mood event is passed to.
      *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function.
@@ -36,7 +36,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                     onMoodEventAdded(moodEvent);
                 })
                 .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Document creation failed: " + e.getMessage()));
+                    onFailure.onFailure(new Exception("Mood event document creation failed: " + e.getMessage()));
                 });
     }
 
@@ -45,7 +45,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      * @param id
      *      ID of the mood event to be retrieved.
      * @param onSuccess
-     *      Callback function to which the mood event object is passed to.
+     *      Callback function to which the retrieved mood event object is passed to.
      * @param onFailure
      *      Failure callback function
      */
@@ -56,11 +56,11 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                     if (doc.exists()) {
                         onSuccess.onSuccess(doc.toObject(MoodEvent.class));
                     } else {
-                        onSuccess.onSuccess(null);
+                        onFailure.onFailure(new Exception("Mood Event not found"));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Document retrieval failed: " + e.getMessage()));
+                    onFailure.onFailure(new Exception("Mood event document retrieval failed: " + e.getMessage()));
                 });
     }
 
@@ -71,7 +71,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      *      Mood event that was updated locally.
      *      In the database, the id will be used to update the document.
      * @param onSuccess
-     *      Success callback function.
+     *      Success callback function to which the updated mood event is passed to.
      *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function.
@@ -84,7 +84,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                         onMoodEventUpdate(moodEvent);
                 })
                 .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Document update failed: " + e.getMessage()));
+                    onFailure.onFailure(new Exception("Mood event document update failed: " + e.getMessage()));
                 });
     }
 
@@ -94,7 +94,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      * @param id
      *      Id of the mood event to delete.
      * @param onSuccess
-     *      Success callback function.
+     *      Success callback function to which the deleted id is passed to.
      *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function
@@ -111,11 +111,11 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                                 })
                                 .addOnFailureListener(onFailure);
                     } else {
-                        onFailure.onFailure(new Exception("Document does not exist"));
+                        onFailure.onFailure(new Exception("Mood event document does not exist"));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Document deletion failed: " + e.getMessage()));
+                    onFailure.onFailure(new Exception("Mood event document deletion failed: " + e.getMessage()));
                 });
     }
 
