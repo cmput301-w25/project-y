@@ -4,6 +4,9 @@ import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
 
+/**
+ * Stores data of a user of the application.
+ */
 public class User implements Serializable {
 
     private String username;

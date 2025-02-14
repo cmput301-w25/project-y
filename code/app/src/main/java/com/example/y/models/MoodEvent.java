@@ -7,6 +7,9 @@ import com.google.firebase.firestore.GeoPoint;
 import java.io.Serializable;
 import java.net.URL;
 
+/**
+ * Stores data of a mood event posted by a user.
+ */
 public class MoodEvent implements Serializable {
 
     // Hidden requirements
