@@ -1,22 +1,22 @@
 package com.example.y.models;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.net.URL;
-import java.util.Date;
 
 public class MoodEvent implements Serializable {
 
     // Hidden requirements
     @Exclude
     private String id;
-    private Date creationDateTime;
+    private Timestamp creationDateTime;
     private String posterUsername;
 
     // Required
-    private Date dateTime;
+    private Timestamp dateTime;
     private Emotion emotion;
 
     // Optional
@@ -27,7 +27,7 @@ public class MoodEvent implements Serializable {
     private URL photoURL;
     private GeoPoint location;
 
-    public MoodEvent(String id, Date creationDateTime, String posterUsername, Date dateTime, Emotion emotion) {
+    public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion) {
         this.id = id;
         this.creationDateTime = creationDateTime;
         this.posterUsername = posterUsername;
@@ -44,17 +44,17 @@ public class MoodEvent implements Serializable {
         this.id = id;
     }
 
-    public Date getCreationDateTime() {
+    public Timestamp getCreationDateTime() {
         return creationDateTime;
     }
 
-    public void setCreationDateTime(Date creationDateTime) { this.creationDateTime = creationDateTime; }
+    public void setCreationDateTime(Timestamp creationDateTime) { this.creationDateTime = creationDateTime; }
 
-    public Date getDateTime() {
+    public Timestamp getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(Timestamp dateTime) {
         this.dateTime = dateTime;
     }
 
