@@ -7,27 +7,22 @@ import java.io.Serializable;
 /**
  * Stores data of one user following another user.
  */
-public class Follows implements Serializable {
+public class Follow implements Serializable {
 
     private final String followerUsername;
     private final String followedUsername;
     private final Timestamp timestamp;
 
-    public Follows(String followerUsername, String followedUsername, Timestamp timestamp) {
+    public Follow(String followerUsername, String followedUsername, Timestamp timestamp) {
         this.followerUsername = followerUsername;
         this.followedUsername = followedUsername;
         this.timestamp = timestamp;
     }
 
-    public String getFollowerUsername() {
-        return followerUsername;
-    }
+    public String getFollowerUsername() { return followerUsername; }
 
-    public String getFollowedUsername() {
-        return followedUsername;
-    }
+    public String getFollowedUsername() { return followedUsername; }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
+    public Timestamp getTimestamp() { return timestamp; }
+
 }

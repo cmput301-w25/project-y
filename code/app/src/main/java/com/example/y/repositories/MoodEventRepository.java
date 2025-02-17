@@ -109,13 +109,15 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                                     onSuccess.onSuccess(id);
                                     onMoodEventDeleted(id);
                                 })
-                                .addOnFailureListener(onFailure);
+                                .addOnFailureListener(e -> {
+                                    onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
+                                });
                     } else {
-                        onFailure.onFailure(new Exception("Mood event document does not exist"));
+                        onFailure.onFailure(new Exception("Mood event document does not exist."));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Mood event document deletion failed: " + e.getMessage()));
+                    onFailure.onFailure(new Exception("Failed to get mood event document when trying to delete: " + e.getMessage()));
                 });
     }
 
