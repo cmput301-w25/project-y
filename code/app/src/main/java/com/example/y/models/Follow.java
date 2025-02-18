@@ -9,9 +9,11 @@ import java.io.Serializable;
  */
 public class Follow implements Serializable {
 
-    private final String followerUsername;
-    private final String followedUsername;
-    private final Timestamp timestamp;
+    private String followerUsername;
+    private String followedUsername;
+    private Timestamp timestamp;
+
+    public Follow() {};
 
     public Follow(String followerUsername, String followedUsername, Timestamp timestamp) {
         this.followerUsername = followerUsername;

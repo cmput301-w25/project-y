@@ -2,14 +2,14 @@
     <string name="app_name">Y</string>
 
     <!-- Emotions -->
-    <string name="emotion_anger">😡</string>
-    <string name="emotion_confusion">😕</string>
-    <string name="emotion_disgust">🤮</string>
-    <string name="emotion_fear">😱</string>
-    <string name="emotion_happiness">😄</string>
-    <string name="emotion_sadness">😭</string>
-    <string name="emotion_shame">😞</string>
-    <string name="emotion_surprise">😳</string>
-    <string name="emotion_laughter">💀</string>
+    <string name="emotion_anger">( •`Δ´•)!</string>
+    <string name="emotion_confusion">( @_@)?</string>
+    <string name="emotion_disgust">( ¬＿¬)</string>
+    <string name="emotion_fear">(( •Д•))</string>
+    <string name="emotion_happiness">( ｡•ᴗ•｡)</string>
+    <string name="emotion_sadness">( ಥ╭╮ಥ)</string>
+    <string name="emotion_shame">( ｡•́~•̀｡)</string>
+    <string name="emotion_surprise">( ⊙_⊙)!</string>
+    <string name="emotion_laughter">( ≧∇≦)</string>
 
 </resources>
