@@ -13,8 +13,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class UserRepository extends GenericRepository<UserListener> {
 
+    public static final String USER_COLLECTION = "users";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference usersRef = db.collection("users");
+    private final CollectionReference usersRef = db.collection(USER_COLLECTION);
 
     /**
      * Add a user to the database.

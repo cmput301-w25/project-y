@@ -30,6 +30,8 @@ public class MoodEvent implements Serializable {
     private URL photoURL;
     private GeoPoint location;
 
+    public MoodEvent() {};
+
     public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion) {
         this.id = id;
         this.creationDateTime = creationDateTime;

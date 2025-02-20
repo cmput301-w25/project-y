@@ -14,6 +14,8 @@ public class User implements Serializable {
     private String name;
     private Timestamp joinDateTime;
 
+    public User() {};
+
     public User(String username, String hashedPassword, String name, Timestamp joinDateTime) {
         this.username = username;
         this.hashedPassword = hashedPassword;
