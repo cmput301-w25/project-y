@@ -11,5 +11,13 @@
     <string name="emotion_shame">😞</string>
     <string name="emotion_surprise">😳</string>
     <string name="emotion_laughter">💀</string>
+    <string name="email">Email</string>
+    <string name="logo">Logo</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="Confirm_email">Confirm email</string>
+    <string name="username">Username</string>
+    <string name="create_account">Create Account</string>
 
 </resources>
