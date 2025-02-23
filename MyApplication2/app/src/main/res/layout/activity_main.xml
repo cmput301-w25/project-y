@@ -8,111 +8,100 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Back Arrow Button in the top-left corner -->
+    <!-- Back Button and Emoji Spinner Row -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/back"
         android:scaleType="fitCenter"
         android:src="@drawable/back_button"
-        android:contentDescription="@string/back"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp" />
-
-    <!-- Row for Mood Spinner and Insert Image Button -->
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerMood"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="60dp"
-        android:layout_marginTop="56dp"
-        android:entries="@array/mood_array"
-        app:layout_constraintEnd_toStartOf="@id/btnInsertImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnBack"
-        />
-
-    <ImageButton
-        android:id="@+id/btnInsertImage"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@android:drawable/ic_menu_camera"
-        android:contentDescription="@string/insert_image"
-        app:layout_constraintTop_toBottomOf="@id/spinnerSocialSituation"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/etReason"/>
 
-    <CheckBox
-        android:id="@+id/checkboxShareLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/share_location"
-        app:layout_constraintTop_toBottomOf="@id/btnInsertImage"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"/>
-
-
-    <!-- Reason: Short Text Field -->
-
-    <!-- Explanation: Long Text Field -->
-
-    <!-- Social Situation Dropdown -->
-
-    <!-- Share Location With Others Checkbox -->
-
-    <!-- Submit Button at the bottom -->
-
+    <!-- Text Input Fields -->
     <EditText
         android:id="@+id/etReason"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="108dp"
         android:hint="@string/hint_reason"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.531"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerMood" />
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
     <EditText
         android:id="@+id/etExplanation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
         android:hint="@string/hint_explanation"
         android:minLines="3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etReason" />
 
+    <!-- Social Situation Section -->
     <Spinner
         android:id="@+id/spinnerSocialSituation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
         android:entries="@array/social_situation_array"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etExplanation" />
 
+    <!-- Image Insert and Location Sharing -->
+    <ImageButton
+        android:id="@+id/btnInsertImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/insert_image"
+        android:src="@android:drawable/ic_menu_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSocialSituation" />
 
+    <CheckBox
+        android:id="@+id/checkboxShareLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/share_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnInsertImage" />
 
+    <!-- Submit Button -->
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="@string/submit"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
