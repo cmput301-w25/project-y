@@ -36,13 +36,25 @@
 
     <ImageButton
         android:id="@+id/btnInsertImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@android:drawable/ic_menu_camera"
         android:contentDescription="@string/insert_image"
-        app:layout_constraintTop_toTopOf="@id/spinnerMood"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSocialSituation"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <CheckBox
+        android:id="@+id/checkboxShareLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share_location"
+        app:layout_constraintTop_toBottomOf="@id/btnInsertImage"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="16dp"/>
+
 
     <!-- Reason: Short Text Field -->
 
@@ -91,15 +103,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etExplanation" />
 
-    <CheckBox
-        android:id="@+id/checkboxShareLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="56dp"
-        android:text="@string/share_location"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerSocialSituation" />
+
 
     <Button
         android:id="@+id/btnSubmit"
