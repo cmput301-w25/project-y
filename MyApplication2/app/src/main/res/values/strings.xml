@@ -7,6 +7,7 @@
     <string name="hint_explanation">Explain your mood...</string>
     <string name="share_location">Share location with others</string>
     <string name="submit">Submit</string>
+    <string name="permission_denied">Storage permission required to select images</string>
 
     <string-array name="mood_array">
         <item>😡</item>
