@@ -19,5 +19,6 @@
     <string name="Confirm_email">Confirm email</string>
     <string name="username">Username</string>
     <string name="create_account">Create Account</string>
+    <string name="return_to_login">Return to Login</string>
 
 </resources>
