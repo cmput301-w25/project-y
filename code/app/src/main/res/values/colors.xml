@@ -11,5 +11,15 @@
     <color name="emotion_shame">#4C4C4C</color>
     <color name="emotion_surprise">#7C0909</color>
     <color name="emotion_laughter">#F28E3D</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+
+
+
+
+
+
+
 
 </resources>
