@@ -104,6 +104,8 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     /**
      * Gets a list of all mood events from all users a user is following.
+     * The result is sorted by date ascending.
+     * Filter is not applied.
      * @param username
      *      The username of the user to fetch the mood following list for.
      * @param onSuccess
@@ -144,7 +146,6 @@ public class UserRepository extends GenericRepository<UserListener> {
 
                         // Sort by date ascending then pass to success callback function
                         moodFollowingList.sort(Comparator.comparing(MoodEvent::getDateTime));
-                        // TODO: Filter results
                         onSuccess.onSuccess(moodFollowingList);
                     })
                     .addOnFailureListener(e -> {
