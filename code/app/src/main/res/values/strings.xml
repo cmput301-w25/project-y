@@ -2,15 +2,16 @@
     <string name="app_name">Y</string>
 
     <!-- Emotions -->
-    <string name="emotion_anger">😡</string>
-    <string name="emotion_confusion">😕</string>
-    <string name="emotion_disgust">🤮</string>
-    <string name="emotion_fear">😱</string>
-    <string name="emotion_happiness">😄</string>
-    <string name="emotion_sadness">😭</string>
-    <string name="emotion_shame">😞</string>
-    <string name="emotion_surprise">😳</string>
-    <string name="emotion_laughter">💀</string>
+
+    <string name="emotion_anger_emoji">😡</string>
+    <string name="emotion_confusion_emoji">😕</string>
+    <string name="emotion_disgust_emogi">🤮</string>
+    <string name="emotion_fear_emoji">😱</string>
+    <string name="emotion_happiness_emoji">😄</string>
+    <string name="emotion_sadness_emoji">😭</string>
+    <string name="emotion_shame_emoji">😞</string>
+    <string name="emotion_surprise_emoji">😳</string>
+    <string name="emotion_laughter_emoji">💀</string>
     <string name="email">Email</string>
     <string name="logo">Logo</string>
     <string name="login">Login</string>
@@ -20,5 +21,15 @@
     <string name="username">Username</string>
     <string name="create_account">Create Account</string>
     <string name="return_to_login">Return to Login</string>
+    <string name="emotion_anger">( •`Δ´•)!</string>
+    <string name="emotion_confusion">( @_@)?</string>
+    <string name="emotion_disgust">( ¬＿¬)</string>
+    <string name="emotion_fear">(( •Д•))</string>
+    <string name="emotion_happiness">( ｡•ᴗ•｡)</string>
+    <string name="emotion_sadness">( ಥ╭╮ಥ)</string>
+    <string name="emotion_shame">( ｡•́~•̀｡)</string>
+    <string name="emotion_surprise">( ⊙_⊙)!</string>
+    <string name="emotion_laughter">( ≧∇≦)</string>
+
 
 </resources>
