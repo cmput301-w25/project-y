@@ -13,8 +13,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class FollowRepository extends GenericRepository<FollowListener> {
 
+    public static final String FOLLOW_COLLECTION = "follows";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference followsRef = db.collection("follows");
+    private final CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
     
     /**
      * Adds a follow record to the database.
