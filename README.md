@@ -31,5 +31,5 @@
 
 - [Wiki Link](https://github.com/cmput301-w25/project-y/wiki)
 - [Scrum Board](https://github.com/orgs/cmput301-w25/projects/41)
-- [UI Mockups](https://www.figma.com/board/P6wFeogzUWr1w68Isj2KUc/CMPUT-301---Project-UI-Mockup?node-id=0-1&p=f&t=yFq12p6vemKwwENk-0)
+- [UI Mockups](https://github.com/cmput301-w25/project-y/wiki/UI-%E2%80%90-MockUp)
 - [UML]
