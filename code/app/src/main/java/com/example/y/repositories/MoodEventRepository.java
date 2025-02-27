@@ -14,8 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
+    public static final String MOOD_EVENT_COLLECTION = "mood-events";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference moodEventRef = db.collection("mood-events");
+    private final CollectionReference moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
 
     /**
      * Add a mood event to the database.
