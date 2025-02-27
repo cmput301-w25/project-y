@@ -12,14 +12,16 @@ public class User implements Serializable {
     private String username;
     private String hashedPassword;
     private String name;
+    private String email;
     private Timestamp joinDateTime;
 
     public User() {};
 
-    public User(String username, String hashedPassword, String name, Timestamp joinDateTime) {
+    public User(String username, String hashedPassword, String name, String email, Timestamp joinDateTime) {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.name = name;
+        this.email = email;
         this.joinDateTime = joinDateTime;
     }
 
@@ -34,6 +36,10 @@ public class User implements Serializable {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
 
     public Timestamp getJoinDateTime() { return joinDateTime; }
 
