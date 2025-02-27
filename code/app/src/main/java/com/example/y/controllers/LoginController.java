@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.y.services.AuthManager;
+import com.example.y.views.HomeActivity;
 import com.example.y.views.LoginActivity;
 import com.example.y.views.MainActivity;
 
@@ -33,7 +34,7 @@ public void onloginUser(String email, String password) {
 //else say login failed
     authManager.login(email, password, user -> {
         Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, HomeActivity.class);
         context.startActivity(intent);
         if (context instanceof LoginActivity) {
             ((LoginActivity) context).finish();

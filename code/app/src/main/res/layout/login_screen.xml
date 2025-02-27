@@ -8,7 +8,6 @@
     android:gravity="center"
     android:background="#000000">
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -26,6 +25,7 @@
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
 
     <EditText
@@ -38,6 +38,8 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
+
         tools:ignore="VisualLintTextFieldSize" />
 
     <Button
@@ -59,8 +61,5 @@
         android:backgroundTint="#000000"
         android:textColorHint="#FFFFFF"
         tools:ignore="VisualLintButtonSize" />
-
-
-
 
 </LinearLayout>

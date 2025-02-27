@@ -51,6 +51,7 @@ public class AuthManager {
                         if (user.getHashedPassword().equals(hashedPassword)) {
                             sessionManager.saveSession(username);
                             onSuccess.onSuccess(doc.toObject(User.class));
+
                         } else {
                             onFailure.onFailure(new Exception("Invalid password"));
                         }

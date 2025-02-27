@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.email);
         passwordEditText = findViewById(R.id.password);
 
-        // Buttons to login or go to signup screen
+
         Button loginButton = findViewById(R.id.login_button);
         Button signUpButton = findViewById(R.id.signup_button);
 
@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         // loads Auth manager
         new AuthManager(this);
 
-        // If login is pressed call login function
+        // call login function
         loginButton.setOnClickListener(v -> loginUser());
 
         // go to SignUpActivity if signup button is pressed
@@ -49,5 +49,14 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         loginController.onloginUser(email, password);
+
+
     }
+
+    private void openHomeActivity() {
+        Intent intent = new Intent(LoginActivity.this, HomeActivity.class); // Replace with the correct current activity
+        startActivity(intent);
+        finish(); // Optional: Finish the current activity if you don’t want the user to go back to the login screen
+    }
+
 }

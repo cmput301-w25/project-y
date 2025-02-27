@@ -8,7 +8,6 @@
     android:gravity="center"
     android:background="#000000">
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -19,6 +18,7 @@
 
     <EditText
         android:id="@+id/email"
+        android:textColor="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -37,8 +37,8 @@
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
-
 
     <EditText
         android:id="@+id/username"
@@ -50,9 +50,8 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
-
-
 
     <EditText
         android:id="@+id/password"
@@ -64,6 +63,7 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
 
     <Button
@@ -85,6 +85,8 @@
         android:backgroundTint="#000000"
         android:textColorHint="#FFFFFF"
         tools:ignore="VisualLintButtonSize" />
+
+
 
 
 
