@@ -47,7 +47,7 @@
         android:layout_marginTop="10dp"
         android:autofillHints=""
         android:hint="@string/username"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:minHeight="48dp"
         android:textColorHint="#FFFFFF"
         android:textColor="#FFFFFF"
