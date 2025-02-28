@@ -10,12 +10,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class SignUpController {
     private final AuthManager authManager;
 
-
     public SignUpController(Context context) {
         this.authManager = new AuthManager(context);
-
     }
-
 
     /**
      * Controls user's signing up
@@ -28,19 +25,8 @@ public class SignUpController {
      * @param onSuccessListener Success callback feature. User that has signed up is then passed to this function
      * @param onFailureListener Failure callback Function
      */
-
-
     public void onSignUpUser(String email, String confirmEmail, String name, String username, String password, String confirmPassword, OnSuccessListener<User> onSuccessListener, OnFailureListener onFailureListener) {
-
-//        if (email.isEmpty() || confirmEmail.isEmpty() || username.isEmpty() || password.isEmpty()) {
-//            Toast.makeText(context, "Fill all boxes", LENGTH_SHORT).show();
-//            return;
-//        }
-        //TODO: implement a query to see if the user's username is unique.
-
-
         // Check email is correct
-
         if (confirmPassword.isEmpty()) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Confirm Password is empty"));
             return;
@@ -58,7 +44,6 @@ public class SignUpController {
             return;
         }
 
-
         if (!email.equals(confirmEmail)) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Emails don't match"));
             return;
@@ -67,16 +52,9 @@ public class SignUpController {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Passwords don't match"));
             return;
         }
+
         // If signup is correct
         authManager.signUp(username, name, password, email, onSuccessListener, onFailureListener);
-//                    Toast.makeText(context, "Sign-up successful!", LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, LoginActivity.class);
-//                    context.startActivity(intent);
-//                    if (context instanceof SignUpActivity) {
-//                        ((SignUpActivity) context).finish();
-//                    }
-//                },
-
     }
 }
 

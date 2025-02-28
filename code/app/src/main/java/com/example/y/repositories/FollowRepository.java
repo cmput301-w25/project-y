@@ -4,6 +4,7 @@ import com.example.y.repositories.FollowRepository.FollowListener;
 import com.example.y.models.Follow;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,6 +52,7 @@ public class FollowRepository extends GenericRepository<FollowListener> {
      */
     public void addFollow(Follow follow, OnSuccessListener<Follow> onSuccess, OnFailureListener onFailure) {
         String compoundId = getCompoundId(follow.getFollowerUsername(), follow.getFollowedUsername());
+        follow.setTimestamp(Timestamp.now());
         followsRef.document(compoundId)
                 .set(follow)
                 .addOnSuccessListener(doc -> {
