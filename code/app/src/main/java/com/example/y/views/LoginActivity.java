@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         loginController.onLoginUser(username, password, user -> {
             // Launch home activity
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
             startActivity(intent);
             finish();
         }, e -> {
