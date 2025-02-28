@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * This class stores information on how to filter a list of mood events.
+ * Any filter set to `null` is ignored.
  */
 public class MoodEventListFilter {
 
@@ -33,6 +34,7 @@ public class MoodEventListFilter {
     /**
      * Copies and applies filter to a mood event list.
      * It is recommended not to override the unfiltered list.
+     * Any filter set to `null` is ignored.
      * @param unfilteredMoodEventList
      *      Mood event list to be filtered.
      * @return
@@ -42,13 +44,26 @@ public class MoodEventListFilter {
         // Clone original array
         ArrayList<MoodEvent> moodsCopy = new ArrayList<MoodEvent>(unfilteredMoodEventList);
 
-        // Remove moods if the filter field is not null and meets the filter requirement
-        moodsCopy.removeIf(m -> minDateTime != null && m.getDateTime().compareTo(minDateTime) < 0);
-        moodsCopy.removeIf(m -> maxDateTime != null && m.getDateTime().compareTo(maxDateTime) > 0);
-        moodsCopy.removeIf(m -> emotion != null && m.getEmotion() == emotion);
-        moodsCopy.removeIf(m -> reasonWhyKeyword != null && m.getReasonWhy().contains(reasonWhyKeyword));
+        // Remove all moods that should be filtered
+        moodsCopy.removeIf(this::wouldBeFiltered);
 
         return moodsCopy;
+    }
+
+    /**
+     * Checks if a mood event will be filtered out or not based on the filter requirements
+     * Any filter set to `null` is ignored.
+     * @param mood
+     *      Mood event to check for.
+     * @return
+     *      True if `mood` will be filtered, false otherwise.
+     */
+    public boolean wouldBeFiltered(MoodEvent mood) {
+        return
+                (minDateTime != null && mood.getDateTime().compareTo(minDateTime) < 0) ||
+                (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
+                (emotion != null && mood.getEmotion() != emotion) ||
+                (reasonWhyKeyword != null && !(mood.getReasonWhy().contains(reasonWhyKeyword)));
     }
 
     public Timestamp getMinDateTime() { return minDateTime; }

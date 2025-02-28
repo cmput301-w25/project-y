@@ -1,6 +1,6 @@
 package com.example.y.repositories;
 
-import com.example.y.listeners.UserListener;
+import com.example.y.repositories.UserRepository.UserListener;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.User;
@@ -27,6 +27,18 @@ public class UserRepository extends GenericRepository<UserListener> {
     public static final String USER_COLLECTION = "users";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference usersRef = db.collection(USER_COLLECTION);
+
+    /**
+     * Listens for a user being added.
+     */
+    public interface UserListener {
+        /**
+         * Action to be taken when a user is added to the database successfully.
+         * @param newUser
+         *      User that was added.
+         */
+        void onUserAdded(User newUser);
+    }
 
     /**
      * Add a user to the database.
@@ -113,7 +125,7 @@ public class UserRepository extends GenericRepository<UserListener> {
      * @param onFailure
      *      Failure callback function.
      */
-    public void getMoodFollowingList(String username, OnSuccessListener<List<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+    public void getFollowingMoodList(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
         getFollowing(username, followingList -> {
             // Case when the following list is empty
             if (followingList.isEmpty()) {
@@ -135,7 +147,7 @@ public class UserRepository extends GenericRepository<UserListener> {
             Tasks.whenAllSuccess(tasks)
                     .addOnSuccessListener(results -> {
                         // Create list of mood events
-                        List<MoodEvent> moodFollowingList = new ArrayList<MoodEvent>();
+                        ArrayList<MoodEvent> moodFollowingList = new ArrayList<MoodEvent>();
                         for (Object result : results) {
                             QuerySnapshot snapshot = (QuerySnapshot) result;
                             for (DocumentSnapshot doc : snapshot) {
