@@ -71,6 +71,7 @@ public class AuthManager {
      * @param username  Username of the new user.
      * @param password  Password of the new user.
      * @param name      Name of the new user.
+     * @oaram email     Email of the new user.
      * @param onSuccess Success callback function to which the new user is passed to.
      * @param onFailure Failure callback function.
      */

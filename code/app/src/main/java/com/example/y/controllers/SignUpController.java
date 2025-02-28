@@ -10,12 +10,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class SignUpController {
     private final AuthManager authManager;
 
-
     public SignUpController(Context context) {
         this.authManager = new AuthManager(context);
 
     }
-
 
     /**
      * Controls user's signing up
@@ -36,7 +34,6 @@ public class SignUpController {
 //            Toast.makeText(context, "Fill all boxes", LENGTH_SHORT).show();
 //            return;
 //        }
-        //TODO: implement a query to see if the user's username is unique.
 
 
         // Check email is correct
@@ -59,7 +56,7 @@ public class SignUpController {
         }
 
 
-        if (!email.equals(confirmEmail)) {
+         if (!email.equals(confirmEmail)) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Emails don't match"));
             return;
         }
@@ -67,6 +64,7 @@ public class SignUpController {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Passwords don't match"));
             return;
         }
+
         // If signup is correct
         authManager.signUp(username, name, password, email, onSuccessListener, onFailureListener);
 //                    Toast.makeText(context, "Sign-up successful!", LENGTH_SHORT).show();
