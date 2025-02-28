@@ -16,19 +16,17 @@ public enum Emotion {
     LAUGHTER(R.color.emotion_laughter, R.string.emotion_laughter);
 
     private final int color;
-    private final int emoji;
+    private final int emoticon;
 
-    private Emotion(int color, int emoji) {
+    private Emotion(int color, int emoticon) {
         this.color = color;
-        this.emoji = emoji;
+        this.emoticon = emoticon;
     }
 
     public int getColor(Context context) {
         return context.getResources().getColor(color);
     }
 
-    public String getEmoji(Context context) {
-        return context.getResources().getString(emoji);
-    }
+    public String getEmoticon(Context context) { return context.getResources().getString(emoticon); }
 
 }
