@@ -5,7 +5,7 @@
 
     <string name="emotion_anger_emoji">😡</string>
     <string name="emotion_confusion_emoji">😕</string>
-    <string name="emotion_disgust_emogi">🤮</string>
+    <string name="emotion_disgust_emoji">🤮</string>
     <string name="emotion_fear_emoji">😱</string>
     <string name="emotion_happiness_emoji">😄</string>
     <string name="emotion_sadness_emoji">😭</string>
@@ -46,6 +46,8 @@
     <string name="reason">Reason</string>
     <string name="mood_photo">Mood photo</string>
     <string name="location">Location</string>
+    <string name="confrim_password">Confrim Password</string>
+    <string name="name">Name</string>
 
 
 </resources>

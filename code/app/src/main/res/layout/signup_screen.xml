@@ -17,6 +17,32 @@
         android:padding="20dp"/>
 
     <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:autofillHints=""
+        android:hint="@string/username"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
+        tools:ignore="VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:autofillHints=""
+        android:hint="@string/name"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
+        tools:ignore="VisualLintTextFieldSize" />
+
+    <EditText
         android:id="@+id/email"
         android:textColor="#FFFFFF"
         android:layout_width="match_parent"
@@ -40,18 +66,6 @@
         android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:autofillHints=""
-        android:hint="@string/username"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:textColorHint="#FFFFFF"
-        android:textColor="#FFFFFF"
-        tools:ignore="VisualLintTextFieldSize" />
 
     <EditText
         android:id="@+id/password"
@@ -66,6 +80,18 @@
         android:textColor="#FFFFFF"
         tools:ignore="VisualLintTextFieldSize" />
 
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:autofillHints=""
+        android:hint="@string/confrim_password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textColorHint="#FFFFFF"
+        android:textColor="#FFFFFF"
+        tools:ignore="VisualLintTextFieldSize" />
     <Button
         android:id="@+id/create_account"
         android:layout_width="match_parent"
