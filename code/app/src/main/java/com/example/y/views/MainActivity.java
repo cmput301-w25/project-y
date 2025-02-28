@@ -10,10 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.y.R;
-import com.example.y.models.Follow;
-import com.example.y.repositories.FollowRepository;
 import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
 
 public class MainActivity extends AppCompatActivity {
 
