@@ -51,6 +51,7 @@ public class AuthManager {
                         if (user.getHashedPassword().equals(hashedPassword)) {
                             sessionManager.saveSession(username);
                             onSuccess.onSuccess(doc.toObject(User.class));
+
                         } else {
                             onFailure.onFailure(new Exception("Invalid password"));
                         }
@@ -77,6 +78,7 @@ public class AuthManager {
             String username,
             String password,
             String name,
+            String email,
             OnSuccessListener<User> onSuccess,
             OnFailureListener onFailure
     ) {
@@ -89,7 +91,7 @@ public class AuthManager {
                     } else {
                         // Get current timestamp, create user
                         Timestamp now = Timestamp.now();
-                        User user = new User(username, hashPassword(password), name, now);
+                        User user = new User(username, hashPassword(password), name, email, now);
 
                         // Add user
                         UserRepository userRepo = new UserRepository();
