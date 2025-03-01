@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
+import com.example.y.services.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
      Button logout;  // Declare it here
@@ -39,7 +40,11 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void onLogoutButtonClick() {
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.logout();
+
         Intent intent = new Intent(this, LoginActivity.class);
+
         startActivity(intent);
         finish();
     }
