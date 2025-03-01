@@ -1,5 +1,6 @@
-package com.example.y.view;
+package com.example.y.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.y.R;
+import com.example.y.services.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,5 +24,16 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

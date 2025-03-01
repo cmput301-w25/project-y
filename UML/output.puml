@@ -1,0 +1,156 @@
+@startuml
+left to right direction
+skinparam classAttributeIconSize 0
+class FollowRepository{
+- db : FirebaseFirestore
+- followsRef : CollectionReference
++ addFollow(follow : Follow, onSuccess : OnSuccessListener<Follow>, onFailure : OnFailureListener) : void
++ getFollow(followerUsername : String, followedUsername : String, onSuccess : OnSuccessListener<Follow>, onFailure : OnFailureListener) : void
++ deleteFollow(followerUsername : String, followedUsername : String, onSuccess : OnSuccessListener<Void>, onFailure : OnFailureListener) : void
+- getCompoundId(followerUsername : String, followedUsername : String) : String
+- onFollowAdded(follow : Follow) : void
+- onFollowDeleted(followerUsername : String, followedUsername : String) : void
+}
+FollowRepository --|> GenericRepository
+class UserRepository{
++ {static} USER_COLLECTION : String
+- db : FirebaseFirestore
+- usersRef : CollectionReference
++ addUser(user : User, onSuccess : OnSuccessListener<User>, onFailure : OnFailureListener) : void
++ getUser(username : String, onSuccess : OnSuccessListener<User>, onFailure : OnFailureListener) : void
+- onUserAdded(user : User) : void
+}
+UserRepository --|> GenericRepository
+class AuthManager{
+- usersRef : CollectionReference
+- sessionManager : SessionManager
++ AuthManager(context : Context)
++ login(username : String, password : String, onSuccess : OnSuccessListener<User>, onFailure : OnFailureListener) : void
++ signUp(username : String, password : String, name : String, onSuccess : OnSuccessListener<User>, onFailure : OnFailureListener) : void
+- hashPassword(password : String) : String
+}
+class SessionManager{
+- {static} preferenceName : String
+- {static} isLoggedInKey : String
+- {static} usernameKey : String
+- prefs : SharedPreferences
+- editor : SharedPreferences.Editor
++ SessionManager(context : Context)
++ saveSession(username : String) : void
++ isLoggedIn() : boolean
++ getUsername() : String
++ logout() : void
+}
+class MainActivity{
+# onCreate(savedInstanceState : Bundle) : void
+}
+MainActivity --|> AppCompatActivity
+class User{
+- username : String
+- hashedPassword : String
+- name : String
+- joinDateTime : Timestamp
++ User()
++ User(username : String, hashedPassword : String, name : String, joinDateTime : Timestamp)
++ getUsername() : String
++ setUsername(username : String) : void
++ getHashedPassword() : String
++ setHashedPassword(hashedPassword : String) : void
++ getName() : String
++ setName(name : String) : void
++ getJoinDateTime() : Timestamp
++ setJoinDateTime(joinDateTime : Timestamp) : void
+}
+User ..|> Serializable
+class MoodEventRepository{
+- db : FirebaseFirestore
+- moodEventRef : CollectionReference
++ addMoodEvent(moodEvent : MoodEvent, onSuccess : OnSuccessListener<MoodEvent>, onFailure : OnFailureListener) : void
++ getMoodEvent(id : String, onSuccess : OnSuccessListener<MoodEvent>, onFailure : OnFailureListener) : void
++ updateMoodEvent(moodEvent : MoodEvent, onSuccess : OnSuccessListener<MoodEvent>, onFailure : OnFailureListener) : void
++ deleteMoodEvent(id : String, onSuccess : OnSuccessListener<String>, onFailure : OnFailureListener) : void
+- onMoodEventAdded(newMoodEvent : MoodEvent) : void
+- onMoodEventUpdate(updatedMoodEvent : MoodEvent) : void
+- onMoodEventDeleted(deletedId : String) : void
+}
+MoodEventRepository --|> GenericRepository
+class Follow{
+- followerUsername : String
+- followedUsername : String
+- timestamp : Timestamp
++ Follow()
++ Follow(followerUsername : String, followedUsername : String, timestamp : Timestamp)
++ getFollowerUsername() : String
++ getFollowedUsername() : String
++ getTimestamp() : Timestamp
+}
+Follow ..|> Serializable
+class MoodEvent{
+- id : String
+- creationDateTime : Timestamp
+- posterUsername : String
+- dateTime : Timestamp
+- emotion : Emotion
+- socialSituation : String
+- trigger : String
+- text : String
+- reasonWhy : String
+- photoURL : URL
+- location : GeoPoint
++ MoodEvent()
++ MoodEvent(id : String, creationDateTime : Timestamp, posterUsername : String, dateTime : Timestamp, emotion : Emotion)
++ getId() : String
++ setId(id : String) : void
++ getCreationDateTime() : Timestamp
++ setCreationDateTime(creationDateTime : Timestamp) : void
++ getDateTime() : Timestamp
++ setDateTime(dateTime : Timestamp) : void
++ getPosterUsername() : String
++ setPosterUsername(posterUsername : String) : void
++ getEmotion() : Emotion
++ setEmotion(emotion : Emotion) : void
++ getTrigger() : String
++ setTrigger(trigger : String) : void
++ getSocialSituation() : String
++ setSocialSituation(socialSituation : String) : void
++ getText() : String
++ setText(text : String) : void
++ getReasonWhy() : String
++ setReasonWhy(reasonWhy : String) : void
++ getPhotoURL() : URL
++ setPhotoURL(photoURL : URL) : void
++ getLocation() : GeoPoint
++ setLocation(location : GeoPoint) : void
+}
+MoodEvent ..|> Serializable
+class GenericRepository{
+# listeners : List<Listener>
++ addListener(listener : Listener) : boolean
++ removeListener(listener : Listener) : void
+}
+AuthManager--"- sessionManager" SessionManager
+MoodEvent--"- emotion" Emotion
+interface MoodEventListener{
+onMoodEventAdded(newMoodEvent : MoodEvent) : void
+onMoodEventUpdated(updatedMoodEvent : MoodEvent) : void
+onMoodEventDeleted(deletedId : String) : void
+}
+interface UserListener{
+onUserAdded(newUser : User) : void
+}
+interface FollowListener{
+onFollowAdded(follow : Follow) : void
+onFollowDeleted(followerUsername : String, followedUsername : String) : void
+}
+enum Emotion{
+ANGER
+CONFUSION
+DISGUST
+FEAR
+HAPPINESS
+SADNESS
+SHAME
+SURPRISE
+LAUGHTER
+}
+@enduml

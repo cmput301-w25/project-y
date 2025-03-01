@@ -2,15 +2,53 @@
     <string name="app_name">Y</string>
 
     <!-- Emotions -->
-    <string name="emotion_anger">😡</string>
-    <string name="emotion_confusion">😕</string>
-    <string name="emotion_disgust">🤮</string>
-    <string name="emotion_fear">😱</string>
-    <string name="emotion_happiness">😄</string>
-    <string name="emotion_sadness">😭</string>
-    <string name="emotion_shame">😞</string>
-    <string name="emotion_surprise">😳</string>
-    <string name="emotion_laughter">💀</string>
+
+    <string name="emotion_anger_emoji">😡</string>
+    <string name="emotion_confusion_emoji">😕</string>
+    <string name="emotion_disgust_emoji">🤮</string>
+    <string name="emotion_fear_emoji">😱</string>
+    <string name="emotion_happiness_emoji">😄</string>
+    <string name="emotion_sadness_emoji">😭</string>
+    <string name="emotion_shame_emoji">😞</string>
+    <string name="emotion_surprise_emoji">😳</string>
+    <string name="emotion_laughter_emoji">💀</string>
+
+    <!-- emoticon -->
+
+    <string name="emotion_anger">( •`Δ´•)!</string>
+    <string name="emotion_confusion">( @_@)?</string>
+    <string name="emotion_disgust">( ¬＿¬)</string>
+    <string name="emotion_fear">(( •Д•))</string>
+    <string name="emotion_happiness">( ｡•ᴗ•｡)</string>
+    <string name="emotion_sadness">( ಥ╭╮ಥ)</string>
+    <string name="emotion_shame">( ｡•́~•̀｡)</string>
+    <string name="emotion_surprise">( ⊙_⊙)!</string>
+    <string name="emotion_laughter">( ≧∇≦)</string>
+
+    <!-- Values -->
+    <string name="email">Email</string>
+    <string name="logo">Logo</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="Confirm_email">Confirm email</string>
+    <string name="username">Username</string>
+    <string name="create_account">Create Account</string>
+    <string name="return_to_login">Return to Login</string>
+
+    <string name="mood_following">Mood Following</string>
+    <string name="mood_map">Mood Map</string>
+    <string name="user_profile">User Profile</string>
+    <string name="user">User</string>
+    <string name="date_and_time">Date and Time</string>
+    <string name="emoticon">Emoticon</string>
+    <string name="alone">Alone</string>
+    <string name="reason">Reason</string>
+    <string name="mood_photo">Mood photo</string>
+    <string name="location">Location</string>
+    <string name="confrim_password">Confrim Password</string>
+    <string name="name">Name</string>
+
 
 
 
