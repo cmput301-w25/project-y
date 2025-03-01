@@ -1,19 +1,24 @@
 package com.example.y.repositories;
 
+import android.util.Log;
+
 import com.example.y.repositories.FollowRepository.FollowListener;
 import com.example.y.models.Follow;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * Adds, gets, and deletes follow records from the follows collection in the fire
+ * Adds, gets, and deletes follow records from the follows collection in the firestore database.
+ * Notifies follow listeners when an action is taken.
  */
 public class FollowRepository extends GenericRepository<FollowListener> {
 
+    private static FollowRepository instance;  // Singleton instance
     public static final String FOLLOW_COLLECTION = "follows";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
@@ -40,13 +45,50 @@ public class FollowRepository extends GenericRepository<FollowListener> {
     }
 
     /**
+     * Initialize the follows snapshot listener
+     */
+    private FollowRepository() {
+        // Listen for real-time updates and notify all listeners
+        followsRef.addSnapshotListener((snapshots, error) -> {
+            if (error != null) {
+                Log.e("FirestoreError", "Error listening for follow changes", error);
+                return;
+            }
+
+            if (snapshots == null || snapshots.isEmpty()) return;
+
+            for (DocumentChange docChange : snapshots.getDocumentChanges()) {
+                Follow follow = docChange.getDocument().toObject(Follow.class);
+
+                // Notify listeners
+                switch (docChange.getType()) {
+                    case ADDED:
+                        onFollowAdded(follow);
+                        break;
+                    case REMOVED:
+                        onFollowDeleted(follow.getFollowerUsername(), follow.getFollowedUsername());
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * Gets singleton instance of this repository
+     * @return
+     *      Instance of FollowRepository
+     */
+    public static synchronized FollowRepository getInstance() {
+        if (instance == null) instance = new FollowRepository();
+        return instance;
+    }
+
+    /**
      * Adds a follow record to the database.
-     * Notifies listeners that a follow record was added.
      * @param follow
      *      Follow record to be added.
      * @param onSuccess
      *      Success callback function to which the added follow record is passed to.
-     *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function.
      */
@@ -55,10 +97,7 @@ public class FollowRepository extends GenericRepository<FollowListener> {
         follow.setTimestamp(Timestamp.now());
         followsRef.document(compoundId)
                 .set(follow)
-                .addOnSuccessListener(doc -> {
-                    onSuccess.onSuccess(follow);
-                    onFollowAdded(follow);
-                })
+                .addOnSuccessListener(doc -> onSuccess.onSuccess(follow))
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Follow record creation failed."));
                 });
@@ -93,14 +132,12 @@ public class FollowRepository extends GenericRepository<FollowListener> {
 
     /**
      * Deletes a follow record from the database.
-     * Notifies listeners that a follow record was deleted.
      * @param followerUsername
      *      Username of the follower of the follow record to be deleted.
      * @param followedUsername
      *      Username of the followed user of the follow record to be deleted.
      * @param onSuccess
      *      Success callback function.
-     *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function.
      */
@@ -111,10 +148,7 @@ public class FollowRepository extends GenericRepository<FollowListener> {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         docRef.delete()
-                                .addOnSuccessListener(unused -> {
-                                    onSuccess.onSuccess(null);
-                                    onFollowDeleted(followerUsername, followedUsername);
-                                })
+                                .addOnSuccessListener(unused -> onSuccess.onSuccess(null))
                                 .addOnFailureListener(e -> {
                                     onFailure.onFailure(new Exception("Failed to delete follow document: " + e.getMessage()));
                                 });
@@ -145,10 +179,8 @@ public class FollowRepository extends GenericRepository<FollowListener> {
      * @param follow
      *      Follow record that was added.
      */
-    private void onFollowAdded(Follow follow) {
-        listeners.forEach(listener -> {
-            listener.onFollowAdded(follow);
-        });
+    private synchronized void onFollowAdded(Follow follow) {
+        listeners.forEach(listener -> listener.onFollowAdded(follow));
     }
 
     /**
@@ -158,10 +190,8 @@ public class FollowRepository extends GenericRepository<FollowListener> {
      * @param followedUsername
      *      Username of the followed user of the follow record that was deleted.
      */
-    private void onFollowDeleted(String followerUsername, String followedUsername) {
-        listeners.forEach(listener -> {
-            listener.onFollowDeleted(followerUsername, followedUsername);
-        });
+    private synchronized void onFollowDeleted(String followerUsername, String followedUsername) {
+        listeners.forEach(listener -> listener.onFollowDeleted(followerUsername, followedUsername));
     }
     
 }
