@@ -6,7 +6,9 @@
     android:padding="16dp">
 
     <include
-        layout="@layout/header" />
+        layout="@layout/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>

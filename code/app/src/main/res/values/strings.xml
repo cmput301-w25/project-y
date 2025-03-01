@@ -48,6 +48,11 @@
     <string name="location">Location</string>
     <string name="confrim_password">Confrim Password</string>
     <string name="name">Name</string>
+    <string name="logout">Logout</string>
+    <string name="addMoodEvent">Add</string>
+    <string name="my_mood_history">My Mood History</string>
+    <string name="follow_requests">Follow Requests</string>
+    <string name="home">Home</string>
 
 
 </resources>
