@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@android:color/black"
+    android:padding="16dp"
+    tools:context=".views.ProfileActivity">
+
+    <include
+        layout="@layout/profile_page_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/follow_requests"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        app:cornerRadius="0dp"
+        android:backgroundTint="#000000"
+        android:textColorHint="#FFFFFF">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnUserProfileMyMoodHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/my_mood_history"
+        android:textColor="#000000"
+        app:cornerRadius="0dp"
+        tools:ignore="VisualLintButtonSize">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnUserProfileLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#000000"
+        app:cornerRadius="0dp"
+        android:textColorHint="#FFFFFF"
+        android:text="@string/logout">
+
+    </Button>
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/btn_addMoodEventFromProfile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="24dp"
+            android:background="@null"
+            android:contentDescription="@string/addMoodEvent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus_symbol_button" />
+
+
+    </FrameLayout>
+
+
+
+</LinearLayout>

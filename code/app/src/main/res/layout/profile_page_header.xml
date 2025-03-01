@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="#000000"
+    android:gravity="center">
+
+    <ImageButton
+        android:id="@+id/btnMoodFollowing"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/mood"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="@string/mood_following" />
+
+    <ImageButton
+        android:id="@+id/btnMoodMap"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/map"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="@string/mood_map"
+        android:layout_marginStart="24dp" />
+
+    <ImageButton
+        android:id="@+id/home"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/home"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="@string/home"
+        android:layout_marginStart="24dp"
+        app:tint="@android:color/white" />
+
+</LinearLayout>
