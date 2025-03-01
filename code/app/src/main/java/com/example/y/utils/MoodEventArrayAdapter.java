@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 
 import com.example.y.R;
 import com.example.y.models.MoodEvent;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -53,10 +55,22 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         usernameTextView.setText(mood.getPosterUsername());
         dateTimeTextView.setText(mood.getDateTime().toString());
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
-        socialSituationTextView.setText(mood.getSocialSituation());
-        reasonWhyTextView.setText(mood.getReasonWhy());
-        // TODO: photoImgView.set
-        locationTextView.setText(mood.getLocation().toString());
+
+        String socialSituation = mood.getSocialSituation();
+        if (socialSituation != null) socialSituationTextView.setText(socialSituation);
+
+        String reasonWhy = mood.getReasonWhy();
+        if (reasonWhy != null) reasonWhyTextView.setText(reasonWhy);
+
+        URL photoURL = mood.getPhotoURL();
+        if (photoURL != null) {
+            // TODO: Fetch image
+        } else {
+            // TODO: Do not show the default image
+        }
+
+        GeoPoint location = mood.getLocation();
+        if (location != null) locationTextView.setText(location.toString());
 
         return view;
     }

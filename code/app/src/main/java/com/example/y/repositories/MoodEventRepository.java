@@ -4,6 +4,7 @@ import com.example.y.repositories.MoodEventRepository.MoodEventListener;
 import com.example.y.models.MoodEvent;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,6 +57,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      *      Failure callback function.
      */
     public void addMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        moodEvent.setCreationDateTime(Timestamp.now());
         moodEventRef.add(moodEvent)
                 .addOnSuccessListener(doc -> {
                     moodEvent.setId(doc.getId());
