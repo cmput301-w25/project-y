@@ -51,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         // Login through controller
         loginController.onLoginUser(username, password, user -> {
             // Launch home activity
-            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeActivity.class);
+            Toast.makeText(this, "Welcome " + username, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
             startActivity(intent);
             finish();
         }, e -> {

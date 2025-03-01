@@ -1,9 +1,10 @@
 package com.example.y.repositories;
 
-import com.example.y.listeners.MoodEventListener;
+import com.example.y.repositories.MoodEventRepository.MoodEventListener;
 import com.example.y.models.MoodEvent;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,6 +20,32 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     private final CollectionReference moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
 
     /**
+     * Listens for mood event being added, updated, or removed.
+     */
+    public interface MoodEventListener {
+        /**
+         * Action to be taken when a mood event is added to the database successfully.
+         * @param newMoodEvent
+         *      Mood event that was added.
+         */
+        void onMoodEventAdded(MoodEvent newMoodEvent);
+
+        /**
+         * Action to be taken when a mood event is updated in the database successfully.
+         * @param updatedMoodEvent
+         *      Mood event that was updated.
+         */
+        void onMoodEventUpdated(MoodEvent updatedMoodEvent);
+
+        /**
+         * Action to be taken when a mood event is deleted from the database successfully.
+         * @param deletedId
+         *      ID of the mood event that was deleted
+         */
+        void onMoodEventDeleted(String deletedId);
+    }
+
+    /**
      * Add a mood event to the database.
      * Notifies listeners that a mood event was added.
      * @param moodEvent
@@ -30,6 +57,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      *      Failure callback function.
      */
     public void addMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        moodEvent.setCreationDateTime(Timestamp.now());
         moodEventRef.add(moodEvent)
                 .addOnSuccessListener(doc -> {
                     moodEvent.setId(doc.getId());

@@ -14,52 +14,52 @@
         android:weightSum="2">
 
         <TextView
-        android:id="@+id/userName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/user"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF" />
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/user"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/dateTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date_and_time"
-        android:textSize="12sp"
-        android:textColor="#BBBBBB"
-        android:layout_weight="1"
-        android:gravity="end" />
+        <TextView
+            android:id="@+id/dateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date_and_time"
+            android:textSize="12sp"
+            android:textColor="#BBBBBB"
+            android:layout_weight="1"
+            android:gravity="end" />
+
     </LinearLayout>
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="2">
-
-    <TextView
-        android:id="@+id/emoticon"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="😄"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:contentDescription="@string/emoticon" />
+        android:orientation="horizontal"
+        android:weightSum="2">
 
-    <TextView
-        android:id="@+id/socialSituation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/alone"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/emoticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/emotion_happiness_emoji"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:contentDescription="@string/emoticon" />
+
+        <TextView
+            android:id="@+id/socialSituation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alone"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/reasonWhy"
@@ -79,14 +79,14 @@
         android:contentDescription="@string/mood_photo"
         android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/location"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            android:textColor="#BBBBBB"
-            android:layout_gravity="end" />
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/location"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:textColor="#BBBBBB"
+        android:layout_gravity="end" />
 
-    </LinearLayout>
+</LinearLayout>

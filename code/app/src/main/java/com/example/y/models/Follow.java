@@ -23,8 +23,13 @@ public class Follow implements Serializable {
 
     public String getFollowerUsername() { return followerUsername; }
 
+    public void setFollowerUsername(String followerUsername) { this.followerUsername = followerUsername; }
+
     public String getFollowedUsername() { return followedUsername; }
+
+    public void setFollowedUsername(String followedUsername) { this.followedUsername = followedUsername; }
 
     public Timestamp getTimestamp() { return timestamp; }
 
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 }

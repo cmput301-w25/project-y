@@ -60,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         signUpController.onSignUpUser(email, confirmEmail, username, name, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
             startActivity(intent);
             finish();
 
