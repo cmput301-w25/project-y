@@ -1,5 +1,6 @@
 package com.example.y.controllers;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.example.y.repositories.MoodEventRepository;
@@ -12,26 +13,47 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
+/**
+ * Manages filter and array adapter for the following mood list activity.
+ * Listens for mood event updates and updates lists accordingly.
+ */
 public class FollowingMoodListController implements MoodEventRepository.MoodEventListener {
 
     private final MoodEventListFilter filter;
+    private final MoodEventRepository moodRepo;
+    private final Context context;
     private com.example.y.utils.MoodEventArrayAdapter moodAdapter;
     private ArrayList<MoodEvent> originalMoodEventList;
     private ArrayList<MoodEvent> filteredMoodEventList;
 
     public FollowingMoodListController(Context context, String username, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         filter = new MoodEventListFilter();
+        moodRepo = MoodEventRepository.getInstance();
+        this.context = context;
 
         // Initialize the array adapter
-        UserRepository userRepo = new UserRepository();
+        UserRepository userRepo = UserRepository.getInstance();
         userRepo.getFollowingMoodList(username, moodEvents -> {
+            // Populate original and filtered lists
             originalMoodEventList = new ArrayList<>(moodEvents);
             filteredMoodEventList = new ArrayList<>(moodEvents);
+
+            // Listen for mood event updates
+            moodRepo.addListener(this);
+
+            // Initialize the array adapter
             moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList);
+
             onSuccess.onSuccess(null);
         }, onFailure);
+    }
+
+    /**
+     * Removes controller from mood event repository's listener set
+     */
+    public void onViewFinish() {
+        moodRepo.removeListener(this);
     }
 
     /**
@@ -42,7 +64,9 @@ public class FollowingMoodListController implements MoodEventRepository.MoodEven
         if (moodAdapter == null || originalMoodEventList == null || filteredMoodEventList == null) return;
         filteredMoodEventList.clear();
         filteredMoodEventList.addAll(filter.applyFilter(originalMoodEventList));
-        moodAdapter.notifyDataSetChanged();
+        if (moodAdapter != null && context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
+        }
     }
 
     /**
@@ -61,7 +85,9 @@ public class FollowingMoodListController implements MoodEventRepository.MoodEven
         // Insert new mood in the filtered list if it wouldn't be filtered out.
         if (!filter.wouldBeFiltered(newMoodEvent)) {
             insertMoodEventSortedDateTime(filteredMoodEventList, newMoodEvent);
-            if (moodAdapter != null) moodAdapter.notifyDataSetChanged();
+            if (moodAdapter != null && context instanceof Activity) {
+                ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
+            }
         }
     }
 
@@ -78,7 +104,9 @@ public class FollowingMoodListController implements MoodEventRepository.MoodEven
         // Remove mood from both cached arrays and notify array adapter.
         filteredMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
         originalMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
-        if (moodAdapter != null) moodAdapter.notifyDataSetChanged();
+        if (moodAdapter != null && context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
+        }
     }
 
     /**
@@ -123,7 +151,9 @@ public class FollowingMoodListController implements MoodEventRepository.MoodEven
         }
 
         // Notify array adapter.
-        if (moodAdapter != null) moodAdapter.notifyDataSetChanged();
+        if (moodAdapter != null && context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
+        }
     }
 
     /**

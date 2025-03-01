@@ -1,5 +1,9 @@
 package com.example.y.repositories;
 
+import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
+
+import android.util.Log;
+
 import com.example.y.repositories.UserRepository.UserListener;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
@@ -9,6 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,6 +29,7 @@ import java.util.List;
  */
 public class UserRepository extends GenericRepository<UserListener> {
 
+    private static UserRepository instance;  // Singleton instance
     public static final String USER_COLLECTION = "users";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference usersRef = db.collection(USER_COLLECTION);
@@ -41,23 +47,52 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
+     * Initialize the user snapshot listener
+     */
+    private UserRepository() {
+        // Listen for real-time updates and notify all listeners
+        usersRef.addSnapshotListener((snapshots, error) -> {
+            if (error != null) {
+                Log.e("FirestoreError", "Error listening for user changes", error);
+                return;
+            }
+
+            if (snapshots == null || snapshots.isEmpty()) return;
+
+            for (DocumentChange docChange : snapshots.getDocumentChanges()) {
+                User user = docChange.getDocument().toObject(User.class);
+
+                // Notify listeners
+                if (docChange.getType() == ADDED) {
+                    onUserAdded(user);
+                }
+            }
+        });
+    }
+
+    /**
+     * Gets singleton instance of this repository
+     * @return
+     *      Instance of UserRepository
+     */
+    public static synchronized UserRepository getInstance() {
+        if (instance == null) instance = new UserRepository();
+        return instance;
+    }
+
+    /**
      * Add a user to the database.
-     * Notifies listeners that a user was added.
      * @param user
      *      User to be added.
      * @param onSuccess
      *      Success callback function to which the added user is passed to.
-     *      Executed before the listeners are notified.
      * @param onFailure
      *      Failure callback function.
      */
     public void addUser(User user, OnSuccessListener<User> onSuccess, OnFailureListener onFailure) {
         usersRef.document(user.getUsername())
                 .set(user)
-                .addOnSuccessListener(doc -> {
-                    onSuccess.onSuccess(user);
-                    onUserAdded(user);
-                })
+                .addOnSuccessListener(doc -> onSuccess.onSuccess(user))
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("User document creation failed."));
                 });
@@ -171,10 +206,8 @@ public class UserRepository extends GenericRepository<UserListener> {
      * @param user
      *      User that was added.
      */
-    private void onUserAdded(User user) {
-        listeners.forEach(listener -> {
-            listener.onUserAdded(user);
-        });
+    private synchronized void onUserAdded(User user) {
+        listeners.forEach(listener -> listener.onUserAdded(user));
     }
 
 }

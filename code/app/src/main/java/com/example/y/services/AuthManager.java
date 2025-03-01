@@ -94,7 +94,7 @@ public class AuthManager {
                         User user = new User(username, hashPassword(password), name, email, now);
 
                         // Add user
-                        UserRepository userRepo = new UserRepository();
+                        UserRepository userRepo = UserRepository.getInstance();
                         userRepo.addUser(user, onSuccess, onFailure);
                     }
                 })
