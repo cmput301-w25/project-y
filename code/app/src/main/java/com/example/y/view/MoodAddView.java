@@ -1,5 +1,7 @@
-package com.example.myapplication;
+package com.example.y.view;
 
+import com.example.y.R;
+import com.example.y.R.layout;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class MainActivity extends AppCompatActivity {
+public class MoodAddView extends AppCompatActivity {
 
     // Declare view references
     private Spinner spinnerMood;
@@ -27,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
         // Set dark mode before creating views
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.addmoodform);
+
 
         // Initialize all views
         spinnerMood = findViewById(R.id.spinnerMood);
