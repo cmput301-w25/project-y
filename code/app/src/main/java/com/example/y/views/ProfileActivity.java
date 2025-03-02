@@ -12,7 +12,7 @@ import com.example.y.services.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
      Button logout;  // Declare it here
-     ImageButton homeButton;
+     ImageButton followingMoodListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,22 +21,16 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize views AFTER setting the layout
         logout = findViewById(R.id.btnUserProfileLogout);
-        homeButton = findViewById(R.id.home);
+        followingMoodListButton = findViewById(R.id.btnMoodFollowing);
 
+        logout.setOnClickListener(view -> onLogoutButtonClick());
 
-            logout.setOnClickListener(view -> onLogoutButtonClick());
-
-
-            homeButton.setOnClickListener(view -> onHomeButtonClick());
-
-
-
+        followingMoodListButton.setOnClickListener(view -> onFollowingMoodListButtonClick());
     }
 
-    private void onHomeButtonClick() {
-        Intent intent = new Intent(this, HomeActivity.class);
+    private void onFollowingMoodListButtonClick() {
+        Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
         startActivity(intent);
-        finish();
     }
 
     private void onLogoutButtonClick() {

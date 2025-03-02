@@ -52,7 +52,7 @@ public class FollowingMoodListController implements MoodEventRepository.MoodEven
     /**
      * Removes controller from mood event repository's listener set
      */
-    public void onViewFinish() {
+    public void onActivityStop() {
         moodRepo.removeListener(this);
     }
 
