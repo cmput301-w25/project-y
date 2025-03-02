@@ -3,6 +3,7 @@ package com.example.y.views;
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -14,7 +15,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class MoodAddView extends AppCompatActivity {
+import java.util.Calendar;
+import java.util.Locale;
+
+public class MoodAddActivity extends AppCompatActivity {
 
     // Declare view references
     private AddMoodController addMoodController;
@@ -23,6 +27,7 @@ public class MoodAddView extends AppCompatActivity {
     private CheckBox checkShareLocation;
     private EditText etReason;
     private EditText etExplanation;
+    private EditText datePicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,8 @@ public class MoodAddView extends AppCompatActivity {
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReason = findViewById(R.id.etReason);
         etExplanation = findViewById(R.id.etExplanation);
-
+        datePicked = findViewById(R.id.datePickerAddMood);
+        datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
         // Configure mood spinner adapter
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -69,6 +75,8 @@ public class MoodAddView extends AppCompatActivity {
             boolean shareLocation = checkShareLocation.isChecked();
             String reason = etReason.getText().toString().trim();
             String explanation = etExplanation.getText().toString().trim();
+            String dateOfMoodEventSTR = datePicked.getText().toString();
+
             //TODO: implementADDMoodController STUFF
             addMoodController.onSubmitMood(selectedMood,socialSituation,shareLocation,reason,explanation);
             // Validation example
@@ -93,5 +101,21 @@ public class MoodAddView extends AppCompatActivity {
             // 3. Send data to server/database
             // 4. Clear form or navigate away
         });
+    }
+
+    private void showDatePickerDialog(EditText datePicked) {
+
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,(view,selectedYear,selectedMonth,selectedDay) ->{
+            String formattedDate = String.format(Locale.getDefault(),"%02d-%02d-%04d",selectedDay,selectedMonth + 1,selectedYear);
+            datePicked.setText(formattedDate);
+
+        },year,month,day
+        );
+        datePickerDialog.show();
     }
 }

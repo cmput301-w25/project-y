@@ -11,8 +11,10 @@ import com.example.y.R;
 import com.example.y.services.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
-     Button logout;  // Declare it here
+     Button logout;
+     // Declare it here
      ImageButton followingMoodListButton;
+     ImageButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +23,19 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize views AFTER setting the layout
         logout = findViewById(R.id.btnUserProfileLogout);
+        addButton = findViewById(R.id.btn_addMoodEventFromProfile);
         followingMoodListButton = findViewById(R.id.btnMoodFollowing);
 
-        logout.setOnClickListener(view -> onLogoutButtonClick());
 
+        logout.setOnClickListener(view -> onLogoutButtonClick());
+        addButton.setOnClickListener(view -> onAddButtonClick());
         followingMoodListButton.setOnClickListener(view -> onFollowingMoodListButtonClick());
+    }
+
+    private void onAddButtonClick() {
+        Intent intent = new Intent(this, MoodAddActivity.class);
+        startActivity(intent);
+
     }
 
     private void onFollowingMoodListButtonClick() {

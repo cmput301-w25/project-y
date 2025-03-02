@@ -43,6 +43,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
         profileButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
+            finish();
         });
 
     }
