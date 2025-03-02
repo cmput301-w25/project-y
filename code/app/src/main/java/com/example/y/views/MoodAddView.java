@@ -69,6 +69,7 @@ public class MoodAddView extends AppCompatActivity {
             boolean shareLocation = checkShareLocation.isChecked();
             String reason = etReason.getText().toString().trim();
             String explanation = etExplanation.getText().toString().trim();
+            //TODO: implementADDMoodController STUFF
             addMoodController.onSubmitMood(selectedMood,socialSituation,shareLocation,reason,explanation);
             // Validation example
             if (reason.length() > 20 ) {

@@ -18,8 +18,27 @@ public class AddMoodController {
         return session.getUsername();
     }
 
-    public void onSubmitMood(String mood, String socialSituation, boolean shareLocation, String reason, String explanation){
+    /**
+     *
+     * @param mood
+     * @param socialSituation
+     * @param shareLocation
+     * @param reason
+     * @param explanation
+     */
 
+    public void onSubmitMood(String currentMood, String socialSituation, boolean shareLocation, String reason, String explanation){
+        /* TODO: we have to do some input validation... and then send make it such that it updates in the database */
+        posterUsername = getPosterUsername();
+        /*
+        * do some more stuff here
+        * ..
+        * .
+        *
+        * .
+        * .
+        * /
+        // Something like Mood moodToSubmit = new MoodEvent()..... I guess try to follow the same format as the logging in and the signup controllers
 
 
         return;
