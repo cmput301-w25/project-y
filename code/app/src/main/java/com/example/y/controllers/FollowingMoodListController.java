@@ -36,4 +36,5 @@ public class FollowingMoodListController extends MoodListController {
     public boolean doesBelongInOriginal(MoodEvent mood) {
         return (followingList != null) && (followingList.contains(mood.getPosterUsername()));
     }
+
 }
