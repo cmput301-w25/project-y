@@ -20,12 +20,12 @@ import java.util.ArrayList;
  */
 public abstract class MoodListController implements MoodEventRepository.MoodEventListener {
 
-    private final MoodEventListFilter filter;
-    private final MoodEventRepository moodRepo;
-    private final Context context;
-    private com.example.y.utils.MoodEventArrayAdapter moodAdapter;
-    private ArrayList<MoodEvent> originalMoodEventList;
-    private ArrayList<MoodEvent> filteredMoodEventList;
+    protected final Context context;
+    protected final MoodEventListFilter filter;
+    protected final MoodEventRepository moodRepo;
+    protected ArrayList<MoodEvent> originalMoodEventList;
+    protected ArrayList<MoodEvent> filteredMoodEventList;
+    protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
 
     public MoodListController(Context context) {
         filter = new MoodEventListFilter();
@@ -77,9 +77,7 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         if (moodAdapter == null || originalMoodEventList == null || filteredMoodEventList == null) return;
         filteredMoodEventList.clear();
         filteredMoodEventList.addAll(filter.applyFilter(originalMoodEventList));
-        if (moodAdapter != null && context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
-        }
+        notifyAdapter();
     }
 
     /**
@@ -98,9 +96,7 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         // Insert new mood in the filtered list if it wouldn't be filtered out.
         if (!filter.wouldBeFiltered(newMoodEvent)) {
             insertMoodEventSortedDateTime(filteredMoodEventList, newMoodEvent);
-            if (moodAdapter != null && context instanceof Activity) {
-                ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
-            }
+            notifyAdapter();
         }
     }
 
@@ -117,9 +113,7 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         // Remove mood from both cached arrays and notify array adapter.
         filteredMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
         originalMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
-        if (moodAdapter != null && context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
-        }
+        notifyAdapter();
     }
 
     /**
@@ -162,29 +156,31 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         if (!isInFiltered && !filter.wouldBeFiltered(updatedMoodEvent)) {
             insertMoodEventSortedDateTime(filteredMoodEventList, updatedMoodEvent);
         }
-
-        // Notify array adapter.
-        if (moodAdapter != null && context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
-        }
+        notifyAdapter();
     }
 
     /**
      * Inserts a mood event into a list of mood events sorted by date time descending.
+     * Uses binary search on date time in order to keep the array sorted.
      * @param sortedMoods
      *      Array of mood events sorted by date time descending.
      * @param mood
      *      Mood event to be inserted into.
      */
-    private void insertMoodEventSortedDateTime(ArrayList<MoodEvent> sortedMoods, MoodEvent mood) {
+    protected void insertMoodEventSortedDateTime(ArrayList<MoodEvent> sortedMoods, MoodEvent mood) {
         Timestamp key = mood.getDateTime();
 
-        // Binary search insertion spot
+        // Binary search for insertion spot
         int low = 0;
         int high = sortedMoods.size() - 1;
+
         while (low <= high) {
             int mid = low + (high - low) / 2;
-            if (sortedMoods.get(mid).getDateTime().compareTo(key) < 0) {
+            int cmp = sortedMoods.get(mid).getDateTime().compareTo(key);
+
+            if (cmp == 0 && sortedMoods.get(mid).getId().equals(mood.getId())) {
+                return;
+            } else if (cmp < 0) {
                 high = mid - 1;
             } else {
                 low = mid + 1;
@@ -193,6 +189,17 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
 
         // Insert mood
         sortedMoods.add(low, mood);
+    }
+
+
+    /**
+     * Notifies the mood adapter that there was a change.
+     * This update happens in the main thread.
+     */
+    protected void notifyAdapter() {
+        if (moodAdapter != null && context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
+        }
     }
 
     public MoodEventListFilter getFilter() { return filter; }

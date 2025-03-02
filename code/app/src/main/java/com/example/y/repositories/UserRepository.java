@@ -187,6 +187,7 @@ public class UserRepository extends GenericRepository<UserListener> {
                             QuerySnapshot snapshot = (QuerySnapshot) result;
                             for (DocumentSnapshot doc : snapshot) {
                                 MoodEvent mood = doc.toObject(MoodEvent.class);
+                                mood.setId(doc.getId());
                                 moodFollowingList.add(mood);
                             }
                         }
