@@ -16,6 +16,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
 
     FollowingMoodListController controller;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

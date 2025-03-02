@@ -1,10 +1,9 @@
-package com.example.y.view;
+package com.example.y.views;
 
 import com.example.y.R;
-import com.example.y.R.layout;
+import com.example.y.controllers.AddMoodController;
+
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +17,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 public class MoodAddView extends AppCompatActivity {
 
     // Declare view references
+    private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
@@ -30,6 +30,8 @@ public class MoodAddView extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addmoodform);
+
+        addMoodController = new AddMoodController(this);
 
 
         // Initialize all views
@@ -67,7 +69,7 @@ public class MoodAddView extends AppCompatActivity {
             boolean shareLocation = checkShareLocation.isChecked();
             String reason = etReason.getText().toString().trim();
             String explanation = etExplanation.getText().toString().trim();
-
+            addMoodController.onSubmitMood(selectedMood,socialSituation,shareLocation,reason,explanation);
             // Validation example
             if (reason.length() > 20 ) {
                 etReason.setError("Reason should not exceed 20 characters");

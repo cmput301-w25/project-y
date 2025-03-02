@@ -12,7 +12,7 @@
     tools:context=".views.ProfileActivity">
 
     <include
-        layout="@layout/profile_page_header"
+        layout="@layout/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
