@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.controllers.FollowingMoodListController;
+import com.example.y.controllers.MoodListController;
 import com.example.y.services.SessionManager;
 
 public class FollowingMoodEventListActivity extends AppCompatActivity {
@@ -26,8 +27,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
 
         // Set up controller
-        SessionManager session = new SessionManager(this);
-        controller = new FollowingMoodListController(this, session.getUsername(), unused -> {
+        controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
         }, e -> {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

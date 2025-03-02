@@ -123,9 +123,9 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Gets a list of all the usernames of the users being followed by a user.
+     * Gets a list of all the usernames a given user is following.
      * @param username
-     *      Username of the user to find followers for.
+     *      Username of the user to find all users they're following.
      * @param onSuccess
      *      Success callback function to which the list of usernames is passed to.
      * @param onFailure
