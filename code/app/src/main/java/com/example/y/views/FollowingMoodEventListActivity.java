@@ -22,28 +22,28 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.following_mood_event_list_view);
 
-        ImageButton mapButton = findViewById(R.id.btnMoodMap);
-        ImageButton profileButton = findViewById(R.id.btnUserProfile);
-        ListView moodListView = findViewById(R.id.listviewMoodEvents);
-
         // Set up controller
+        ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
         }, e -> {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         });
 
-        // Switch activities
-        mapButton.setOnClickListener(view -> {
+        // Header navigation
+        findViewById(R.id.btnDiscover).setOnClickListener(view -> {
+            Intent intent = new Intent(this, DiscoverActivity.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.btnMoodMap).setOnClickListener(view -> {
             // TODO: Switch to map activity
             // Intent intent = new Intent(this, MapActivity.class);
             // startActivity(intent);
         });
-        profileButton.setOnClickListener(view -> {
+        findViewById(R.id.btnUserProfile).setOnClickListener(view -> {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         });
-
     }
 
     @Override
