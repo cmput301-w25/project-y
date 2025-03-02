@@ -216,6 +216,32 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     /**
+     * Gets every mood event from a user.
+     * @param username
+     *      Username of the user to get moods from.
+     * @param onSuccess
+     *      Success callback function to which the array of mood events is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getAllMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        moodEventRef
+                .whereEqualTo("posterUsername", username)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> allMoods = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
+                        }
+                        onSuccess.onSuccess(allMoods);
+                    } else onFailure.onFailure(new Exception("Failed to fetch all mood events from user " + username, task.getException()));
+                });
+    }
+
+    /**
      * Notifies all listeners that a mood event was added to the database successfully.
      * @param newMoodEvent
      *      Mood event that was added.
