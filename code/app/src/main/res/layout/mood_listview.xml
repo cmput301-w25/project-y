@@ -13,6 +13,15 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
+        <Button
+            android:id="@+id/btnFollowFromMood"
+            android:backgroundTint="@color/follow"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/follow" />
+
+
         <TextView
             android:id="@+id/username"
             android:layout_width="0dp"
