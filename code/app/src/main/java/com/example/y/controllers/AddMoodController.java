@@ -37,7 +37,7 @@ public class AddMoodController {
         *
         * .
         * .
-        * /
+        */
         // Something like Mood moodToSubmit = new MoodEvent()..... I guess try to follow the same format as the logging in and the signup controllers
 
 
