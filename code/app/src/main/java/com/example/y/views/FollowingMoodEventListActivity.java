@@ -17,6 +17,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
 
     FollowingMoodListController controller;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
         findViewById(R.id.btnUserProfile).setOnClickListener(view -> {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 

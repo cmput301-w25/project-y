@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
         String password = passwordField.getText().toString().trim();
         String confirmPassword = passwordField.getText().toString().trim();
 
-        signUpController.onSignUpUser(email, confirmEmail, username, name, password, confirmPassword, user -> {
+        signUpController.onSignUpUser(email, confirmEmail, name, username, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();
             Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
             startActivity(intent);
