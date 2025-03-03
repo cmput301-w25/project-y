@@ -31,13 +31,11 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         filter = new MoodEventListFilter();
         moodRepo = MoodEventRepository.getInstance();
         this.context = context;
-
-        // Initialize the array adapter
-        UserRepository userRepo = UserRepository.getInstance();
     }
 
     /**
      * Initializes the array adapter. Child classes must call this in their constructor
+     * Adds this instance as a mood event listener.
      * @param moodEvents
      *      Initial list of mood events.
      */

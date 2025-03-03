@@ -80,4 +80,5 @@ public class FollowingMoodListController extends MoodListController implements F
             notifyAdapter();
         }
     }
+
 }
