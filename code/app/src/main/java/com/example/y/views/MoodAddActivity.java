@@ -107,25 +107,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
             });
         });
-            // Validation example
-
-
-
-            // Create display message
-            /*String message = "Mood: " + selectedMood +
-                    "\nReason: " + (reason.isEmpty() ? "N/A" : reason) +
-                    "\nExplanation: " + (explanation.isEmpty() ? "N/A" : explanation) +
-                    "\nSocial Situation: " + socialSituation +
-                    "\nLocation Sharing: " + (shareLocation ? "ON" : "OFF");
-*/
-            // Show collected data (replace with your actual submission logic)
-            //Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
-            // Here you would typically:
-            // 1. Validate all fields
-            // 2. Create a Mood object
-            // 3. Send data to server/database
-            // 4. Clear form or navigate away
+        
         }
 
 
