@@ -21,7 +21,9 @@ import com.example.y.services.SessionManager;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Array adapter for mood events.
@@ -105,7 +107,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Populate content
         // TODO: Check for optional fields and change the way the post looks
         usernameTextView.setText(mood.getPosterUsername());
-        dateTimeTextView.setText(mood.getDateTime().toString());
+        String dateTimeFormatted = new SimpleDateFormat("HH:mm MMM dd, yyyy", Locale.getDefault())
+                .format(mood.getDateTime().toDate());
+        dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
         String socialSituation = mood.getSocialSituation();
@@ -117,8 +121,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         URL photoURL = mood.getPhotoURL();
         if (photoURL != null) {
             // TODO: Fetch image
+            photoImgView.setVisibility(View.VISIBLE);
         } else {
-            // TODO: Do not show the default image
+            photoImgView.setVisibility(View.GONE);
         }
 
         GeoPoint location = mood.getLocation();

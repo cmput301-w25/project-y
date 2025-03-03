@@ -28,14 +28,11 @@ public class GenericRepository<Listener> {
 
     /**
      * Removes a listener from the listener set.
-     * Throws `IllegalArgumentException` if the listener is not found in the set.
      * @param listener
      *      listener to be removed
      */
     public synchronized void removeListener(Listener listener) {
-        if (!listeners.remove(listener)) {
-            throw new IllegalArgumentException("Listener not found in repository: " + listener);
-        }
+        listeners.remove(listener);
     }
 
 }
