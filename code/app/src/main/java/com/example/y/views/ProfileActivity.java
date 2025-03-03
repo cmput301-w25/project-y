@@ -13,7 +13,9 @@ import com.example.y.services.SessionManager;
 public class ProfileActivity extends AppCompatActivity {
      Button logout;
      Button followRequests;
+
      ImageButton followingMoodListButton;
+     ImageButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +24,20 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         logout = findViewById(R.id.btnUserProfileLogout);
+        addButton = findViewById(R.id.btn_addMoodEventFromProfile);
         followingMoodListButton = findViewById(R.id.btnMoodFollowing);
         followRequests = findViewById(R.id.FollowRequests);
+  
+        addButton.setOnClickListener(view -> onAddButtonClick());
         logout.setOnClickListener(view -> onLogoutButtonClick());
-
         followRequests.setOnClickListener(view -> onFollowRequests());
-
         followingMoodListButton.setOnClickListener(view -> onFollowingMoodListButtonClick());
+    }
+
+    private void onAddButtonClick() {
+        Intent intent = new Intent(this, MoodAddActivity.class);
+        startActivity(intent);
+
     }
 
     private void onFollowingMoodListButtonClick() {

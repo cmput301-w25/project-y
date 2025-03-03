@@ -54,7 +54,7 @@ public class SignUpController {
         }
 
         // If signup is correct
-        authManager.signUp(username, name, password, email, onSuccessListener, onFailureListener);
+        authManager.signUp(username, password, name, email, onSuccessListener, onFailureListener);
     }
 }
 
