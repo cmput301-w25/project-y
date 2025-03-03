@@ -130,8 +130,8 @@ public class MoodAddActivity extends AppCompatActivity {
 
 
     /**
-     *
-     * @param datePicked
+     * Basically a str -> datetime
+     * @param datePicked Edit text of our date picker.
      */
     private void showDatePickerDialog(EditText datePicked) {
 

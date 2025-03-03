@@ -24,12 +24,16 @@ public class AddMoodController {
     }
 
     /**
+     * Handles adding a new mood event to the database
      *
-     * @param currentMood
-     * @param socialSituation
-     * @param shareLocation
-     * @param reason
-     * @param explanation
+     * @param currentMood Mood for the mood event .
+     * @param socialSituation The social situation of the mood event.
+     * @param shareLocation Boolean to see if the user wants their location shared.
+     * @param reason Reason of the mood event.
+     * @param explanation Explanation of the mood event.
+     * @param dateOfMoodEvent Date of the mood event.
+     * @param onSuccessListener Success callback of adding the mood event.
+     * @param onFailureListener Failure callback of adding the mood event.
      */
 
     public void onSubmitMood(Emotion currentMood, String socialSituation, boolean shareLocation, String reason, String explanation, Timestamp dateOfMoodEvent, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener) {
