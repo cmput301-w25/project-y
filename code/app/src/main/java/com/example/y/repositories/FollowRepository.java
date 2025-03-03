@@ -162,6 +162,27 @@ public class FollowRepository extends GenericRepository<FollowListener> {
     }
 
     /**
+     * Checks if a user is following another
+     * @param followerUsername
+     *      Username of the follower.
+     * @param followedUsername
+     *      Username of the user that the follower may or may not follow.
+     * @param onSuccess
+     *      Success callback function. Boolean argument representing if followerUsername follower followedUsername or not.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void isFollowing(String followerUsername, String followedUsername, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        String compoundId = getCompoundId(followerUsername, followedUsername);
+        DocumentReference docRef = followsRef.document(compoundId);
+        docRef.get()
+                .addOnSuccessListener(doc -> onSuccess.onSuccess(doc.exists()))
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to get follow document: " + e.getMessage()));
+                });
+    }
+
+    /**
      * Constructs a unique ID for a follow record.
      * @param followerUsername
      *      Username of the follower.

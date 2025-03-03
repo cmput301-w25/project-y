@@ -1,0 +1,64 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/usernameText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Username"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"/>
+
+        <ImageButton
+            android:id="@+id/acceptButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/plus_symbol_button"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:contentDescription="Accept Request"
+            android:layout_marginStart="16dp"/>
+
+        <ImageButton
+            android:id="@+id/declineButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/negative_symbol_button"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:contentDescription="Decline Request"
+            android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textColor="#000000"
+        android:background="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

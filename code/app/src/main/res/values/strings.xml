@@ -54,11 +54,9 @@
     <string name="follow_requests">Follow Requests</string>
     <string name="home">Home</string>
 
-
-
-
-
-
+    <!--  Mood list content  -->
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
 
     <!--add mood form strings-->
     <string name="back">Back</string>
