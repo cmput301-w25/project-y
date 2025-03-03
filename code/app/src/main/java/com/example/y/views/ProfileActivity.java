@@ -31,7 +31,26 @@ public class ProfileActivity extends AppCompatActivity {
         addButton.setOnClickListener(view -> onAddButtonClick());
         logout.setOnClickListener(view -> onLogoutButtonClick());
         followRequests.setOnClickListener(view -> onFollowRequests());
-        followingMoodListButton.setOnClickListener(view -> onFollowingMoodListButtonClick());
+
+        // Open my mood history
+        findViewById(R.id.btnUserProfileMyMoodHistory).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyMoodHistoryActivity.class);
+            startActivity(intent);
+        });
+
+        // Header navigation
+        findViewById(R.id.btnMoodFollowing).setOnClickListener(view -> {
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.btnDiscover).setOnClickListener(view -> {
+            Intent intent = new Intent(this, DiscoverActivity.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.btnMoodMap).setOnClickListener(view -> {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void onAddButtonClick() {
@@ -39,13 +58,6 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
-
-    private void onFollowingMoodListButtonClick() {
-        Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
-        startActivity(intent);
-    }
-
-
 
     private void onLogoutButtonClick() {
         SessionManager sessionManager = new SessionManager(this);
@@ -56,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     private void onFollowRequests() {
         Intent intent = new Intent(this, FollowRequestsActivity.class);
         startActivity(intent);

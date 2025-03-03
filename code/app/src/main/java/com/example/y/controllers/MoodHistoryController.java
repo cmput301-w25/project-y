@@ -1,11 +1,11 @@
 package com.example.y.controllers;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.widget.Toast;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MoodHistoryController extends MoodListController {
@@ -19,7 +19,7 @@ public class MoodHistoryController extends MoodListController {
      * @param username
      *      Username of the user to get mood history for
      */
-    public MoodHistoryController(Context context, String username, OnSuccessListener<Void> onSuccess, AudioManager.OnAudioFocusChangeListener onFailure) {
+    public MoodHistoryController(Context context, String username, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
 
         MoodEventRepository.getInstance().getAllMoodEventsFrom(username, moodEvents -> {
