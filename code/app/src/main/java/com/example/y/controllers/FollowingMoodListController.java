@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
-public class FollowingMoodListController extends MoodListController implements FollowRepository.FollowListener {
+public class FollowingMoodListController extends MoodListController {
 
     private final SessionManager session;
     private ArrayList<String> followingList = null;
@@ -32,7 +32,6 @@ public class FollowingMoodListController extends MoodListController implements F
 
         // Initialize the array adapter
         userRepo.getFollowingMoodList(session.getUsername(), moodEvents -> {
-            FollowRepository.getInstance().addListener(this);
             initializeArrayAdapter(moodEvents);
             onSuccess.onSuccess(null);
         }, onFailure);
@@ -44,13 +43,14 @@ public class FollowingMoodListController extends MoodListController implements F
     }
 
     @Override
-    public void onActivityStop() {
-        super.onActivityStop();
-        FollowRepository.getInstance().removeListener(this);
+    public boolean isPosterAllowed(String poster) {
+        return followingList.contains(poster);
     }
 
     @Override
     public void onFollowAdded(Follow follow) {
+        super.onFollowAdded(follow);
+
         if (followingList != null && follow.getFollowerUsername().equals(session.getUsername())) {
             followingList.add(follow.getFollowedUsername());
 
@@ -71,6 +71,8 @@ public class FollowingMoodListController extends MoodListController implements F
 
     @Override
     public void onFollowDeleted(String followerUsername, String followedUsername) {
+        super.onFollowDeleted(followerUsername, followedUsername);
+
         if (followingList != null && followerUsername.equals(session.getUsername())) {
             followingList.removeIf(following -> following.equals(followedUsername));
 
