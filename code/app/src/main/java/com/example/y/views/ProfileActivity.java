@@ -12,23 +12,25 @@ import com.example.y.services.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
      Button logout;
-     // Declare it here
+     Button followRequests;
+
      ImageButton followingMoodListButton;
      ImageButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile); // Set the layout first!
+        setContentView(R.layout.activity_profile);
 
-        // Initialize views AFTER setting the layout
+
         logout = findViewById(R.id.btnUserProfileLogout);
         addButton = findViewById(R.id.btn_addMoodEventFromProfile);
         followingMoodListButton = findViewById(R.id.btnMoodFollowing);
-
-
-        logout.setOnClickListener(view -> onLogoutButtonClick());
+        followRequests = findViewById(R.id.FollowRequests);
+  
         addButton.setOnClickListener(view -> onAddButtonClick());
+        logout.setOnClickListener(view -> onLogoutButtonClick());
+        followRequests.setOnClickListener(view -> onFollowRequests());
         followingMoodListButton.setOnClickListener(view -> onFollowingMoodListButtonClick());
     }
 
@@ -43,6 +45,8 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
     private void onLogoutButtonClick() {
         SessionManager sessionManager = new SessionManager(this);
         sessionManager.logout();
@@ -52,4 +56,10 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    private void onFollowRequests() {
+        Intent intent = new Intent(this, FollowRequestsActivity.class);
+        startActivity(intent);
+    }
+
+
 }

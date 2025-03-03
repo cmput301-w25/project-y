@@ -11,6 +11,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 
 /**
  * Adds, updates, gets, deletes documents from the mood events collection in the firestore database.
@@ -187,6 +190,54 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 })
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Failed to get mood event document when trying to delete: " + e.getMessage()));
+                });
+    }
+
+    /**
+     * Gets every mood event ever.
+     * @param onSuccess
+     *      Success callback function to which the array of all mood events is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getAllMoodEvents(OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        moodEventRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> allMoods = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
+                        }
+                        onSuccess.onSuccess(allMoods);
+                    } else onFailure.onFailure(new Exception("Failed to fetch all mood events", task.getException()));
+                });
+    }
+
+    /**
+     * Gets every mood event from a user.
+     * @param username
+     *      Username of the user to get moods from.
+     * @param onSuccess
+     *      Success callback function to which the array of mood events is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getAllMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        moodEventRef
+                .whereEqualTo("posterUsername", username)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> allMoods = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
+                        }
+                        onSuccess.onSuccess(allMoods);
+                    } else onFailure.onFailure(new Exception("Failed to fetch all mood events from user " + username, task.getException()));
                 });
     }
 

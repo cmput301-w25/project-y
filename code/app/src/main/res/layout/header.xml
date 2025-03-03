@@ -18,6 +18,16 @@
         android:contentDescription="@string/mood_following" />
 
     <ImageButton
+        android:id="@+id/btnDiscover"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/discover"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="Discover"
+        android:layout_marginStart="24dp" />
+
+    <ImageButton
         android:id="@+id/btnMoodMap"
         android:layout_width="48dp"
         android:layout_height="48dp"
