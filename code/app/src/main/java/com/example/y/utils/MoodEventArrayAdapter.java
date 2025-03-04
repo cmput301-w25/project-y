@@ -91,6 +91,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }, this::handleException);
 
         // Get views from content
+        View colorView = view.findViewById(R.id.emotionColor);
         TextView usernameTextView = view.findViewById(R.id.username);
         TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
@@ -106,6 +107,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
                 .format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
+
+        colorView.setBackgroundColor(mood.getEmotion().getColor(context));
 
         String socialSituation = mood.getSocialSituation();
         if (socialSituation != null) socialSituationTextView.setText(socialSituation);

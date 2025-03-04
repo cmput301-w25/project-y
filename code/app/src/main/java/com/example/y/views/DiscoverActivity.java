@@ -11,15 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.y.R;
 import com.example.y.controllers.DiscoverController;
 
-public class DiscoverActivity extends AppCompatActivity {
+public class DiscoverActivity extends BaseActivity {
 
     DiscoverController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_discover);
 
         // Initialize controller
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
@@ -28,19 +26,9 @@ public class DiscoverActivity extends AppCompatActivity {
         }, e -> {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         });
-
-        // Header navigation
-        findViewById(R.id.btnMoodFollowing).setOnClickListener(view -> {
-            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
-            startActivity(intent);
-        });
-        findViewById(R.id.btnMoodMap).setOnClickListener(view -> {
-             Intent intent = new Intent(this, MapActivity.class);
-             startActivity(intent);
-        });
-        findViewById(R.id.btnUserProfile).setOnClickListener(view -> {
-            Intent intent = new Intent(this, ProfileActivity.class);
-            startActivity(intent);
-        });
     }
+
+    @Override
+    protected int getActivityLayout() { return R.layout.activity_discover; }
+
 }
