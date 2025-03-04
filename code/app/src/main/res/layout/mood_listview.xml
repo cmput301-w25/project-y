@@ -84,9 +84,10 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/hi"
         android:contentDescription="@string/mood_photo"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
 
     <TextView
         android:id="@+id/location"

@@ -2,6 +2,7 @@ package com.example.y.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.y.R;
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
@@ -114,13 +116,19 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         String reasonWhy = mood.getReasonWhy();
         if (reasonWhy != null) reasonWhyTextView.setText(reasonWhy);
 
-        Uri UriImage = mood.UriImage();
+        Uri UriImage = mood.getUriImage();
         if (UriImage != null) {
-            // TODO: Fetch image
+            Glide.with(context)
+                    .load(UriImage)
+                    .into(photoImgView);
             photoImgView.setVisibility(View.VISIBLE);
+            Log.d("MoodEventAdapter", "Image URI is there");
         } else {
             photoImgView.setVisibility(View.GONE);
+            Log.d("MoodEventAdapter", "Image URI is aaaaaaaaaaaaaaaaaa");
+
         }
+
 
         GeoPoint location = mood.getLocation();
         if (location != null) locationTextView.setText(location.toString());

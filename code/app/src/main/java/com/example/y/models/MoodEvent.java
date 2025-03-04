@@ -34,14 +34,6 @@ public class MoodEvent implements Serializable {
 
     public MoodEvent() {};
 
-    public Uri getUriImage() {
-        return UriImage;
-    }
-
-    public void setUriImage(Uri uriImage) {
-        UriImage = uriImage;
-    }
-
     public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion, Uri UriImage) {
         this.id = id;
         this.creationDateTime = creationDateTime;
@@ -106,7 +98,12 @@ public class MoodEvent implements Serializable {
 
     public void setLocation(GeoPoint location) { this.location = location; }
 
-    public Uri UriImage() {
-        return null;
+    public Uri getUriImage() {
+        return UriImage;
     }
+
+    public void setUriImage(Uri uriImage) {
+        UriImage = uriImage;
+    }
+
 }
