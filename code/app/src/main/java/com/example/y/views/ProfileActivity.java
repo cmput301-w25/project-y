@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
      Button logout;
      Button followRequests;
 
@@ -20,8 +20,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
 
         logout = findViewById(R.id.btnUserProfileLogout);
         addButton = findViewById(R.id.btn_addMoodEventFromProfile);
@@ -35,20 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
         // Open my mood history
         findViewById(R.id.btnUserProfileMyMoodHistory).setOnClickListener(v -> {
             Intent intent = new Intent(this, MyMoodHistoryActivity.class);
-            startActivity(intent);
-        });
-
-        // Header navigation
-        findViewById(R.id.btnMoodFollowing).setOnClickListener(view -> {
-            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
-            startActivity(intent);
-        });
-        findViewById(R.id.btnDiscover).setOnClickListener(view -> {
-            Intent intent = new Intent(this, DiscoverActivity.class);
-            startActivity(intent);
-        });
-        findViewById(R.id.btnMoodMap).setOnClickListener(view -> {
-            Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
         });
     }
@@ -74,5 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected int getActivityLayout() { return R.layout.activity_profile; }
 
 }
