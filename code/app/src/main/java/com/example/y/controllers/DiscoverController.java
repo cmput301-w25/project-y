@@ -22,4 +22,8 @@ public class DiscoverController extends MoodListController {
         return true;  // Every mood belongs here
     }
 
+    @Override
+    public boolean isPosterAllowed(String poster) {
+        return true;  // All posters are allowed
+    }
 }

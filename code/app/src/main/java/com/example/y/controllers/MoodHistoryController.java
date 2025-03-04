@@ -10,19 +10,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MoodHistoryController extends MoodListController {
 
-    private String username;
+    private String poster;
 
     /**
      * Constructor
      * @param context
      *      Current context
-     * @param username
+     * @param poster
      *      Username of the user to get mood history for
      */
-    public MoodHistoryController(Context context, String username, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+    public MoodHistoryController(Context context, String poster, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
 
-        MoodEventRepository.getInstance().getAllMoodEventsFrom(username, moodEvents -> {
+        MoodEventRepository.getInstance().getAllMoodEventsFrom(poster, moodEvents -> {
             initializeArrayAdapter(moodEvents);
             onSuccess.onSuccess(null);
         }, e -> {
@@ -32,7 +32,11 @@ public class MoodHistoryController extends MoodListController {
 
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
-        return mood.getPosterUsername().equals(username);
+        return mood.getPosterUsername().equals(poster);
     }
 
+    @Override
+    public boolean isPosterAllowed(String poster) {
+        return poster.equals(this.poster);
+    }
 }

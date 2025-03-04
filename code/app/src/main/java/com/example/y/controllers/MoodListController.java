@@ -3,7 +3,12 @@ package com.example.y.controllers;
 import android.app.Activity;
 import android.content.Context;
 
+import com.example.y.models.Follow;
+import com.example.y.models.FollowRequest;
+import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.MoodEventRepository;
+import com.example.y.services.SessionManager;
 import com.example.y.utils.MoodEventArrayAdapter;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
@@ -18,19 +23,23 @@ import java.util.ArrayList;
  * Manages filter and array adapter for the following mood list activity.
  * Listens for mood event updates and updates lists accordingly.
  */
-public abstract class MoodListController implements MoodEventRepository.MoodEventListener {
+public abstract class MoodListController
+        implements
+            MoodEventRepository.MoodEventListener,
+            FollowRepository.FollowListener,
+            FollowRequestRepository.FollowRequestListener {
 
     protected final Context context;
     protected final MoodEventListFilter filter;
-    protected final MoodEventRepository moodRepo;
     protected ArrayList<MoodEvent> originalMoodEventList;
     protected ArrayList<MoodEvent> filteredMoodEventList;
     protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
+    protected SessionManager sessionManager;
 
     public MoodListController(Context context) {
         filter = new MoodEventListFilter();
-        moodRepo = MoodEventRepository.getInstance();
         this.context = context;
+        sessionManager = new SessionManager(context);
     }
 
     /**
@@ -44,8 +53,11 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         originalMoodEventList = new ArrayList<>(moodEvents);
         filteredMoodEventList = new ArrayList<>(moodEvents);
 
-        // Listen for mood event updates
-        moodRepo.addListener(this);
+        // Listen for mood event, follows, and follow request updates
+        MoodEventRepository.getInstance().addListener(this);
+        FollowRepository.getInstance().addListener(this);
+        FollowRequestRepository.getInstance().addListener(this);
+
 
         // Initialize the array adapter
         moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList);
@@ -61,10 +73,21 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
     public abstract boolean doesBelongInOriginal(MoodEvent mood);
 
     /**
-     * Removes controller from mood event repository's listener set
+     * Checks if the poster's moods are allowed to be in the filtered mood array.
+     * @param poster
+     *      Username of poster to check for.
+     * @return
+     *      If the poster's moods are allowed to be in the filtered array.
+     */
+    public abstract boolean isPosterAllowed(String poster);
+
+    /**
+     * Removes controller from mood event, follow, and follow request repository's listener set
      */
     public void onActivityStop() {
-        moodRepo.removeListener(this);
+        MoodEventRepository.getInstance().removeListener(this);
+        FollowRepository.getInstance().removeListener(this);
+        FollowRequestRepository.getInstance().removeListener(this);
     }
 
     /**
@@ -76,6 +99,45 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         filteredMoodEventList.clear();
         filteredMoodEventList.addAll(filter.applyFilter(originalMoodEventList));
         notifyAdapter();
+    }
+
+    @Override
+    public void onFollowAdded(Follow follow) {
+        updateAdapterOnFollowStatusUpdate(follow.getFollowerUsername(), follow.getFollowedUsername());
+    }
+
+    @Override
+    public void onFollowDeleted(String followerUsername, String followedUsername) {
+        updateAdapterOnFollowStatusUpdate(followerUsername, followedUsername);
+    }
+
+    @Override
+    public void onFollowRequestAdded(FollowRequest followRequest) {
+        updateAdapterOnFollowStatusUpdate(followRequest.getRequester(), followRequest.getRequestee());
+    }
+
+    @Override
+    public void onFollowRequestDeleted(String requester, String requestee) {
+        updateAdapterOnFollowStatusUpdate(requester, requestee);
+    }
+
+    /**
+     * Updates adapter when the user's follow status is updated
+     * @param user
+     *      User that requested or followed somebody else.
+     * @param poster
+     *      User that `user` followed or requested.
+     */
+    private void updateAdapterOnFollowStatusUpdate(String user, String poster) {
+        // Assert that the status update was made by logged in user
+        boolean isUserTheFollower = user.equals(sessionManager.getUsername());
+
+        // Assert that the poster will be in the array
+        boolean posterAllowed = isPosterAllowed(poster);
+
+        if (isUserTheFollower && posterAllowed) {
+            notifyAdapter();
+        }
     }
 
     /**

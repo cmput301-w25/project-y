@@ -24,6 +24,9 @@
         android:theme="@style/Theme.Y"
         tools:targetApi="31">
         <activity
+            android:name=".views.FollowRequestsActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.MyMoodHistoryActivity"
             android:exported="false" />
         <activity
@@ -49,9 +52,6 @@
             android:exported="true" />
         <activity
             android:name=".views.MainActivity"
-            android:exported="true"/>
-        <activity
-            android:name=".views.FollowRequestsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -15,9 +15,12 @@ import androidx.annotation.Nullable;
 
 import com.example.y.R;
 import com.example.y.models.Follow;
+import com.example.y.models.FollowRequest;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.services.SessionManager;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.net.URL;
@@ -33,7 +36,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
     private final ArrayList<MoodEvent> moodEvents;
     private final Context context;
 
-    public MoodEventArrayAdapter(Context context, ArrayList<MoodEvent> moodEvents){
+    public MoodEventArrayAdapter(Context context, ArrayList<MoodEvent> moodEvents) {
         super(context, 0, moodEvents);
         this.moodEvents = moodEvents;
         this.context = context;
@@ -42,58 +45,50 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
-        if (view == null){
+        if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.mood_listview, parent, false);
         }
 
         SessionManager sessionManager = new SessionManager(context);
         FollowRepository followRepository = FollowRepository.getInstance();
+        FollowRequestRepository followReqRepository = FollowRequestRepository.getInstance();
         MoodEvent mood = moodEvents.get(position);
 
-        // Button click styles and clicks
         Button followBtn = view.findViewById(R.id.btnFollowFromMood);
-        followRepository.isFollowing(sessionManager.getUsername(), mood.getPosterUsername(), isF -> {
-            final boolean[] isFollowing = { isF };
+        String user = sessionManager.getUsername();
+        String poster = mood.getPosterUsername();
 
-            // Set text and color accordingly
-            if (isFollowing[0]) {
-                followBtn.setText(context.getString(R.string.following));
-                followBtn.setBackgroundColor(context.getColor(R.color.following));
-            } else {
-                followBtn.setText(context.getString(R.string.follow));
-                followBtn.setBackgroundColor(context.getColor(R.color.follow));
-            }
+        // Button clicking logic
+        followRepository.isFollowing(user, poster, isFollowing -> {
+            followReqRepository.didRequest(user, poster, didReq -> {
 
-            // Handle follow button clicks
-            followBtn.setOnClickListener(v -> {
-                Follow follow = new Follow();
-                follow.setFollowerUsername(sessionManager.getUsername());
-                follow.setFollowedUsername(mood.getPosterUsername());
-
-                if (isFollowing[0]) {
-                    // If following and click, unfollow and set text and color to follow
-                    followRepository.deleteFollow(sessionManager.getUsername(), mood.getPosterUsername(), unused -> {
-                        followBtn.setText(context.getString(R.string.follow));
-                        followBtn.setBackgroundColor(context.getColor(R.color.follow));
-                        isFollowing[0] = false;
-                    }, e -> {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                // Set button style
+                if (isFollowing) {
+                    followBtn.setText(context.getString(R.string.following));
+                    followBtn.setBackgroundColor(context.getColor(R.color.following));
+                } else if (didReq) {
+                    followBtn.setText(context.getString(R.string.requested));
+                    followBtn.setBackgroundColor(context.getColor(R.color.requested));
                 } else {
-                    // If not following and click, follow and set text and color to following
-                    followRepository.addFollow(follow, f -> {
-                        followBtn.setText(context.getString(R.string.following));
-                        followBtn.setBackgroundColor(context.getColor(R.color.following));
-                        isFollowing[0] = true;
-                    }, e -> {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    followBtn.setText(context.getString(R.string.follow));
+                    followBtn.setBackgroundColor(context.getColor(R.color.follow));
                 }
 
-            });
-        }, e -> {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+                followBtn.setOnClickListener(v -> {
+                    if (isFollowing) {
+                        // Delete the follow record on click
+                        followRepository.deleteFollow(user, poster, unused -> {}, this::handleException);
+                    } else if (didReq) {
+                        // Delete the follow request on click
+                        followReqRepository.deleteFollowRequest(user, poster, unused -> {}, this::handleException);
+                    } else {
+                        // Add follow request on click
+                        FollowRequest req = new FollowRequest(user, poster, Timestamp.now());
+                        followReqRepository.addFollowRequest(req, r -> {}, this::handleException);
+                    }
+                });
+            }, this::handleException);
+        }, this::handleException);
 
         // Get views from content
         TextView usernameTextView = view.findViewById(R.id.username);
@@ -131,4 +126,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         return view;
     }
+
+    private void handleException(Exception e) {
+        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
 }
