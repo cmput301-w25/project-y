@@ -2,6 +2,7 @@ package com.example.y.controllers;
 
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
@@ -36,7 +37,7 @@ public class AddMoodController {
      * @param onFailureListener Failure callback of adding the mood event.
      */
 
-    public void onSubmitMood(Emotion currentMood, String socialSituation, boolean shareLocation, String reason, String explanation, Timestamp dateOfMoodEvent, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener) {
+    public void onSubmitMood(Emotion currentMood, String socialSituation, boolean shareLocation, String reason, String explanation, Uri UriImage, Timestamp dateOfMoodEvent, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener) {
         /* TODO: we have to do some input validation... and then send make it such that it updates in the database */
         posterUsername = getPosterUsername();
 
@@ -48,7 +49,7 @@ public class AddMoodController {
             return;
         }
 
-        MoodEvent mood = new MoodEvent(null, Timestamp.now(), posterUsername, dateOfMoodEvent, currentMood);
+        MoodEvent mood = new MoodEvent(null, Timestamp.now(), posterUsername, dateOfMoodEvent, currentMood, UriImage);
 
         if (!reason.isEmpty()) {
             mood.setReasonWhy(reason);

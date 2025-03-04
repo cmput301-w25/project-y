@@ -43,6 +43,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private EditText etReason;
     private EditText etExplanation;
     private EditText datePicked;
+    Uri selectedImageUri;
 
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
@@ -93,6 +94,7 @@ public class MoodAddActivity extends AppCompatActivity {
             String reason = etReason.getText().toString().trim();
             String explanation = etExplanation.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
+            Uri UriImage = selectedImageUri;
             Timestamp dateOfMoodEventTimeStamp = null;
 
             try {
@@ -108,7 +110,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
 
             //TODO: figure out camera and
-            addMoodController.onSubmitMood(selectedMood, socialSituation, shareLocation, reason, explanation, dateOfMoodEventTimeStamp,moodEvent -> {
+            addMoodController.onSubmitMood(selectedMood, socialSituation, shareLocation, reason, explanation, UriImage, dateOfMoodEventTimeStamp,moodEvent -> {
                 Toast.makeText(this, "Mood Posted!", LENGTH_SHORT).show();
                 Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
                 startActivity(intent);
@@ -160,6 +162,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 if (null != selectedImageUri) {
                     IVPreviewImage.setImageURI(selectedImageUri);
                     IVPreviewImage.setVisibility(View.VISIBLE);
+
                 }
             }
         }

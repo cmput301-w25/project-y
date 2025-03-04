@@ -1,6 +1,7 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,8 +114,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         String reasonWhy = mood.getReasonWhy();
         if (reasonWhy != null) reasonWhyTextView.setText(reasonWhy);
 
-        URL photoURL = mood.getPhotoURL();
-        if (photoURL != null) {
+        Uri UriImage = mood.UriImage();
+        if (UriImage != null) {
             // TODO: Fetch image
             photoImgView.setVisibility(View.VISIBLE);
         } else {

@@ -1,5 +1,7 @@
 package com.example.y.models;
 
+import android.net.Uri;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
@@ -27,17 +29,27 @@ public class MoodEvent implements Serializable {
     private String trigger;
     private String text;
     private String reasonWhy;
-    private URL photoURL;
+    private Uri UriImage;
     private GeoPoint location;
 
     public MoodEvent() {};
 
-    public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion) {
+    public Uri getUriImage() {
+        return UriImage;
+    }
+
+    public void setUriImage(Uri uriImage) {
+        UriImage = uriImage;
+    }
+
+    public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion, Uri UriImage) {
         this.id = id;
         this.creationDateTime = creationDateTime;
         this.posterUsername = posterUsername;
         this.dateTime = dateTime;
         this.emotion = emotion;
+        this.UriImage = UriImage;
+
     }
 
     @Exclude
@@ -89,12 +101,12 @@ public class MoodEvent implements Serializable {
 
     public void setReasonWhy(String reasonWhy) { this.reasonWhy = reasonWhy; }
 
-    public URL getPhotoURL() { return photoURL; }
-
-    public void setPhotoURL(URL photoURL) { this.photoURL = photoURL; }
 
     public GeoPoint getLocation() { return location; }
 
     public void setLocation(GeoPoint location) { this.location = location; }
 
+    public Uri UriImage() {
+        return null;
+    }
 }
