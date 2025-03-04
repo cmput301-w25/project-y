@@ -2,6 +2,7 @@ package com.example.y.repositories;
 
 import android.util.Log;
 
+import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository.FollowRequestListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -11,6 +12,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.core.OrderBy;
+
+import java.util.ArrayList;
 
 /**
  * Adds, gets, and deletes follow request records from the follow requests collection in the firestore database.
@@ -179,6 +185,51 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
                 .addOnSuccessListener(doc -> onSuccess.onSuccess(doc.exists()))
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Failed to get follow request document: " + e.getMessage()));
+                });
+    }
+
+    /**
+     * Accepts a follow request.
+     * @param req
+     *      Follow request to accept.
+     * @param onSuccess
+     *      Success callback function to which the newly created follow is passed to.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void acceptRequest(FollowRequest req, OnSuccessListener<Follow> onSuccess, OnFailureListener onFailure) {
+        deleteFollowRequest(req.getRequester(), req.getRequestee(), unused -> {
+            Follow follow = new Follow(req.getRequester(), req.getRequestee(), Timestamp.now());
+            FollowRepository.getInstance().addFollow(follow, onSuccess, onFailure);
+        }, onFailure);
+    }
+
+    /**
+     * Get all follow requests of users requested to follow `username`.
+     * Sorted by timestamp descending
+     * @param username
+     *      User to get all requesters of.
+     * @param onSuccess
+     *      Success callback function to which the array of all requests is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getAllRequestsTo(String username, OnSuccessListener<ArrayList<FollowRequest>> onSuccess, OnFailureListener onFailure) {
+        followReqsRef
+                .whereEqualTo("requestee", username)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<FollowRequest> reqs = new ArrayList<FollowRequest>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            FollowRequest req = doc.toObject(FollowRequest.class);
+                            reqs.add(req);
+                        }
+                        onSuccess.onSuccess(reqs);
+                    } else {
+                        onFailure.onFailure(new Exception("Failed to get all requests to " + username, task.getException()));
+                    }
                 });
     }
 

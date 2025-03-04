@@ -262,8 +262,6 @@ public abstract class MoodListController
         }
     }
 
-
-
     public MoodEventListFilter getFilter() { return filter; }
 
     public MoodEventArrayAdapter getMoodAdapter() { return moodAdapter; }

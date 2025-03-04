@@ -26,9 +26,7 @@ public class FollowingMoodEventListActivity extends AppCompatActivity {
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-        }, e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
         // Header navigation
         findViewById(R.id.btnDiscover).setOnClickListener(view -> {
