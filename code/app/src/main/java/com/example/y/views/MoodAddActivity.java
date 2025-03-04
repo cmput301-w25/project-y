@@ -11,13 +11,17 @@ import com.google.firebase.Timestamp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +43,9 @@ public class MoodAddActivity extends AppCompatActivity {
     private EditText etReason;
     private EditText etExplanation;
     private EditText datePicked;
+
+    int SELECT_PICTURE = 200;
+    ImageView IVPreviewImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +73,20 @@ public class MoodAddActivity extends AppCompatActivity {
         ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, support_simple_spinner_dropdown_item,Emotion.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
+        // For images
+        IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish());
 
         // Image insertion button listener
-        btnInsertImage.setOnClickListener(v ->
-                Toast.makeText(this, "Image insertion clicked", Toast.LENGTH_SHORT).show()
+        btnInsertImage.setOnClickListener(v -> images()
         );
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {
             // Collect all form data
+
             Emotion selectedMood = (Emotion) spinnerMood.getSelectedItem();
             String socialSituation = spinnerSocial.getSelectedItem().toString();
             boolean shareLocation = checkShareLocation.isChecked();
@@ -93,8 +102,10 @@ public class MoodAddActivity extends AppCompatActivity {
                 dateOfMoodEventTimeStamp = new Timestamp(date);
             } catch (ParseException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Invalid date format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid date format", LENGTH_SHORT).show();
             }
+
+
 
             //TODO: figure out camera and
             addMoodController.onSubmitMood(selectedMood, socialSituation, shareLocation, reason, explanation, dateOfMoodEventTimeStamp,moodEvent -> {
@@ -130,6 +141,28 @@ public class MoodAddActivity extends AppCompatActivity {
         );
         datePickerDialog.show();
     }
+    // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    private void images() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
+    }
+    // use to make image visible
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == SELECT_PICTURE) {
+
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    IVPreviewImage.setImageURI(selectedImageUri);
+                    IVPreviewImage.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
 }
 
