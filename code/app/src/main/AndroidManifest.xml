@@ -28,7 +28,7 @@
             android:name=".views.FollowRequestsActivity"
             android:exported="false" />
         <activity
-            android:name=".views.MyMoodHistoryActivity"
+            android:name=".views.MoodHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".views.MapActivity"

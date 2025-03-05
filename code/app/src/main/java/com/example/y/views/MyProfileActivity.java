@@ -2,6 +2,7 @@ package com.example.y.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.se.omapi.Session;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -31,8 +32,10 @@ public class MyProfileActivity extends BaseActivity {
         followRequests.setOnClickListener(view -> onFollowRequests());
 
         // Open my mood history
+        SessionManager session = new SessionManager(this);
         findViewById(R.id.btnUserProfileMyMoodHistory).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyMoodHistoryActivity.class);
+            Intent intent = new Intent(this, MoodHistoryActivity.class);
+            intent.putExtra("user", session.getUsername());
             startActivity(intent);
         });
     }
@@ -40,7 +43,6 @@ public class MyProfileActivity extends BaseActivity {
     private void onAddButtonClick() {
         Intent intent = new Intent(this, MoodAddActivity.class);
         startActivity(intent);
-
     }
 
     private void onLogoutButtonClick() {

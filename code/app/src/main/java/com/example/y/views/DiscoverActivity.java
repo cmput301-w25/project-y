@@ -7,9 +7,7 @@ import android.widget.Toast;
 import com.example.y.R;
 import com.example.y.controllers.DiscoverController;
 
-public class DiscoverActivity extends BaseActivity {
-
-    DiscoverController controller;
+public class DiscoverActivity extends MoodListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +18,7 @@ public class DiscoverActivity extends BaseActivity {
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new DiscoverController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-        }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, this::handleException);
     }
-
-    @Override
-    protected int getActivityLayout() { return R.layout.activity_discover; }
 
 }
