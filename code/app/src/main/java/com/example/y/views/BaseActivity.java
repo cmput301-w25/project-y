@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             startActivity(intent);
         });
         findViewById(R.id.btnMoodMap).setOnClickListener(view -> {
-            Intent intent = new Intent(this, MapActivity.class);
+            Intent intent = new Intent(this, MapsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });

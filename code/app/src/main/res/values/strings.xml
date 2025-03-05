@@ -88,4 +88,5 @@
         <item>With two to several people</item>
         <item>With a crowd</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
