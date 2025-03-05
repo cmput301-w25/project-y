@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/mood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emoticon"
+        android:textColor="#BBBBBB"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/geolocation_pin"
+        app:layout_constraintEnd_toEndOf="@id/geolocation_pin"
+        app:layout_constraintStart_toStartOf="@id/geolocation_pin"
+        app:layout_constraintTop_toTopOf="@id/geolocation_pin"
+        app:layout_constraintVertical_bias="0.388" />
+
+    <ImageView
+        android:id="@+id/geolocation_pin"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/mood_photo"
+        android:scaleType="fitCenter"
+        android:src="@drawable/geolocation_pin"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="34dp" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/username"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/geolocation_pin"
+        tools:layout_editor_absoluteX="17dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

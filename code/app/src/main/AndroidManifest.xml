@@ -13,6 +13,7 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -39,9 +40,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="" />
-
+        <!--
         <activity
-            android:name=".views.MapsActivity"
+            android:name=".views.MapActivity"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>
@@ -50,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        -->
         <activity
             android:name=".views.FollowRequestsActivity"
             android:exported="false" />
