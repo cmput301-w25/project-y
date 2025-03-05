@@ -30,7 +30,7 @@ import com.example.y.models.SocialSituation;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class UpdateOrDeleteMoodEvent extends AppCompatActivity {
+public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
     MoodEvent moodEventToUpdateOrDelete;
@@ -43,7 +43,7 @@ public class UpdateOrDeleteMoodEvent extends AppCompatActivity {
     private EditText datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
 
-    public UpdateOrDeleteMoodEvent(MoodEvent toEditOrDelete) {
+    public UpdateOrDeleteMoodEventActivity(MoodEvent toEditOrDelete) {
         this.moodEventToUpdateOrDelete = toEditOrDelete;
     }
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".views.MoodAddActivity">
+    tools:context=".views.UpdateOrDeleteMoodEventActivity">
 
     <!-- Back Button and Emoji Spinner Row -->
     <ImageButton
