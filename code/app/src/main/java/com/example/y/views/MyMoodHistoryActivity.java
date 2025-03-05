@@ -20,6 +20,7 @@ public class MyMoodHistoryActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        deselectAllHeaderButtons();
 
         // Initialize controller
         ListView moodListView = findViewById(R.id.listviewMoodEvents);

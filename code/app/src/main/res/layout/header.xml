@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp"
-    android:background="#000000"
+    android:background="#FFFFFF"
     android:gravity="center">
 
     <ImageButton
         android:id="@+id/btnMoodFollowing"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/mood"
+        android:src="@drawable/home_black"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="@string/mood_following" />
@@ -21,7 +21,7 @@
         android:id="@+id/btnDiscover"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/discover"
+        android:src="@drawable/compass_white"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="Discover"
@@ -31,7 +31,7 @@
         android:id="@+id/btnMoodMap"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/map"
+        android:src="@drawable/map_white"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="@string/mood_map"
@@ -41,7 +41,7 @@
         android:id="@+id/btnUserProfile"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/profile"
+        android:src="@drawable/profile_white"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="@string/user_profile"

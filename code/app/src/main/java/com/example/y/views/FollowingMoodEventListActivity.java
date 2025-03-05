@@ -14,6 +14,7 @@ public class FollowingMoodEventListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectMoodFollowingListHeaderButton();
 
         // Set up controller
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
