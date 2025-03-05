@@ -1,7 +1,9 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
     private final Context context;
     private final String user;
     private final HashMap<String, UserRepository.FollowStatus> followStatus;
+    private final LruCache<String, Bitmap> imageCache =
+            new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
+                protected int sizeOf(String key, Bitmap value) {
+                    return value.getByteCount() / 1024;
+                }
+            };
 
     public MoodEventArrayAdapter(Context context, ArrayList<MoodEvent> moodEvents, HashMap<String, UserRepository.FollowStatus> followStatus) {
         super(context, 0, moodEvents);
@@ -144,21 +152,58 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             // Otherwise ony fill in the non-null fields
             if (socialSituation != null) {
                 socialSituationTextView.setText(socialSituation);
+                socialSituationTextView.setVisibility(View.VISIBLE);
+            } else {
+                socialSituationTextView.setVisibility(View.GONE);
             }
+
             if (location != null) {
                 locationTextView.setText(location.toString());  // TODO: Format location
+                locationTextView.setVisibility(View.VISIBLE);
+            } else {
+                locationTextView.setVisibility(View.GONE);
             }
         }
 
         // Optional field: reason why text
         String text = mood.getText();
-        if (text != null) reasonWhyTextTextView.setText(text);
+        if (text != null) {
+            reasonWhyTextTextView.setText(text);
+            reasonWhyTextTextView.setVisibility(View.VISIBLE);
+        } else {
+            reasonWhyTextTextView.setVisibility(View.GONE);
+        }
 
         // Optional field: Photo
         String photoURL = mood.getPhotoURL();
-        if (photoImgView != null && photoURL != null && !photoURL.isEmpty()) {
-            MoodEventRepository.getInstance().downloadImage(photoURL, photoImgView::setImageBitmap, e -> {});
-            photoImgView.setVisibility(View.VISIBLE);
+        if (photoImgView != null) {
+            if (photoURL != null && !photoURL.isEmpty()) {
+                // Set tag to track proper image association
+                photoImgView.setTag(photoURL);
+                photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
+                photoImgView.setVisibility(View.VISIBLE);
+
+                // Check image cache first
+                Bitmap cachedBitmap = imageCache.get(photoURL);
+                if (cachedBitmap != null) {
+                    photoImgView.setImageBitmap(cachedBitmap);
+                } else {
+                    MoodEventRepository.getInstance().downloadImage( photoURL, bitmap -> {
+                        // Cache downloaded image
+                        imageCache.put(photoURL, bitmap);
+
+                        // Only set image if tag matches current URL
+                        if (photoURL.equals(photoImgView.getTag())) {
+                            photoImgView.setImageBitmap(bitmap);
+                        }
+                    }, this::handleException);
+                }
+            } else {
+                // Clear if there is no photo
+                photoImgView.setImageDrawable(null);
+                photoImgView.setVisibility(View.GONE);
+                photoImgView.setTag(null);
+            }
         }
 
         return view;
