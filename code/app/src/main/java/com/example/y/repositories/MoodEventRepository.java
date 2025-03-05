@@ -1,5 +1,8 @@
 package com.example.y.repositories;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.y.repositories.MoodEventRepository.MoodEventListener;
@@ -13,7 +16,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -24,6 +30,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
     private static MoodEventRepository instance;  // Singleton instance
     public static final String MOOD_EVENT_COLLECTION = "mood-events";
+    public static final String MOOD_PHOTO_STORAGE_NAME = "mood-images";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
 
@@ -181,7 +188,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         docRef.delete()
-                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id))
+                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id))  // TODO: Delete image from storage if exists
                                 .addOnFailureListener(e -> {
                                     onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
                                 });
@@ -242,6 +249,56 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                         }
                         onSuccess.onSuccess(allMoods);
                     } else onFailure.onFailure(new Exception("Failed to fetch all mood events from user " + username, task.getException()));
+                });
+    }
+
+    /**
+     * Uploads an image to firebase storage and attaches the download URL to the mood event.
+     * @param mood
+     *      Mood event to attach image URL to.
+     * @param photoUri
+     *      Uri of the photo to upload.
+     * @param onSuccess
+     *      Success callback function to which the updated mood is passed to.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void uploadAndAttachImage(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        if (photoUri == null) return;
+
+        StorageReference storageRef = FirebaseStorage
+                .getInstance()
+                .getReference()
+                .child(MoodEventRepository.MOOD_PHOTO_STORAGE_NAME + "/" + mood.getPosterUsername() + "_" + System.currentTimeMillis() + ".jpg");
+
+        storageRef.putFile(photoUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                String url = uri.toString();
+                                mood.setPhotoURL(url);
+                                onSuccess.onSuccess(mood);
+                            })
+                            .addOnFailureListener(e -> {
+                                onFailure.onFailure(new Exception("Failed to get download URL for newly uploaded image"));
+                            });
+                })
+                .addOnFailureListener(e -> onFailure.onFailure(new Exception("Failed to upload image to firebase storage", e)));
+    }
+
+    public void downloadImage(String photoUrl, OnSuccessListener<Bitmap> onSuccess, OnFailureListener onFailure) {
+        if (photoUrl == null || photoUrl.isEmpty()) return;
+
+        FirebaseStorage
+                .getInstance()
+                .getReferenceFromUrl(photoUrl)
+                .getBytes(Long.MAX_VALUE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    onSuccess.onSuccess(bitmap);
+                })
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to download image bytes"));
                 });
     }
 

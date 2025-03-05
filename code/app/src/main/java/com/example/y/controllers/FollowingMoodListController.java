@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
-import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
@@ -13,6 +12,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FollowingMoodListController extends MoodListController {
 
@@ -27,13 +27,24 @@ public class FollowingMoodListController extends MoodListController {
 
         // Cache all users username is following
         userRepo.getFollowing(session.getUsername(), followingList -> {
-            this.followingList = new ArrayList<String>(followingList);
+            this.followingList = new ArrayList<>(followingList);
         }, onFailure);
 
         // Initialize the array adapter
-        userRepo.getFollowingMoodList(session.getUsername(), moodEvents -> {
-            initializeArrayAdapter(moodEvents);
-            onSuccess.onSuccess(null);
+        String user = session.getUsername();
+        userRepo.getFollowingMoodList(user, moodEvents -> {
+
+            // Hashmap consists only of users being followed
+            userRepo.getFollowing(user, followingList -> {
+                HashMap<String, UserRepository.FollowStatus> followStatus = new HashMap<>();
+                for (String followee : followingList) {
+                    // Create hashmap and initialize array adapter
+                    followStatus.put(followee, UserRepository.FollowStatus.FOLLOWING);
+                    initializeArrayAdapter(moodEvents, followStatus);
+                    onSuccess.onSuccess(null);
+                }
+            }, onFailure);
+
         }, onFailure);
     }
 
@@ -49,10 +60,9 @@ public class FollowingMoodListController extends MoodListController {
 
     @Override
     public void onFollowAdded(Follow follow) {
-        super.onFollowAdded(follow);
-
         if (followingList != null && follow.getFollowerUsername().equals(session.getUsername())) {
             followingList.add(follow.getFollowedUsername());
+            notifyAdapter();
 
             // Insert moods belonging to newly followed user if they match the filter
             MoodEventRepository.getInstance().getAllMoodEventsFrom(follow.getFollowedUsername(), allMoods -> {
@@ -63,16 +73,13 @@ public class FollowingMoodListController extends MoodListController {
                         notifyAdapter();
                     }
                 });
-            }, e -> {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            });
+            }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
         }
+        super.onFollowAdded(follow);
     }
 
     @Override
     public void onFollowDeleted(String followerUsername, String followedUsername) {
-        super.onFollowDeleted(followerUsername, followedUsername);
-
         if (followingList != null && followerUsername.equals(session.getUsername())) {
             followingList.removeIf(following -> following.equals(followedUsername));
 
@@ -81,6 +88,7 @@ public class FollowingMoodListController extends MoodListController {
             filteredMoodEventList.removeIf(mood -> mood.getPosterUsername().equals(followedUsername));
             notifyAdapter();
         }
+        super.onFollowDeleted(followerUsername, followedUsername);
     }
 
 }

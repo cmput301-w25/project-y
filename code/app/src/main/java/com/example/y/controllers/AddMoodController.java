@@ -1,9 +1,10 @@
 package com.example.y.controllers;
 
-
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 
-import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
@@ -13,60 +14,109 @@ import com.google.firebase.Timestamp;
 
 public class AddMoodController {
 
-    private String posterUsername;
-    SessionManager session;
-    public AddMoodController(Context context){
+    private final String loggedInUser;
+    private final Context context;
 
-        session = new SessionManager(context);
+    public AddMoodController(Context context){
+        this.context = context;
+        SessionManager session = new SessionManager(context);
+        loggedInUser = session.getUsername();
     }
-    public String getPosterUsername() {
-        return session.getUsername();
+
+    public void onSubmitMood(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        // Required:
+        //      posterUsername
+        if (!mood.getPosterUsername().equals(loggedInUser)) {
+            onFailure.onFailure(new Exception("Cannot post a mood that does not belong to the logged in user"));
+        }
+        //      dateTime
+        if (!isValidTimestamp(mood.getDateTime())) {
+            onFailure.onFailure(new Exception("Invalid date time: " + mood.getDateTime().toString()));
+        }
+        //      emotion
+        if (mood.getEmotion() == null) {
+            onFailure.onFailure(new Exception("Emotion required"));
+        }
+
+        // Optional:
+        //      socialSituation (alone, with one other person, with two to several people, with a crowd))
+        //          No need to validate this one I don't think
+        //      text/trigger/reasonWhy (at most 20 characters or 3 words)
+        if (mood.getText() != null) {
+            if (mood.getText().length() > 20) {
+                onFailure.onFailure(new Exception("Text length must be at most 20 characters"));
+            }
+            int textWordCount = mood.getText().isEmpty() ? 0 : mood.getText().split("\\s+").length;
+            if (textWordCount > 3) {
+                onFailure.onFailure(new Exception("Text length must be at most 3 words"));
+            }
+        }
+        //      photoURL (under 65,536 KB)
+//        if (photoUri != null && getImageSize(photoUri) >= 65536) {
+//            onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
+//        }
+        //      location
+        //          Not sure if this needs to be validated
+
+
+        // Finally upload the mood
+        MoodEventRepository moodRepo = MoodEventRepository.getInstance();
+        if (photoUri != null) {
+            // Attach image first if it exists
+            moodRepo.uploadAndAttachImage(mood, photoUri, updatedMood -> {
+                moodRepo.addMoodEvent(mood, onSuccess, onFailure);
+            }, onFailure);
+        } else {
+            // Otherwise directly upload it
+            moodRepo.addMoodEvent(mood, onSuccess, onFailure);
+        }
     }
 
     /**
-     * Handles adding a new mood event to the database
-     *
-     * @param currentMood Mood for the mood event .
-     * @param socialSituation The social situation of the mood event.
-     * @param shareLocation Boolean to see if the user wants their location shared.
-     * @param reason Reason of the mood event.
-     * @param explanation Explanation of the mood event.
-     * @param dateOfMoodEvent Date of the mood event.
-     * @param onSuccessListener Success callback of adding the mood event.
-     * @param onFailureListener Failure callback of adding the mood event.
+     * Makes sure a timestamp is valid.
+     * @param timestamp
+     *      Timestamp to validate.
+     * @return
+     *      True if valid, false otherwise
      */
-
-    public void onSubmitMood(Emotion currentMood, String socialSituation, boolean shareLocation, String reason, String explanation, Timestamp dateOfMoodEvent, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener) {
-        /* TODO: we have to do some input validation... and then send make it such that it updates in the database */
-        posterUsername = getPosterUsername();
-
-        if (posterUsername == null || posterUsername.isEmpty()) {
-            onFailureListener.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
+    private boolean isValidTimestamp(Timestamp timestamp) {
+        if (timestamp == null) return false;
+        try {
+            long seconds = timestamp.getSeconds();
+            return seconds > 0 && seconds < 253402300799L; // Year range check (0001-9999)
+        } catch (Exception e) {
+            return false;
         }
-        if (reason.length() > 20) {
-            onFailureListener.onFailure(new IllegalArgumentException("Reason should not exceed 20 characters"));
-            return;
-        }
-
-        MoodEvent mood = new MoodEvent(null, Timestamp.now(), posterUsername, dateOfMoodEvent, currentMood);
-
-        if (!reason.isEmpty()) {
-            mood.setReasonWhy(reason);
-
-        }
-        if (!explanation.isEmpty()) {
-            mood.setText(explanation);
-        }
-        if (!socialSituation.isEmpty()) {
-            mood.setSocialSituation(socialSituation);
-        }
-        MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
-        moodEventRepository.addMoodEvent(mood, onSuccessListener, onFailureListener);
-
     }
 
+    /**
+     * Finds the size of the image in bytes
+     * @param imageUri
+     *      Uri of the image to check for.
+     * @return
+     *      Size of the image in bytes
+     */
+    private long getImageSize(Uri imageUri) {
+        long imageSizeInBytes = 0;
+        try {
+            // Open the file descriptor for the selected image
+            Cursor cursor = context.getContentResolver().query(imageUri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                if (columnIndex != -1) {
+                    imageSizeInBytes = cursor.getLong(columnIndex);
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        return imageSizeInBytes;
     }
+
+}
 
 
 
