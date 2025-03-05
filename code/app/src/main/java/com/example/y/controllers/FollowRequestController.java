@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
@@ -53,10 +52,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     @Override
     public void onFollowRequestDeleted(String requester, String requestee) {
-        Log.e("Test", "requester: " + requester + ". requestee: " + requestee);
-        Log.e("Test", "user: " + user);
         if (requestee.equals(user)) {
-            Log.e("Test", "update array adapter");
             reqs.removeIf(req -> req.getRequester().equals(requester));
             notifyAdapter();
         }
