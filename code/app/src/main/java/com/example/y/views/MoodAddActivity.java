@@ -142,6 +142,10 @@ public class MoodAddActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
     // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+
+    /***
+     * Used to grab images
+     */
     private void images() {
         Intent i = new Intent();
         i.setType("image/*");
@@ -149,6 +153,13 @@ public class MoodAddActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     }
     // use to make image visible
+
+    /**
+     * Method to make images visible
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
