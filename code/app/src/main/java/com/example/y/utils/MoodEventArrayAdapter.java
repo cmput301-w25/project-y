@@ -17,6 +17,7 @@ import com.example.y.R;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -112,15 +113,15 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
-        String socialSituation = mood.getSocialSituation();
+        String socialSituation = mood.getSocialSituation().getText(context);
         if (socialSituation != null) socialSituationTextView.setText(socialSituation);
 
         String reasonWhy = mood.getReasonWhy();
         if (reasonWhy != null) reasonWhyTextView.setText(reasonWhy);
 
-        URL photoURL = mood.getPhotoURL();
-        if (photoURL != null) {
-            // TODO: Fetch image
+        String photoURL = mood.getPhotoURL();
+        if (photoURL != null && !photoURL.isEmpty()) {
+            MoodEventRepository.getInstance().downloadImage(photoURL, photoImgView::setImageBitmap, e -> {});
             photoImgView.setVisibility(View.VISIBLE);
         } else {
             photoImgView.setVisibility(View.GONE);
