@@ -68,6 +68,8 @@
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
+    <string name="delete_this_mood">Delete this mood.</string>
+    <string name="edit_this_mood">Edit this mood.</string>
 
     <string-array name="mood_array">
         <item>😡</item>
