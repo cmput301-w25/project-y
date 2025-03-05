@@ -14,6 +14,7 @@ public class DiscoverActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectDiscoverHeaderButton();
 
         // Initialize controller
         ListView moodListView = findViewById(R.id.listviewMoodEvents);

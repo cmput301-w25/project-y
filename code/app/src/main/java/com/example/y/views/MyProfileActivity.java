@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
-public class ProfileActivity extends BaseActivity {
+public class MyProfileActivity extends BaseActivity {
+
      Button logout;
      Button followRequests;
 
@@ -20,6 +19,7 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectProfileHeaderButton();
 
         logout = findViewById(R.id.btnUserProfileLogout);
         addButton = findViewById(R.id.btn_addMoodEventFromProfile);
