@@ -1,17 +1,11 @@
 package com.example.y.views;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.y.R;
 import com.example.y.controllers.FollowingMoodListController;
-import com.example.y.controllers.MoodListController;
-import com.example.y.services.SessionManager;
 
 public class FollowingMoodEventListActivity extends BaseActivity {
 
@@ -26,12 +20,6 @@ public class FollowingMoodEventListActivity extends BaseActivity {
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
         }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        controller.onActivityStop();
     }
 
     @Override

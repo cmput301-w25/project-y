@@ -14,7 +14,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.core.OrderBy;
 
 import java.util.ArrayList;
 
@@ -206,9 +205,9 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
 
     /**
      * Get all follow requests of users requested to follow `username`.
-     * Sorted by timestamp descending
+     * Sorted by timestamp descending.
      * @param username
-     *      User to get all requesters of.
+     *      User to get all requests to.
      * @param onSuccess
      *      Success callback function to which the array of all requests is passed to.
      * @param onFailure
@@ -229,6 +228,35 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
                         onSuccess.onSuccess(reqs);
                     } else {
                         onFailure.onFailure(new Exception("Failed to get all requests to " + username, task.getException()));
+                    }
+                });
+    }
+
+    /**
+     * Get all follow requests from user `username`.
+     * Sorted by timestamp descending.
+     * @param username
+     *      User to get all requests from.
+     * @param onSuccess
+     *      Success callback function to which the array of all requests is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getAllRequestsFrom(String username, OnSuccessListener<ArrayList<FollowRequest>> onSuccess, OnFailureListener onFailure) {
+        followReqsRef
+                .whereEqualTo("requester", username)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<FollowRequest> reqs = new ArrayList<FollowRequest>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            FollowRequest req = doc.toObject(FollowRequest.class);
+                            reqs.add(req);
+                        }
+                        onSuccess.onSuccess(reqs);
+                    } else {
+                        onFailure.onFailure(new Exception("Failed to get all requests from " + username, task.getException()));
                     }
                 });
     }
