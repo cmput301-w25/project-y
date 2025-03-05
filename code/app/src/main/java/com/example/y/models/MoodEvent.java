@@ -23,11 +23,11 @@ public class MoodEvent implements Serializable {
     private Emotion emotion;
 
     // Optional
-    private String socialSituation;
+    private SocialSituation socialSituation;
     private String trigger;
     private String text;
     private String reasonWhy;
-    private URL photoURL;
+    private String photoURL;
     private GeoPoint location;
 
     public MoodEvent() {};
@@ -77,9 +77,9 @@ public class MoodEvent implements Serializable {
 
     public void setTrigger(String trigger) { this.trigger = trigger; }
 
-    public String getSocialSituation() { return socialSituation; }
+    public SocialSituation getSocialSituation() { return socialSituation; }
 
-    public void setSocialSituation(String socialSituation) { this.socialSituation = socialSituation; }
+    public void setSocialSituation(SocialSituation socialSituation) { this.socialSituation = socialSituation; }
 
     public String getText() { return text; }
 
@@ -89,9 +89,9 @@ public class MoodEvent implements Serializable {
 
     public void setReasonWhy(String reasonWhy) { this.reasonWhy = reasonWhy; }
 
-    public URL getPhotoURL() { return photoURL; }
+    public String getPhotoURL() { return photoURL; }
 
-    public void setPhotoURL(URL photoURL) { this.photoURL = photoURL; }
+    public void setPhotoURL(String photoURL) { this.photoURL = photoURL; }
 
     public GeoPoint getLocation() { return location; }
 
