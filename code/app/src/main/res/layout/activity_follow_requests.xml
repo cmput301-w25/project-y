@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <ListView
-        android:id="@+id/listviewMoodEvents"
+        android:id="@+id/listviewFollowRequests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />

@@ -14,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -201,14 +202,16 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     /**
-     * Gets every mood event ever.
+     * Gets every mood event ever. Ordered by dateTime descending.
      * @param onSuccess
      *      Success callback function to which the array of all mood events is passed to.
      * @param onFailure
      *      Failure callback function.
      */
     public void getAllMoodEvents(OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
-        moodEventRef.get()
+        moodEventRef
+                .orderBy("dateTime", Query.Direction.DESCENDING)
+                .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> allMoods = new ArrayList<>();
@@ -223,7 +226,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     /**
-     * Gets every mood event from a user.
+     * Gets every mood event from a user. Ordered by dateTime descending.
      * @param username
      *      Username of the user to get moods from.
      * @param onSuccess
@@ -234,6 +237,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     public void getAllMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
         moodEventRef
                 .whereEqualTo("posterUsername", username)
+                .orderBy("dateTime", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

@@ -2,35 +2,44 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
+import com.example.y.models.Follow;
+import com.example.y.models.FollowRequest;
+import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.MoodEventRepository;
+import com.example.y.services.SessionManager;
 import com.example.y.utils.MoodEventArrayAdapter;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
 import com.example.y.utils.MoodEventListFilter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Manages filter and array adapter for the following mood list activity.
  * Listens for mood event updates and updates lists accordingly.
  */
-public abstract class MoodListController implements MoodEventRepository.MoodEventListener {
+public abstract class MoodListController
+        implements
+            MoodEventRepository.MoodEventListener,
+            FollowRepository.FollowListener,
+            FollowRequestRepository.FollowRequestListener {
 
     protected final Context context;
     protected final MoodEventListFilter filter;
-    protected final MoodEventRepository moodRepo;
     protected ArrayList<MoodEvent> originalMoodEventList;
     protected ArrayList<MoodEvent> filteredMoodEventList;
     protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
+    protected SessionManager sessionManager;
 
     public MoodListController(Context context) {
         filter = new MoodEventListFilter();
-        moodRepo = MoodEventRepository.getInstance();
         this.context = context;
+        sessionManager = new SessionManager(context);
     }
 
     /**
@@ -39,16 +48,18 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
      * @param moodEvents
      *      Initial list of mood events.
      */
-    protected void initializeArrayAdapter(ArrayList<MoodEvent> moodEvents) {
+    protected void initializeArrayAdapter(ArrayList<MoodEvent> moodEvents, HashMap<String, UserRepository.FollowStatus> followStatus) {
         // Populate original and filtered lists
         originalMoodEventList = new ArrayList<>(moodEvents);
         filteredMoodEventList = new ArrayList<>(moodEvents);
 
-        // Listen for mood event updates
-        moodRepo.addListener(this);
+        // Listen for mood event, follows, and follow request updates
+        MoodEventRepository.getInstance().addListener(this);
+        FollowRepository.getInstance().addListener(this);
+        FollowRequestRepository.getInstance().addListener(this);
 
         // Initialize the array adapter
-        moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList);
+        moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList, followStatus);
     }
 
     /**
@@ -61,11 +72,13 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
     public abstract boolean doesBelongInOriginal(MoodEvent mood);
 
     /**
-     * Removes controller from mood event repository's listener set
+     * Checks if the poster's moods are allowed to be in the filtered mood array.
+     * @param poster
+     *      Username of poster to check for.
+     * @return
+     *      If the poster's moods are allowed to be in the filtered array.
      */
-    public void onActivityStop() {
-        moodRepo.removeListener(this);
-    }
+    public abstract boolean isPosterAllowed(String poster);
 
     /**
      * Applies the filter to the mood event list.
@@ -76,6 +89,57 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         filteredMoodEventList.clear();
         filteredMoodEventList.addAll(filter.applyFilter(originalMoodEventList));
         notifyAdapter();
+    }
+
+    @Override
+    public void onFollowAdded(Follow follow) {
+        if (shouldUpdateOnFollowStatusUpdate(follow.getFollowerUsername(), follow.getFollowedUsername())) {
+            moodAdapter.followStatusPut(follow.getFollowedUsername(), UserRepository.FollowStatus.FOLLOWING);
+            notifyAdapter();
+        }
+    }
+
+    @Override
+    public void onFollowDeleted(String followerUsername, String followedUsername) {
+        if (shouldUpdateOnFollowStatusUpdate(followerUsername, followedUsername)) {
+            moodAdapter.followStatusPut(followedUsername, UserRepository.FollowStatus.NEITHER);
+            notifyAdapter();
+        }
+    }
+
+    @Override
+    public void onFollowRequestAdded(FollowRequest followRequest) {
+        if (shouldUpdateOnFollowStatusUpdate(followRequest.getRequester(), followRequest.getRequestee())) {
+            moodAdapter.followStatusPut(followRequest.getRequestee(), UserRepository.FollowStatus.REQUESTED);
+            notifyAdapter();
+        }
+    }
+
+    @Override
+    public void onFollowRequestDeleted(String requester, String requestee) {
+        if (shouldUpdateOnFollowStatusUpdate(requester, requestee)) {
+            moodAdapter.followStatusPut(requestee, UserRepository.FollowStatus.NEITHER);
+            notifyAdapter();
+        }
+    }
+
+    /**
+     * Checks if the adapter should on a new follow status update
+     * @param user
+     *      User that requested or followed somebody else.
+     * @param poster
+     *      User that `user` followed or requested.
+     * @return
+     *      If the adapter should be notified or not.
+     */
+    protected boolean shouldUpdateOnFollowStatusUpdate(String user, String poster) {
+        // Assert that the status update was made by logged in user
+        boolean isUserTheFollower = user.equals(sessionManager.getUsername());
+
+        // Assert that the poster will be in the array
+        boolean posterAllowed = isPosterAllowed(poster);
+
+        return isUserTheFollower && posterAllowed;
     }
 
     /**
@@ -188,7 +252,6 @@ public abstract class MoodListController implements MoodEventRepository.MoodEven
         // Insert mood
         sortedMoods.add(low, mood);
     }
-
 
     /**
      * Notifies the mood adapter that there was a change.

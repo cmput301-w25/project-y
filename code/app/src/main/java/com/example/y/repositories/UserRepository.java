@@ -4,6 +4,7 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 import android.util.Log;
 
+import com.example.y.models.FollowRequest;
 import com.example.y.repositories.UserRepository.UserListener;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +31,7 @@ import java.util.List;
  */
 public class UserRepository extends GenericRepository<UserListener> {
 
+    public enum FollowStatus { FOLLOWING, REQUESTED, NEITHER };
     private static UserRepository instance;  // Singleton instance
     public static final String USER_COLLECTION = "users";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -151,7 +154,7 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     /**
      * Gets a list of all mood events from all users a user is following.
-     * The result is sorted by date ascending.
+     * The result is sorted by date descending.
      * Filter is not applied.
      * @param username
      *      The username of the user to fetch the mood following list for.
@@ -192,14 +195,60 @@ public class UserRepository extends GenericRepository<UserListener> {
                             }
                         }
 
-                        // Sort by date ascending then pass to success callback function
-                        moodFollowingList.sort(Comparator.comparing(MoodEvent::getDateTime));
+                        // Sort by date descending then pass to success callback function
+                        moodFollowingList.sort(Comparator.comparing(MoodEvent::getDateTime).reversed());
                         onSuccess.onSuccess(moodFollowingList);
                     })
                     .addOnFailureListener(e -> {
                         onFailure.onFailure(new Exception("Error getting mood following list", e));
                     });
         }, onFailure);
+    }
+
+    /**
+     * Gets a hashmap of a user's follow status in relation to all users.
+     * @param user
+     *      User to get hashmap for.
+     * @param onSuccess
+     *      Success callback function to which the hashmap is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getFollowStatusHashMap(String user, OnSuccessListener<HashMap<String, FollowStatus>> onSuccess, OnFailureListener onFailure) {
+        // Get all users
+        usersRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+
+                // Initialize all users as NEITHER in the hashmap
+                HashMap<String, FollowStatus> fStatus = new HashMap<String, FollowStatus>();
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+                    User otherUser = doc.toObject(User.class);
+                    fStatus.put(otherUser.getUsername(), FollowStatus.NEITHER);
+                }
+
+                // Get all users that `user` is following
+                getFollowing(user, followingList -> {
+                    // Set all to FOLLOWING in the hashmap
+                    for (String followee : followingList) {
+                        fStatus.put(followee, FollowStatus.FOLLOWING);
+                    }
+
+                    // Get all users that `user` has requested to follow
+                    FollowRequestRepository.getInstance().getAllRequestsFrom(user, reqs -> {
+                        // Set all to REQUESTED in the hashmap
+                        for (FollowRequest req : reqs) {
+                            fStatus.put(req.getRequestee(), FollowStatus.REQUESTED);
+                        }
+
+                        // Finally, pass the hashmap to onSuccess
+                        onSuccess.onSuccess(fStatus);
+
+                    }, onFailure);
+
+                }, onFailure);
+
+            } else onFailure.onFailure(new Exception("Failed to fetch all users", task.getException()));
+        });
     }
 
     /**
