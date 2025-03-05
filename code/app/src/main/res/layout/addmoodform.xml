@@ -30,13 +30,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
 
-        app:layout_constraintBottom_toTopOf="@id/etReason"
+        app:layout_constraintBottom_toTopOf="@id/etReasonWhyText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.389" />
 
     <EditText
-        android:id="@+id/etReason"
+        android:id="@+id/etReasonWhyText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -49,19 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
-    <EditText
-        android:id="@+id/etExplanation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:gravity="top"
-        android:hint="@string/hint_explanation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etReason" />
-
     <!-- Social Situation Section -->
     <Spinner
         android:id="@+id/spinnerSocialSituation"
@@ -73,7 +60,7 @@
         android:entries="@array/social_situation_array"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etExplanation" />
+        app:layout_constraintTop_toBottomOf="@id/etReasonWhyText" />
 
 
     <!-- Image Insert and Location Sharing -->
