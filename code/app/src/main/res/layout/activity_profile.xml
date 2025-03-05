@@ -9,7 +9,7 @@
     android:layout_gravity="center"
     android:background="@android:color/black"
     android:padding="16dp"
-    tools:context=".views.ProfileActivity">
+    tools:context=".views.MyProfileActivity">
 
     <View
         android:layout_width="match_parent"
