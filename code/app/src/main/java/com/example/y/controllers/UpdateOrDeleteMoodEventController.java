@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,7 +26,7 @@ public class UpdateOrDeleteMoodEventController {
         return session.getUsername();
     }
         //TODO: fix the signature of social situation, once the enum version is pushed
-    public void onUpdateMoodEvent(MoodEvent moodEvent,String reason,String explanation,String socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
+    public void onUpdateMoodEvent(MoodEvent moodEvent, String reason, String explanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
 
         posterUsername = getPosterUsername();
 
@@ -44,7 +45,7 @@ public class UpdateOrDeleteMoodEventController {
         if (!explanation.isEmpty()) {
             moodEvent.setText(explanation);
         }
-        if (!socialSituation.isEmpty()) {
+        if (socialSituation != null) {
             moodEvent.setSocialSituation(socialSituation);
         }
 

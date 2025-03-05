@@ -17,12 +17,20 @@ public class AddMoodController {
     private final String loggedInUser;
     private final Context context;
 
-    public AddMoodController(Context context){
+
+    public AddMoodController(Context context) {
         this.context = context;
         SessionManager session = new SessionManager(context);
         loggedInUser = session.getUsername();
     }
 
+
+    /**
+     * @param mood
+     * @param photoUri
+     * @param onSuccess
+     * @param onFailure
+     */
     public void onSubmitMood(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
         // Required:
         //      posterUsername
@@ -74,10 +82,9 @@ public class AddMoodController {
 
     /**
      * Makes sure a timestamp is valid.
-     * @param timestamp
-     *      Timestamp to validate.
-     * @return
-     *      True if valid, false otherwise
+     *
+     * @param timestamp Timestamp to validate.
+     * @return True if valid, false otherwise
      */
     private boolean isValidTimestamp(Timestamp timestamp) {
         if (timestamp == null) return false;
@@ -91,10 +98,9 @@ public class AddMoodController {
 
     /**
      * Finds the size of the image in bytes
-     * @param imageUri
-     *      Uri of the image to check for.
-     * @return
-     *      Size of the image in bytes
+     *
+     * @param imageUri Uri of the image to check for.
+     * @return Size of the image in bytes
      */
     private long getImageSize(Uri imageUri) {
         long imageSizeInBytes = 0;
@@ -113,10 +119,13 @@ public class AddMoodController {
             e.printStackTrace();
         }
 
+
         return imageSizeInBytes;
     }
 
 }
+
+
 
 
 

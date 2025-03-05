@@ -25,6 +25,7 @@ import com.example.y.controllers.AddMoodController;
 import com.example.y.controllers.UpdateOrDeleteMoodEventController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -61,9 +62,8 @@ public class UpdateOrDeleteMoodEvent extends AppCompatActivity {
                 Emotion.values());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMood.setSelection(adapter.getPosition(moodEventToUpdateOrDelete.getEmotion()));
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-
+        SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReason = findViewById(R.id.etReason);
@@ -90,11 +90,11 @@ public class UpdateOrDeleteMoodEvent extends AppCompatActivity {
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish());
-        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete,etReason.getText().toString().trim(),etExplanation.getText().toString().trim(),spinnerSocial.getSelectedItem().toString()));
+        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete,etReason.getText().toString().trim(),etExplanation.getText().toString().trim(),socialSituation));
         deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete));
     }
 
-    private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String reason, String explanation, String socialSituation) {
+    private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String reason, String explanation, SocialSituation socialSituation) {
 
 
         updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, reason, explanation, socialSituation,
