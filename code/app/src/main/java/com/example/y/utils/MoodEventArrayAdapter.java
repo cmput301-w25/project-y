@@ -1,12 +1,14 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,6 @@ import com.example.y.services.SessionManager;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,19 +52,23 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.mood_listview, parent, false);
-        }
-
+        // Init repos and current mood
         FollowRepository followRepository = FollowRepository.getInstance();
         FollowRequestRepository followReqRepository = FollowRequestRepository.getInstance();
         MoodEvent mood = moodEvents.get(position);
 
-        Button followBtn = view.findViewById(R.id.btnFollowFromMood);
-        String poster = mood.getPosterUsername();
+        // Select either with or without photo context
+        View view = convertView;
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(
+                    mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
+                    parent, false
+            );
+        }
 
         // Set button style (or fix style after update)
+        Button followBtn = view.findViewById(R.id.btnFollowFromMood);
+        String poster = mood.getPosterUsername();
         if (followStatus.get(poster) == UserRepository.FollowStatus.FOLLOWING) {
             followBtn.setText(context.getString(R.string.following));
             followBtn.setBackgroundColor(context.getColor(R.color.following));
@@ -110,53 +115,92 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         });
 
         // Get views from content
-        View colorView = view.findViewById(R.id.emotionColor);
+        LinearLayout border = view.findViewById(R.id.border);
         TextView usernameTextView = view.findViewById(R.id.username);
         TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
         TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
-        TextView reasonWhyTextView = view.findViewById(R.id.reasonWhy);
-        ImageView photoImgView = view.findViewById(R.id.photo);
+        TextView reasonWhyTextTextView = view.findViewById(R.id.reasonWhyText);
         TextView locationTextView = view.findViewById(R.id.location);
+        ImageView photoImgView = view.findViewById(R.id.photo);
 
-        // Populate content
-        // TODO: Check for optional fields and change the way the post looks
+        // Populate required fields (username, datetime, emotion emoticon)
         usernameTextView.setText(mood.getPosterUsername());
         String dateTimeFormatted = new SimpleDateFormat("HH:mm MMM dd, yyyy", Locale.getDefault())
                 .format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
-        colorView.setBackgroundColor(mood.getEmotion().getColor(context));
+        // Set border colour based on emotion
+        border.setBackgroundColor(mood.getEmotion().getColor(context));
 
+        // Optional fields: (location and social situation)
         String socialSituation = mood.getSocialSituation().getText(context);
-        if (socialSituation != null) socialSituationTextView.setText(socialSituation);
-
-        String reasonWhy = mood.getReasonWhy();
-        if (reasonWhy != null) reasonWhyTextView.setText(reasonWhy);
-
-        String photoURL = mood.getPhotoURL();
-        if (photoURL != null && !photoURL.isEmpty()) {
-            MoodEventRepository.getInstance().downloadImage(photoURL, photoImgView::setImageBitmap, e -> {});
-            photoImgView.setVisibility(View.VISIBLE);
+        GeoPoint location = mood.getLocation();
+        if (socialSituation == null && location == null) {
+            // Hide layout if they're both null
+            view.findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
         } else {
-            photoImgView.setVisibility(View.GONE);
+            // Otherwise ony fill in the non-null fields
+            if (socialSituation != null) {
+                socialSituationTextView.setText(socialSituation);
+            }
+            if (location != null) {
+                locationTextView.setText(location.toString());  // TODO: Format location
+            }
         }
 
-        GeoPoint location = mood.getLocation();
-        if (location != null) locationTextView.setText(location.toString());
+        // Optional field: reason why text
+        String text = mood.getText();
+        if (text != null) reasonWhyTextTextView.setText(text);
+
+        // Optional field: Photo
+        String photoURL = mood.getPhotoURL();
+        if (photoImgView != null && photoURL != null && !photoURL.isEmpty()) {
+            MoodEventRepository.getInstance().downloadImage(photoURL, photoImgView::setImageBitmap, e -> {});
+            photoImgView.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // Ensure the correct layout is the one being showed.
+        MoodEvent mood = moodEvents.get(position);
+        return mood.getPhotoURL() == null ? 0 : 1;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    /**
+     * Handles exception by showing a Toast
+     * @param e
+     *      Exception to handle
+     */
     private void handleException(Exception e) {
         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Updates the follow status of the logged in user in relation to another user.
+     * @param otherUser
+     *      The user to which the follow status is being updated.
+     * @param status
+     *      The follow status of the logged in user to `otherUse`
+     */
     public void followStatusPut(String otherUser, UserRepository.FollowStatus status) {
         followStatus.put(otherUser, status);
     }
 
+    /**
+     * Removes a user following status entry.
+     * @param otherUser
+     *      User to remove from the following status hashmap.
+     */
     public void followStatusRemove(String otherUser) {
         followStatus.remove(otherUser);
     }

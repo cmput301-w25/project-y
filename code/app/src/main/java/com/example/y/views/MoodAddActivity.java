@@ -16,19 +16,16 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,7 +40,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
-    private EditText etReason;
+    private EditText etReasonWhyText;
     private EditText etExplanation;
     private EditText datePicked;
     private Uri selectedImageUri;
@@ -59,15 +56,16 @@ public class MoodAddActivity extends AppCompatActivity {
 
         addMoodController = new AddMoodController(this);
 
-        // Initialize all views
-        spinnerMood = findViewById(R.id.spinnerMood);
+        // Initialize (image) buttons
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
         Button btnSubmit = findViewById(R.id.btnSubmit);
+
+        // Initialize text views
+        spinnerMood = findViewById(R.id.spinnerMood);
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        etReason = findViewById(R.id.etReason);
-        etExplanation = findViewById(R.id.etExplanation);
+        etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
         IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
@@ -90,8 +88,7 @@ public class MoodAddActivity extends AppCompatActivity {
             Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
-            String reason = etReason.getText().toString().trim();
-            String explanation = etExplanation.getText().toString().trim();
+            String reasonWhyText = etReasonWhyText.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
 
@@ -112,7 +109,7 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setDateTime(moodDateTime);
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
-            newMood.setText(reason);
+            newMood.setText(reasonWhyText);
             // TODO: newMood.setLocation()
 
             // Submit form
@@ -121,9 +118,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
                 startActivity(intent);
                 finish();
-            }, e -> {
-                Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-            });
+            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         });
         
     }
@@ -133,7 +128,6 @@ public class MoodAddActivity extends AppCompatActivity {
      * @param datePicked Edit text of our date picker.
      */
     private void showDatePickerDialog(EditText datePicked) {
-
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -157,16 +151,13 @@ public class MoodAddActivity extends AppCompatActivity {
     // use to make image visible
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK && requestCode == SELECT_PICTURE) {
-
             selectedImageUri = data.getData();
             if (selectedImageUri != null) {
                 IVPreviewImage.setImageURI(selectedImageUri);
                 IVPreviewImage.setVisibility(View.VISIBLE);
             }
         }
-
     }
 
 }
