@@ -7,9 +7,7 @@ import android.widget.Toast;
 import com.example.y.R;
 import com.example.y.controllers.FollowingMoodListController;
 
-public class FollowingMoodEventListActivity extends BaseActivity {
-
-    FollowingMoodListController controller;
+public class FollowingMoodEventListActivity extends MoodListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,11 +18,8 @@ public class FollowingMoodEventListActivity extends BaseActivity {
         ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-        }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, this::handleException);
     }
-
-    @Override
-    protected int getActivityLayout() { return R.layout.following_mood_event_list_view; }
 
 }
 
