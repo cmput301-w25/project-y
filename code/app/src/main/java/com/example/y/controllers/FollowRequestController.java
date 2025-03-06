@@ -2,6 +2,8 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
@@ -20,9 +22,11 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     private final Context context;
     private FollowRequestArrayAdapter adapter;
     private ArrayList<FollowRequest> reqs;
+    private TextView emptyTextView;
 
-    public FollowRequestController(Context context, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+    public FollowRequestController(Context context, TextView emptyTextView, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         this.context = context;
+        this.emptyTextView = emptyTextView;
 
         SessionManager sessionManager = new SessionManager(context);
         user = sessionManager.getUsername();
@@ -38,6 +42,9 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             // Create adapter
             adapter = new FollowRequestArrayAdapter(context, this.reqs);
 
+            // Check if empty
+            updateEmptyState();
+
             onSuccess.onSuccess(null);
         }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
@@ -46,6 +53,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void onFollowRequestAdded(FollowRequest followRequest) {
         if (followRequest.getRequestee().equals(user)) {
             insertReq(followRequest);
+            updateEmptyState();
             notifyAdapter();
         }
     }
@@ -54,6 +62,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void onFollowRequestDeleted(String requester, String requestee) {
         if (requestee.equals(user)) {
             reqs.removeIf(req -> req.getRequester().equals(requester));
+            updateEmptyState();
             notifyAdapter();
         }
     }
@@ -111,4 +120,16 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     public FollowRequestArrayAdapter getAdapter() { return adapter; }
 
+
+    private void updateEmptyState() {
+        if (context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> {
+                if (reqs.isEmpty()) {
+                    emptyTextView.setVisibility(View.VISIBLE);
+                } else {
+                    emptyTextView.setVisibility(View.GONE); //
+                }
+            });
+        }
+    }
 }
