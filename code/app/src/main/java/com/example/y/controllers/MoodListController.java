@@ -1,7 +1,10 @@
 package com.example.y.controllers;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.example.y.models.Follow;
@@ -14,6 +17,7 @@ import com.example.y.utils.MoodEventArrayAdapter;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
 import com.example.y.utils.MoodEventListFilter;
+import com.example.y.views.UpdateOrDeleteMoodEventActivity;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -262,9 +266,13 @@ public abstract class MoodListController
             ((Activity) context).runOnUiThread(() -> moodAdapter.notifyDataSetChanged());
         }
     }
-
     public MoodEventListFilter getFilter() { return filter; }
 
     public MoodEventArrayAdapter getMoodAdapter() { return moodAdapter; }
+
+    public MoodEvent getFilteredMoodEvent(int position) {
+        return filteredMoodEventList.get(position);
+    }
+
 
 }

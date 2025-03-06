@@ -1,5 +1,10 @@
 package com.example.y.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
@@ -10,7 +15,7 @@ import java.net.URL;
 /**
  * Stores data of a mood event posted by a user.
  */
-public class MoodEvent implements Serializable {
+public class MoodEvent implements Serializable,Parcelable {
 
     // Hidden requirements
     @Exclude
@@ -39,6 +44,30 @@ public class MoodEvent implements Serializable {
         this.dateTime = dateTime;
         this.emotion = emotion;
     }
+
+    protected MoodEvent(Parcel in) {
+        id = in.readString();
+        creationDateTime = in.readParcelable(Timestamp.class.getClassLoader());
+        posterUsername = in.readString();
+        dateTime = in.readParcelable(Timestamp.class.getClassLoader());
+        trigger = in.readString();
+        text = in.readString();
+        reasonWhy = in.readString();
+        photoURL = in.readString();
+    }
+
+
+    public static final Creator<MoodEvent> CREATOR = new Creator<MoodEvent>() {
+        @Override
+        public MoodEvent createFromParcel(Parcel in) {
+            return new MoodEvent(in);
+        }
+
+        @Override
+        public MoodEvent[] newArray(int size) {
+            return new MoodEvent[size];
+        }
+    };
 
     @Exclude
     public String getId() {
@@ -97,4 +126,20 @@ public class MoodEvent implements Serializable {
 
     public void setLocation(GeoPoint location) { this.location = location; }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeParcelable(creationDateTime, i);
+        parcel.writeString(posterUsername);
+        parcel.writeParcelable(dateTime, i);
+        parcel.writeString(trigger);
+        parcel.writeString(text);
+        parcel.writeString(reasonWhy);
+        parcel.writeString(photoURL);
+    }
 }

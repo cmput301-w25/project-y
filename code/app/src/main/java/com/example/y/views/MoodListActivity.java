@@ -1,12 +1,15 @@
 package com.example.y.views;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodListController;
+import com.example.y.models.MoodEvent;
 
 public class MoodListActivity extends BaseActivity {
 
@@ -18,5 +21,14 @@ public class MoodListActivity extends BaseActivity {
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
+    void onMoodClick(MoodEvent moodEvent, String userName){
+        if (moodEvent.getPosterUsername().equals(userName)){
+            Intent intent = new Intent(this,UpdateOrDeleteMoodEventActivity.class);
+            intent.putExtra("mood_event", (Parcelable) moodEvent);
+            startActivity(intent);
+            finish();
 
+        }
+
+    }
 }

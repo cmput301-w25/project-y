@@ -2,6 +2,7 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
+import static androidx.core.content.ContextCompat.startActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -33,7 +34,13 @@ import java.util.Locale;
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
+    Intent intent = getIntent();
     MoodEvent moodEventToUpdateOrDelete;
+
+    {
+        moodEventToUpdateOrDelete = (MoodEvent) intent.getSerializableExtra("mood_event");
+    }
+
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
@@ -42,13 +49,14 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private EditText etExplanation;
     private EditText datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
-
     public UpdateOrDeleteMoodEventActivity(MoodEvent toEditOrDelete) {
         this.moodEventToUpdateOrDelete = toEditOrDelete;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
+
         // Set dark mode before creating views
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
@@ -95,8 +103,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     }
 
     private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String reason, String explanation, SocialSituation socialSituation) {
-
-
         updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, reason, explanation, socialSituation,
                 moodEvent -> {
                     Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
@@ -140,39 +146,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     }
     // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
 
-    /***
-     * Used to grab images
-     */
-    private void images() {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
-    }
-    // use to make image visible
 
-    /**
-     * Method to make images visible
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
 
-            if (requestCode == SELECT_PICTURE) {
 
-                Uri selectedImageUri = data.getData();
-                if (null != selectedImageUri) {
-                    IVPreviewImage.setImageURI(selectedImageUri);
-                    IVPreviewImage.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-    }
 
 
 }

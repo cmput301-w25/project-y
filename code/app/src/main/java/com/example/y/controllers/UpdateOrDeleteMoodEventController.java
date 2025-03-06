@@ -12,12 +12,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class UpdateOrDeleteMoodEventController {
     SessionManager session;
-    private String posterUsername;
+    MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
     public UpdateOrDeleteMoodEventController(Context context){
 
         session = new SessionManager(context);
     }
-
     /***
      *
      * @return String OP's Username
@@ -28,7 +27,7 @@ public class UpdateOrDeleteMoodEventController {
         //TODO: fix the signature of social situation, once the enum version is pushed
     public void onUpdateMoodEvent(MoodEvent moodEvent, String reason, String explanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
 
-        posterUsername = getPosterUsername();
+        String posterUsername = getPosterUsername();
 
         if (posterUsername == null || posterUsername.isEmpty()) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
@@ -49,13 +48,11 @@ public class UpdateOrDeleteMoodEventController {
             moodEvent.setSocialSituation(socialSituation);
         }
 
-        MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
         moodEventRepository.updateMoodEvent(moodEvent, onSuccessListener,onFailureListener);
     }
 
 
     public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccessListener, OnFailureListener onFailureListener){
-    MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
     moodEventRepository.deleteMoodEvent(moodEvent.getId(),onSuccessListener,onFailureListener);
 
 

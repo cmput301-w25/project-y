@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/emotion_sadness">
 
     <LinearLayout
@@ -44,6 +45,9 @@
                 android:text="@string/follow"
                 android:layout_gravity="end"
                 android:textColor="@color/white"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
                 android:backgroundTint="@color/follow" />
 
         </LinearLayout>
