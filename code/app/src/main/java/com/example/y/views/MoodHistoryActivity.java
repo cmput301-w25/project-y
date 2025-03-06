@@ -12,12 +12,14 @@ import com.example.y.services.SessionManager;
 
 public class MoodHistoryActivity extends MoodListActivity {
 
+    private String user;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deselectAllHeaderButtons();
 
-        String user = getIntent().getStringExtra("user");
+        user = getIntent().getStringExtra("user");
         if (user == null) {
             try {
                 throw new Exception("MoodHistoryActivity must have string extra 'user'");
@@ -32,5 +34,7 @@ public class MoodHistoryActivity extends MoodListActivity {
             moodListView.setAdapter(controller.getMoodAdapter());
         }, this::handleException);
     }
+
+    public String getUser() { return user; }
 
 }

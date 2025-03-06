@@ -1,32 +1,35 @@
 package com.example.y.models;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.example.y.R;
 
 public enum Emotion {
-    ANGER(R.color.emotion_anger, R.string.emotion_anger),
-    CONFUSION(R.color.emotion_confusion, R.string.emotion_confusion),
-    DISGUST(R.color.emotion_disgust, R.string.emotion_disgust),
-    FEAR(R.color.emotion_fear, R.string.emotion_fear),
-    HAPPINESS(R.color.emotion_happiness, R.string.emotion_happiness),
-    SADNESS(R.color.emotion_sadness, R.string.emotion_sadness),
-    SHAME(R.color.emotion_shame, R.string.emotion_shame),
-    SURPRISE(R.color.emotion_surprise, R.string.emotion_surprise),
-    LAUGHTER(R.color.emotion_laughter, R.string.emotion_laughter);
+    ANGER(0),
+    CONFUSION(1),
+    DISGUST(2),
+    FEAR(3),
+    HAPPINESS(4),
+    SADNESS(5),
+    SHAME(6),
+    SURPRISE(7),
+    LAUGHTER(8);
 
-    private final int color;
-    private final int emoticon;
+    private final int index;
 
-    private Emotion(int color, int emoticon) {
-        this.color = color;
-        this.emoticon = emoticon;
+    private Emotion(int index) {
+        this.index = index;
     }
 
     public int getColor(Context context) {
-        return context.getResources().getColor(color);
+        String[] colorAsStrings = context.getResources().getStringArray(R.array.emotionColorArray);
+        return Color.parseColor(colorAsStrings[index]);
     }
 
-    public String getEmoticon(Context context) { return context.getResources().getString(emoticon); }
+    public String getEmoticon(Context context) {
+        String[] emoticons = context.getResources().getStringArray(R.array.emotionEmoticonArray);
+        return emoticons[index];
+    }
 
 }

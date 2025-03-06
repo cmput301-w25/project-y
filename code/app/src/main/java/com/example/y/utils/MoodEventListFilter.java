@@ -63,7 +63,8 @@ public class MoodEventListFilter {
                 (minDateTime != null && mood.getDateTime().compareTo(minDateTime) < 0) ||
                 (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
                 (emotion != null && mood.getEmotion() != emotion) ||
-                (reasonWhyKeyword != null && !(mood.getReasonWhy().contains(reasonWhyKeyword)));
+                (reasonWhyKeyword != null && mood.getText() != null && !(mood.getText().contains(reasonWhyKeyword))) ||
+                (mood.getText() == null);
     }
 
     public Timestamp getMinDateTime() { return minDateTime; }
