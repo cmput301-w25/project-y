@@ -1,8 +1,6 @@
 package com.example.y.views;
 
-import static android.R.layout.simple_spinner_item;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.example.y.R.id.EditTextUpdateTextExplanation;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -44,6 +42,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -53,7 +52,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         setContentView(R.layout.update_or_delete);
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
-        //https://stackoverflow.com/a/6954561
+        // Taken from https://stackoverflow.com/a/6954561
+        // Taken by Tegen Hilker Readman
+        // Authored By Turtle
+        // Taken on 2025-03-05
         int temp = getIntent().getIntExtra("emotion", -1);
         if(temp >= 0 && temp < Emotion.values().length)
             recievedEmotion = Emotion.values()[temp];
@@ -69,7 +71,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
 
 
-
+        // Debugging stuff
         Log.i("onMoodClick", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getEmotion());
         Log.i("Update", "MoodEvent text: " + moodEventToUpdateOrDelete.getText());
         if (moodEventToUpdateOrDelete == null) {
@@ -82,40 +84,41 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         Log.i("Update", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getEmotion());
         Log.i("Update", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getSocialSituation());
 
+        // Set our controller
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Find the Emotion spinner view, then set it's adapter
         spinnerMood = findViewById(R.id.spinnerMood);
-        ArrayAdapter<Emotion> moodAdapter =  new ArrayAdapter<>(this, simple_spinner_item, Emotion.values());
-        moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<Emotion> moodAdapter =  new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, Emotion.values());
+        moodAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         spinnerMood.setAdapter(moodAdapter);
 
 
         if (moodEventToUpdateOrDelete.getEmotion() == null) {
             Log.e("AHHHHHH", "Pain ");
         }
+/*
        int spinnerPos = moodAdapter.getPosition(moodEventToUpdateOrDelete.getEmotion());
         Log.i("AHH","Help" + spinnerPos);
+ Preload the mood event's emotion when the user goes to edit, so that if they don't switch it, then it will remain the same
+*/
         spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().getIndex());
 
-//        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item,Emotion.values());
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            // It's the same deal with the social situation
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, simple_spinner_item, SocialSituation.values());
-        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, SocialSituation.values());
+        socialAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
         spinnerSocial.setSelection(moodEventToUpdateOrDelete.getSocialSituation().getIndex());
 
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        // Initialize views
-        editTextUpdateTextExplanation = findViewById(EditTextUpdateTextExplanation);
+        // Grab the text explanation view as well as the date
+        editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
         datePicked = findViewById(R.id.datePickerAddMood);
 
-// Set values
-//        if (moodEventToUpdateOrDelete.getReasonWhy() != null && !moodEventToUpdateOrDelete.getReasonWhy().isEmpty()) {
-//            etReason.setText(moodEventToUpdateOrDelete.getReasonWhy());
-//        }
+        // Then this just prefills the date in a nice format
         if (moodEventToUpdateOrDelete.getDateTime() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             datePicked.setText(sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
@@ -123,33 +126,36 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btnBack);
         //https://developer.android.com/training/permissions/requesting
         //ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
-
+        // Update & delete buttons
         Button updateButton = findViewById(R.id.UpdateMoodButton);
         Button deleteButton = findViewById(R.id.deleteMoodButton);
 
-        if (moodEventToUpdateOrDelete.getText() == null) {
-
-            Log.d("HELP", "onCreate: GUHHH ");
-        }
+//        if (moodEventToUpdateOrDelete.getText() == null) {
+//
+//            Log.d("HELP", "onCreate: GUHHH ");
+//        }
+        // Check if it's null
         if (!moodEventToUpdateOrDelete.getText().isEmpty()) {
             editTextUpdateTextExplanation.setText(moodEventToUpdateOrDelete.getText());
         }
 
-//        if (datePicked.getText() != null) {
-//            datePicked.setText(moodEventToUpdateOrDelete.getDateTime().toString());
-//
-//        }
+        // If we wanted the date to chance, then all we have to do it uncomment:
 
         //datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
         //VPreviewImage = findViewById(R.id.IVPreviewImage);
 
 
         // Back button listener
-        btnBack.setOnClickListener(v -> finish());
-        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete, editTextUpdateTextExplanation.getText().toString().trim()));
-        deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete));
+        btnBack.setOnClickListener(v -> finish()); // If they click the back button
+        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete, editTextUpdateTextExplanation.getText().toString().trim())); // If they click update
+        deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete));// If they click delete
     }
 
+    /**
+     *  Handles updating moods
+     * @param moodEventToUpdateOrDelete The mood event to update
+     * @param updateTextExplanation The text explanation of the given mood to update
+     */
     private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String updateTextExplanation) {
         Emotion selectedEmotion = (Emotion) spinnerMood.getSelectedItem();
         moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
@@ -166,6 +172,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handles the deletion of mood events
+     * @param moodEventToUpdateOrDelete The mood event to delete
+     */
     private void onDeleteMoodEvent(MoodEvent moodEventToUpdateOrDelete) {
 
         updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
