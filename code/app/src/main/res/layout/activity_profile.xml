@@ -11,10 +11,18 @@
     android:padding="16dp"
     tools:context=".views.MyProfileActivity">
 
-    <View
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"/>
+
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="255dp" />
 
     <Button
         android:id="@+id/FollowRequests"
@@ -36,7 +44,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:backgroundTint="#FFFFFF"
-        android:text="@string/my_mood_history"
+        android:text="@string/mood_history"
         android:textColor="#000000"
         app:cornerRadius="0dp"
         tools:ignore="VisualLintButtonSize">
@@ -76,6 +84,7 @@
 
 
     </FrameLayout>
+
 
 
 

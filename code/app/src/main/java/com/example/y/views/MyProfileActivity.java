@@ -2,9 +2,9 @@ package com.example.y.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.se.omapi.Session;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.y.R;
 import com.example.y.services.SessionManager;
@@ -13,6 +13,7 @@ public class MyProfileActivity extends BaseActivity {
 
      Button logout;
      Button followRequests;
+     TextView username;
 
      ImageButton followingMoodListButton;
      ImageButton addButton;
@@ -21,7 +22,7 @@ public class MyProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectProfileHeaderButton();
-
+        username = findViewById(R.id.username);
         logout = findViewById(R.id.btnUserProfileLogout);
         addButton = findViewById(R.id.btn_addMoodEventFromProfile);
         followingMoodListButton = findViewById(R.id.btnMoodFollowing);
@@ -38,6 +39,9 @@ public class MyProfileActivity extends BaseActivity {
             intent.putExtra("user", session.getUsername());
             startActivity(intent);
         });
+        // Used to display username
+        String user = session.getUsername();
+        username.setText(user);
     }
 
     private void onAddButtonClick() {

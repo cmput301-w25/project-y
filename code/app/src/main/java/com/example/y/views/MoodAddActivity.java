@@ -24,8 +24,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -42,7 +45,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
     private EditText etExplanation;
-    private EditText datePicked;
+    private TextView datePicked;
     private Uri selectedImageUri;
 
     int SELECT_PICTURE = 200;
@@ -127,7 +130,7 @@ public class MoodAddActivity extends AppCompatActivity {
      * Basically a str -> datetime
      * @param datePicked Edit text of our date picker.
      */
-    private void showDatePickerDialog(EditText datePicked) {
+    private void showDatePickerDialog(TextView datePicked) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);

@@ -50,7 +50,6 @@
     <string name="name">Name</string>
     <string name="logout">Logout</string>
     <string name="addMoodEvent">Add</string>
-    <string name="my_mood_history">My Mood History</string>
     <string name="follow_requests">Follow Requests</string>
     <string name="home">Home</string>
 
@@ -68,6 +67,7 @@
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
+    <string name="mood_history">Mood History</string>
 
     <string-array name="mood_array">
         <item>😡</item>
