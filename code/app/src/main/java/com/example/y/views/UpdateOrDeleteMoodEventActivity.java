@@ -1,5 +1,6 @@
 package com.example.y.views;
 
+import static android.R.layout.simple_spinner_item;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.example.y.R.id.EditTextUpdateTextExplanation;
 
@@ -51,30 +52,60 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
+        Emotion recievedEmotion = null;
+        //https://stackoverflow.com/a/6954561
+        int temp = getIntent().getIntExtra("emotion", -1);
+        if(temp >= 0 && temp < Emotion.values().length)
+            recievedEmotion = Emotion.values()[temp];
+        Log.i("update", String.valueOf(recievedEmotion));
+        moodEventToUpdateOrDelete.setEmotion(recievedEmotion);
 
+        SocialSituation receivedSocial = null;
+
+        int tempSocial = getIntent().getIntExtra("social", -1);
+        if(tempSocial >= 0 && tempSocial < SocialSituation.values().length)
+            receivedSocial = SocialSituation.values()[tempSocial];
+        Log.i("update", String.valueOf(receivedSocial));
+        moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
+
+
+
+        Log.i("onMoodClick", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getEmotion());
+        Log.i("Update", "MoodEvent text: " + moodEventToUpdateOrDelete.getText());
         if (moodEventToUpdateOrDelete == null) {
             Log.e("MoodEventError", "MoodEvent is null!");
-            Toast.makeText(this, "Error loading mood event", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error loading mood event", LENGTH_SHORT).show();
             finish();
             return;
         }
         Log.i("MoodEvent", "MoodEvent loaded: " + moodEventToUpdateOrDelete.getId());
+        Log.i("Update", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getEmotion());
+        Log.i("Update", "MoodEvent emotion: " + moodEventToUpdateOrDelete.getSocialSituation());
 
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood = findViewById(R.id.spinnerMood);
-        ArrayAdapter<Emotion> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Emotion.values());
+        ArrayAdapter<Emotion> moodAdapter =  new ArrayAdapter<>(this, simple_spinner_item, Emotion.values());
         moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(moodAdapter);
-        if (moodEventToUpdateOrDelete.getEmotion() != null) {
-            spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().ordinal());
+
+
+        if (moodEventToUpdateOrDelete.getEmotion() == null) {
+            Log.e("AHHHHHH", "Pain ");
         }
-        moodEventToUpdateOrDelete.setEmotion((Emotion) spinnerMood.getSelectedItem());
+       int spinnerPos = moodAdapter.getPosition(moodEventToUpdateOrDelete.getEmotion());
+        Log.i("AHH","Help" + spinnerPos);
+        spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().getIndex());
+
 //        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item,Emotion.values());
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-        SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
+        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, simple_spinner_item, SocialSituation.values());
+        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSocial.setAdapter(socialAdapter);
+        spinnerSocial.setSelection(moodEventToUpdateOrDelete.getSocialSituation().getIndex());
+
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         // Initialize views
@@ -120,10 +151,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     }
 
     private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String updateTextExplanation) {
-        String selectedEmotion = spinnerMood.getSelectedItem().toString();
-        moodEventToUpdateOrDelete.setEmotion(Emotion.valueOf(selectedEmotion.toUpperCase()));
-        SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
-        updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, updateTextExplanation, socialSituation,
+        Emotion selectedEmotion = (Emotion) spinnerMood.getSelectedItem();
+        moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
+        SocialSituation selectedSocialSituation = (SocialSituation) spinnerSocial.getSelectedItem();
+        updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, updateTextExplanation, selectedSocialSituation,
                 moodEvent -> {
                     Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
                     finish();

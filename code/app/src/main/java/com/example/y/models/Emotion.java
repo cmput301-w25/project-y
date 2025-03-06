@@ -32,4 +32,7 @@ public enum Emotion {
         return emoticons[index];
     }
 
+    public int getIndex() {
+        return index;
+    }
 }
