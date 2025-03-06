@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:background="@color/white">
+    android:descendantFocusability="blocksDescendants"
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,6 +42,9 @@
                 android:minHeight="0dp"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="14dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
                 android:text="@string/follow"
                 android:layout_gravity="end"
                 android:textColor="@color/white"

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+    <Button
+        android:id="@+id/deleteMoodButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_this_mood"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:backgroundTint="@color/black"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/EditMoodButton"
+        android:layout_width="0dp"
+        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:backgroundTint="@color/black"
+        android:layout_gravity="center"
+        android:text="@string/edit_this_mood"
+        android:layout_weight="1"/>
+
+
+</LinearLayout>

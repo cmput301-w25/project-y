@@ -21,4 +21,7 @@ public enum SocialSituation {
         return socialTexts[index];
     }
 
+    public int getIndex() {
+        return index;
+    }
 }
