@@ -1,14 +1,11 @@
 package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
-import static androidx.core.content.ContextCompat.startActivity;
+import static com.example.y.R.id.EditTextUpdateTextExplanation;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,100 +26,124 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
-    Intent intent = getIntent();
-    MoodEvent moodEventToUpdateOrDelete;
 
-    {
-        moodEventToUpdateOrDelete = (MoodEvent) intent.getSerializableExtra("mood_event");
-    }
 
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
-    private EditText etReason;
-    private EditText etExplanation;
-    private EditText datePicked;
+    private EditText editTextUpdateTextExplanation;
+    private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
-    public UpdateOrDeleteMoodEventActivity(MoodEvent toEditOrDelete) {
-        this.moodEventToUpdateOrDelete = toEditOrDelete;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
 
         // Set dark mode before creating views
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
+        MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
+
+        if (moodEventToUpdateOrDelete == null) {
+            Log.e("MoodEventError", "MoodEvent is null!");
+            Toast.makeText(this, "Error loading mood event", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Log.i("MoodEvent", "MoodEvent loaded: " + moodEventToUpdateOrDelete.getId());
 
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood = findViewById(R.id.spinnerMood);
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this,
-                support_simple_spinner_dropdown_item,
-                Emotion.values());
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<Emotion> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Emotion.values());
+        moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMood.setAdapter(moodAdapter);
+        if (moodEventToUpdateOrDelete.getEmotion() != null) {
+            spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().ordinal());
+        }
+        moodEventToUpdateOrDelete.setEmotion((Emotion) spinnerMood.getSelectedItem());
+//        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item,Emotion.values());
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        etReason = findViewById(R.id.etReason);
-        etExplanation = findViewById(R.id.etExplanation);
+        // Initialize views
+        editTextUpdateTextExplanation = findViewById(EditTextUpdateTextExplanation);
         datePicked = findViewById(R.id.datePickerAddMood);
+
+// Set values
+//        if (moodEventToUpdateOrDelete.getReasonWhy() != null && !moodEventToUpdateOrDelete.getReasonWhy().isEmpty()) {
+//            etReason.setText(moodEventToUpdateOrDelete.getReasonWhy());
+//        }
+        if (moodEventToUpdateOrDelete.getDateTime() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            datePicked.setText(sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
+        }
         ImageButton btnBack = findViewById(R.id.btnBack);
         //https://developer.android.com/training/permissions/requesting
-        ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
+        //ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
 
         Button updateButton = findViewById(R.id.UpdateMoodButton);
         Button deleteButton = findViewById(R.id.deleteMoodButton);
-        if (!moodEventToUpdateOrDelete.getReasonWhy().isEmpty()) {
-            etReason.setText(moodEventToUpdateOrDelete.getReasonWhy());
+
+        if (moodEventToUpdateOrDelete.getText() == null) {
+
+            Log.d("HELP", "onCreate: GUHHH ");
         }
         if (!moodEventToUpdateOrDelete.getText().isEmpty()) {
-            etExplanation.setText(moodEventToUpdateOrDelete.getText());
+            editTextUpdateTextExplanation.setText(moodEventToUpdateOrDelete.getText());
         }
 
-        datePicked.setText(moodEventToUpdateOrDelete.getDateTime().toString());
+//        if (datePicked.getText() != null) {
+//            datePicked.setText(moodEventToUpdateOrDelete.getDateTime().toString());
+//
+//        }
 
+        //datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
+        //VPreviewImage = findViewById(R.id.IVPreviewImage);
 
-        datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
-        IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish());
-        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete,etReason.getText().toString().trim(),etExplanation.getText().toString().trim(),socialSituation));
+        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete, editTextUpdateTextExplanation.getText().toString().trim()));
         deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete));
     }
 
-    private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String reason, String explanation, SocialSituation socialSituation) {
-        updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, reason, explanation, socialSituation,
+    private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String updateTextExplanation) {
+        String selectedEmotion = spinnerMood.getSelectedItem().toString();
+        moodEventToUpdateOrDelete.setEmotion(Emotion.valueOf(selectedEmotion.toUpperCase()));
+        SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
+        updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, updateTextExplanation, socialSituation,
                 moodEvent -> {
                     Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                    finish();
                 },
                 e -> {
                     Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-                    });
+                });
+
 
     }
 
     private void onDeleteMoodEvent(MoodEvent moodEventToUpdateOrDelete) {
 
-    updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
-        Toast.makeText(this,"Mood Deleted!" + deletedId,LENGTH_SHORT).show();
-        finish();
+        updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
+            Toast.makeText(this, "Mood Deleted!" + deletedId, LENGTH_SHORT).show();
+            finish();
         }, e -> {
-                Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
 
-            });
+        });
     }
 
     /**
@@ -145,11 +167,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
     // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
-
-
-
-
-
 
 
 }

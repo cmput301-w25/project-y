@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#000000"
+        android:descendantFocusability="blocksDescendants"
         android:padding="4dp">
 
         <LinearLayout
@@ -20,6 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
             android:gravity="center_vertical">
 
             <TextView
@@ -57,13 +59,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:orientation="horizontal"
+            android:descendantFocusability="blocksDescendants"
             android:background="#80000000" >
 
             <TextView
                 android:id="@+id/emoticon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/emotion_happiness"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"
                 android:contentDescription="@string/emoticon"
@@ -90,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
             android:background="#80000000"
             android:orientation="horizontal"
             android:layout_gravity="bottom"
@@ -124,6 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
             android:text="@string/reason"
             android:textSize="14sp"
             android:textColor="#FFFFFF"

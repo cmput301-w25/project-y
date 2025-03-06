@@ -1,7 +1,6 @@
 package com.example.y.controllers;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
@@ -25,27 +24,35 @@ public class UpdateOrDeleteMoodEventController {
         return session.getUsername();
     }
         //TODO: fix the signature of social situation, once the enum version is pushed
-    public void onUpdateMoodEvent(MoodEvent moodEvent, String reason, String explanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
+    public void onUpdateMoodEvent(MoodEvent moodEvent, String textExplanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
 
         String posterUsername = getPosterUsername();
 
         if (posterUsername == null || posterUsername.isEmpty()) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
         }
-        if (reason.length() > 20) {
+        if (textExplanation.length() > 20) {
             onFailureListener.onFailure(new IllegalArgumentException("Reason should not exceed 20 characters"));
             return;
         }
 
-        if (!reason.isEmpty()) {
-            moodEvent.setReasonWhy(reason);
+        if (!textExplanation.isEmpty()) {
+            moodEvent.setText(textExplanation);
 
         }
-        if (!explanation.isEmpty()) {
-            moodEvent.setText(explanation);
-        }
+
         if (socialSituation != null) {
             moodEvent.setSocialSituation(socialSituation);
+        }
+
+        if (moodEvent.getText() != null) {
+            if (moodEvent.getText().length() > 20) {
+                onFailureListener.onFailure(new Exception("Text length must be at most 20 characters"));
+            }
+            int textWordCount = moodEvent.getText().isEmpty() ? 0 : moodEvent.getText().split("\\s+").length;
+            if (textWordCount > 3) {
+                onFailureListener.onFailure(new Exception("Text length must be at most 3 words"));
+            }
         }
 
         moodEventRepository.updateMoodEvent(moodEvent, onSuccessListener,onFailureListener);
@@ -54,7 +61,6 @@ public class UpdateOrDeleteMoodEventController {
 
     public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccessListener, OnFailureListener onFailureListener){
     moodEventRepository.deleteMoodEvent(moodEvent.getId(),onSuccessListener,onFailureListener);
-
 
     }
 }

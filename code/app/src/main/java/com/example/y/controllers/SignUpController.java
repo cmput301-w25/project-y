@@ -53,6 +53,11 @@ public class SignUpController {
             return;
         }
 
+        int textWordCount = username.isEmpty() ? 0 : username.split("\\s+").length;
+        if (textWordCount > 1) {
+            onFailureListener.onFailure(new Exception("Username must be 1 word"));
+        }
+
         // If signup is correct
         authManager.signUp(username, password, name, email, onSuccessListener, onFailureListener);
     }

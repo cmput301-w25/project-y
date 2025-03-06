@@ -19,10 +19,8 @@
     <color name="follow">#DC826B</color>
     <color name="following">#B9B9B9</color>
     <color name="requested">#B9B9B9</color>
-
-
-
-
+    <color name="red">#F61C0D</color>
+    <color name="green">#00EF23</color>
 
 
 </resources>
