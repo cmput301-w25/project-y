@@ -36,6 +36,8 @@
         <activity
             android:name=".views.MoodAddActivity"
             android:exported="true" />
+        <activity android:name=".views.UpdateOrDeleteMoodEventActivity"
+            android:exported="true"/>
         <activity
             android:name=".views.DiscoverActivity"
             android:exported="false" />

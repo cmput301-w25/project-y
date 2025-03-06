@@ -14,16 +14,31 @@
     <string name="emotion_laughter_emoji">💀</string>
 
     <!-- emoticon -->
+    <string-array name="emotionEmoticonArray">
+        <item>( •`Δ´•)!</item>
+        <item>( @_@)?</item>
+        <item>( ¬＿¬)</item>
+        <item>(( •Д•))</item>
+        <item>( ｡•ᴗ•｡)</item>
+        <item>( ಥ╭╮ಥ)</item>
+        <item>( ｡•́~•̀｡)</item>
+        <item>( ⊙_⊙)!</item>
+        <item>( ≧∇≦)</item>
+    </string-array>
 
-    <string name="emotion_anger">( •`Δ´•)!</string>
-    <string name="emotion_confusion">( @_@)?</string>
-    <string name="emotion_disgust">( ¬＿¬)</string>
-    <string name="emotion_fear">(( •Д•))</string>
-    <string name="emotion_happiness">( ｡•ᴗ•｡)</string>
-    <string name="emotion_sadness">( ಥ╭╮ಥ)</string>
-    <string name="emotion_shame">( ｡•́~•̀｡)</string>
-    <string name="emotion_surprise">( ⊙_⊙)!</string>
-    <string name="emotion_laughter">( ≧∇≦)</string>
+    <!-- Emotion Colours -->
+    <string-array name="emotionColorArray">
+        <item>#E82828</item>
+        <item>#DC326C</item>
+        <item>#5C904E</item>
+        <item>#A147D9</item>
+        <item>#F2E46D</item>
+        <item>#3C66A2</item>
+        <item>#4C4C4C</item>
+        <item>#7C0909</item>
+        <item>#F28E3D</item>
+    </string-array>
+
 
     <!-- Values -->
     <string name="email">Email</string>
@@ -68,6 +83,9 @@
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
+    <string name="delete_this_mood">Delete this mood</string>
+    <string name="edit_this_mood">Edit this mood.</string>
+    <string name="update_this_mood">Update this mood</string>
 
     <string-array name="mood_array">
         <item>😡</item>
