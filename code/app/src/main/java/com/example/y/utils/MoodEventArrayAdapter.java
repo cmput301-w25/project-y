@@ -40,7 +40,6 @@ import java.util.Locale;
  */
 public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
-    private boolean shouldHideButton;
     private final ArrayList<MoodEvent> moodEvents;
     private final Context context;
     private final String user;
@@ -80,9 +79,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Set button style (or fix style after update)
         Button followBtn = view.findViewById(R.id.btnFollowFromMood);
 
-        // Hide button if looking at your own mood history
+        // Hide button if looking at your own mood
         SessionManager sessionManager = new SessionManager(context);
-        if (context instanceof MoodHistoryActivity && ((MoodHistoryActivity) context).getUser().equals(sessionManager.getUsername())) {
+        if (mood.getPosterUsername().equals(sessionManager.getUsername())) {
             followBtn.setVisibility(View.GONE);
         }
 

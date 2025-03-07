@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -249,6 +250,32 @@ public class UserRepository extends GenericRepository<UserListener> {
 
             } else onFailure.onFailure(new Exception("Failed to fetch all users", task.getException()));
         });
+    }
+
+    /**
+     * Gets the number of followers of a user.
+     * @param username
+     *      Username of the user to count followers for.
+     * @param onSuccess
+     *      Success callback function to which the follower count is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getFollowerCount(String username, OnSuccessListener<Integer> onSuccess, OnFailureListener onFailure) {
+        db.collection(FollowRepository.FOLLOW_COLLECTION)
+                .whereEqualTo("followedUsername", username)
+                .count()
+                .get(AggregateSource.SERVER)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        try {
+                            Integer followerCount = Math.toIntExact(task.getResult().getCount());
+                            onSuccess.onSuccess(followerCount);
+                        } catch (ArithmeticException e) {
+                            onFailure.onFailure(new Exception("Follower count is too large"));
+                        }
+                    } else onFailure.onFailure(new Exception("Failed to count number of followers", task.getException()));
+                });
     }
 
     /**
