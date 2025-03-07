@@ -1,7 +1,6 @@
 package com.example.y.controllers;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.FollowRepository;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 
 public class MoodHistoryController extends MoodListController {
 
-    private String poster;
+    private final String poster;
 
     /**
      * Constructor
@@ -27,6 +26,7 @@ public class MoodHistoryController extends MoodListController {
      */
     public MoodHistoryController(Context context, String poster, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
+        this.poster = poster;
 
         MoodEventRepository moodEventRepo = MoodEventRepository.getInstance();
         FollowRepository followRepo = FollowRepository.getInstance();
@@ -51,9 +51,9 @@ public class MoodHistoryController extends MoodListController {
                     initializeArrayAdapter(moodEvents, followStatus);
                     onSuccess.onSuccess(null);
 
-                }, this::handleException);
-            }, this::handleException);
-        }, this::handleException);
+                }, onFailure);
+            }, onFailure);
+        }, onFailure);
     }
 
     @Override
@@ -66,7 +66,4 @@ public class MoodHistoryController extends MoodListController {
         return poster.equals(this.poster);
     }
 
-    private void handleException(Exception e) {
-        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
 }
