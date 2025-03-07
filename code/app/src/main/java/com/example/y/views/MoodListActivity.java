@@ -2,6 +2,7 @@ package com.example.y.views;
 
 import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,8 @@ import com.example.y.models.Emotion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 
@@ -38,6 +41,10 @@ public class MoodListActivity extends BaseActivity {
         // Filter functionality
         initializeEmotionSpinner();
         initializeReasonWhyKeywordFilter();
+    }
+
+    private void initializeMinDateFilter() {
+
     }
 
     private void initializeEmotionSpinner() {
@@ -107,6 +114,19 @@ public class MoodListActivity extends BaseActivity {
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void showDatePickerDialog(EditText datePicked) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,(view, selectedYear, selectedMonth, selectedDay) -> {
+            String formattedDate = String.format(Locale.getDefault(),"%02d-%02d-%04d",selectedDay,selectedMonth + 1,selectedYear);
+            datePicked.setText(formattedDate);
+        }, year, month, day);
+        datePickerDialog.show();
     }
 
     /**
