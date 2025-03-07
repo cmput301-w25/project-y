@@ -286,6 +286,15 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 .addOnFailureListener(e -> onFailure.onFailure(new Exception("Failed to upload image to firebase storage", e)));
     }
 
+    /**
+     * Downloads an image from firebase storage
+     * @param photoUrl
+     *      Download URL of the image.
+     * @param onSuccess
+     *      Success callback function to which the image's bitmap is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
     public void downloadImage(String photoUrl, OnSuccessListener<Bitmap> onSuccess, OnFailureListener onFailure) {
         if (photoUrl == null || photoUrl.isEmpty()) return;
 

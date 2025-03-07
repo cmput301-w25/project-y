@@ -2,7 +2,9 @@ package com.example.y.services;
 
 import android.content.Context;
 
+import com.example.y.models.Follow;
 import com.example.y.models.User;
+import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -94,7 +96,17 @@ public class AuthManager {
 
                         // Add user
                         UserRepository userRepo = UserRepository.getInstance();
-                        userRepo.addUser(user, onSuccess, onFailure);
+                        userRepo.addUser(user, newUser -> {
+
+                            // Make the new user follow themselves
+                            Follow reflexiveFollow = new Follow();
+                            reflexiveFollow.setFollowerUsername(newUser.getUsername());
+                            reflexiveFollow.setFollowedUsername(newUser.getUsername());
+                            FollowRepository.getInstance().addFollow(reflexiveFollow, follow -> {
+                                onSuccess.onSuccess(newUser);
+                            }, onFailure);
+
+                        }, onFailure);
                     }
                 })
                 .addOnFailureListener(e -> {
