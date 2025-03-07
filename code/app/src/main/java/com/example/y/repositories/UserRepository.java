@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,9 +34,9 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     public enum FollowStatus { FOLLOWING, REQUESTED, NEITHER };
     private static UserRepository instance;  // Singleton instance
+    private FirebaseFirestore db;
     public static final String USER_COLLECTION = "users";
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference usersRef = db.collection(USER_COLLECTION);
+    private final CollectionReference usersRef;
 
     /**
      * Listens for a user being added.
@@ -49,10 +50,45 @@ public class UserRepository extends GenericRepository<UserListener> {
         void onUserAdded(User newUser);
     }
 
-    /**
-     * Initialize the user snapshot listener
-     */
     private UserRepository() {
+        db = FirebaseFirestore.getInstance();
+        usersRef = db.collection(USER_COLLECTION);
+        startListening();
+    }
+
+    /**
+     * @param firestore
+     *      Firestore db instance.
+     */
+    private UserRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        usersRef = db.collection(USER_COLLECTION);
+        startListening();
+    }
+
+    /**
+     * Gets singleton instance of this repository
+     * @return
+     *      Instance of UserRepository
+     */
+    public static synchronized UserRepository getInstance() {
+        if (instance == null) instance = new UserRepository();
+        return instance;
+    }
+
+    /**
+     * Updates the singleton instance with a new db
+     * @param firestore
+     *      Testing db instance.
+     */
+    public static void setInstanceForTesting(FirebaseFirestore firestore) {
+        instance = new UserRepository(firestore);
+    }
+
+    /**
+     * Listen for snapshots and notify listeners.
+     */
+    public void startListening() {
         // Listen for real-time updates and notify all listeners
         usersRef.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
@@ -74,16 +110,6 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Gets singleton instance of this repository
-     * @return
-     *      Instance of UserRepository
-     */
-    public static synchronized UserRepository getInstance() {
-        if (instance == null) instance = new UserRepository();
-        return instance;
-    }
-
-    /**
      * Add a user to the database.
      * @param user
      *      User to be added.
@@ -93,6 +119,7 @@ public class UserRepository extends GenericRepository<UserListener> {
      *      Failure callback function.
      */
     public void addUser(User user, OnSuccessListener<User> onSuccess, OnFailureListener onFailure) {
+        user.setJoinDateTime(Timestamp.now());
         usersRef.document(user.getUsername())
                 .set(user)
                 .addOnSuccessListener(doc -> onSuccess.onSuccess(user))
