@@ -25,6 +25,8 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
+import com.example.y.views.FollowingMoodEventListActivity;
+import com.example.y.views.MoodHistoryActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -38,6 +40,7 @@ import java.util.Locale;
  */
 public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
+    private boolean shouldHideButton;
     private final ArrayList<MoodEvent> moodEvents;
     private final Context context;
     private final String user;
@@ -76,6 +79,13 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         // Set button style (or fix style after update)
         Button followBtn = view.findViewById(R.id.btnFollowFromMood);
+
+        // Hide button if looking at your own mood history
+        SessionManager sessionManager = new SessionManager(context);
+        if (context instanceof MoodHistoryActivity && ((MoodHistoryActivity) context).getUser().equals(sessionManager.getUsername())) {
+            followBtn.setVisibility(View.GONE);
+        }
+
         String poster = mood.getPosterUsername();
         if (followStatus.get(poster) == UserRepository.FollowStatus.FOLLOWING) {
             followBtn.setText(context.getString(R.string.following));
