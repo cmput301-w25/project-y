@@ -10,9 +10,10 @@
 
     <ImageButton
         android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="8dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="60dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/back"
         android:scaleType="fitCenter"
