@@ -29,7 +29,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     /**
      * Starts controller and gets follow requests sent to current user
      * @param context the context
-     * @param onSuccess Callback for sucessful initialization
+     * @param onSuccess Callback for successful initialization
      * @param onFailure Callback for initialization failure
      */
     public FollowRequestController(Context context, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
@@ -132,6 +132,10 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
         }
     }
 
+    /**
+     * Returns the adapter for the list of follow requests
+     * @return FollowRequestArrayAdapter
+     */
     public FollowRequestArrayAdapter getAdapter() {
         return adapter;
     }
