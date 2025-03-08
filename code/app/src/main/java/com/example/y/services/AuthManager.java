@@ -20,12 +20,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public class AuthManager {
 
-    private final CollectionReference usersRef;
     private final SessionManager sessionManager;
 
     public AuthManager(Context context) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        usersRef = db.collection(UserRepository.USER_COLLECTION);
         sessionManager = new SessionManager(context);
     }
 
@@ -45,26 +42,14 @@ public class AuthManager {
             OnFailureListener onFailure
     ) {
         String hashedPassword = hashPassword(password);
-        usersRef.document(username)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        User user = doc.toObject(User.class);
-                        if (user.getHashedPassword().equals(hashedPassword)) {
-                            sessionManager.saveSession(username);
-                            onSuccess.onSuccess(doc.toObject(User.class));
-
-                        } else {
-                            onFailure.onFailure(new Exception("Invalid password"));
-                        }
-                    } else {
-                        onFailure.onFailure(new Exception("User does not exist: " + username));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    onFailure.onFailure(
-                            new Exception("User document retrieval failed: " + e.getMessage()));
-                });
+        UserRepository.getInstance().doesUserExist(username, retrievedUser -> {
+            if (retrievedUser != null) {
+                if (retrievedUser.getHashedPassword().equals(hashedPassword)) {
+                    sessionManager.saveSession(retrievedUser.getUsername());
+                    onSuccess.onSuccess(retrievedUser);
+                } else onFailure.onFailure(new Exception("Invalid password"));
+            } else onFailure.onFailure(new Exception("User does not exist: " + username));
+        }, onFailure);
     }
 
     /**
@@ -84,35 +69,29 @@ public class AuthManager {
             OnSuccessListener<User> onSuccess,
             OnFailureListener onFailure
     ) {
-        usersRef.document(username)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        // If the user exists already then prevent sign up
-                        onFailure.onFailure(new Exception("User " + username + " already exists."));
-                    } else {
-                        // Create user
-                        User user = new User(username, hashPassword(password), name, email);
+        UserRepository.getInstance().doesUserExist(username, retrievedUser -> {
+            if (retrievedUser != null) {
+                // If the user exists already then prevent sign up
+                onFailure.onFailure(new Exception("User " + retrievedUser.getUsername() + " already exists."));
+            } else {
+                // Create user
+                User user = new User(username, hashPassword(password), name, email);
 
-                        // Add user
-                        UserRepository userRepo = UserRepository.getInstance();
-                        userRepo.addUser(user, newUser -> {
+                // Add user
+                UserRepository userRepo = UserRepository.getInstance();
+                userRepo.addUser(user, newUser -> {
 
-                            // Make the new user follow themselves
-                            Follow reflexiveFollow = new Follow();
-                            reflexiveFollow.setFollowerUsername(newUser.getUsername());
-                            reflexiveFollow.setFollowedUsername(newUser.getUsername());
-                            FollowRepository.getInstance().addFollow(reflexiveFollow, follow -> {
-                                onSuccess.onSuccess(newUser);
-                            }, onFailure);
+                    // Make the new user follow themselves
+                    Follow reflexiveFollow = new Follow();
+                    reflexiveFollow.setFollowerUsername(newUser.getUsername());
+                    reflexiveFollow.setFollowedUsername(newUser.getUsername());
+                    FollowRepository.getInstance().addFollow(reflexiveFollow, follow -> {
+                        onSuccess.onSuccess(newUser);
+                    }, onFailure);
 
-                        }, onFailure);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    onFailure.onFailure(
-                            new Exception("Unable to check if user exists: " + e.getMessage()));
-                });
+                }, onFailure);
+            }
+        }, onFailure);
     }
 
     /**
@@ -135,4 +114,5 @@ public class AuthManager {
             return null;
         }
     }
+
 }

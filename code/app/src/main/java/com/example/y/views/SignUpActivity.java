@@ -56,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
         String email = emailField.getText().toString().trim();
         String confirmEmail = confirmEmailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
-        String confirmPassword = passwordField.getText().toString().trim();
+        String confirmPassword = confirmPasswordField.getText().toString().trim();
 
         signUpController.onSignUpUser(email, confirmEmail, name, username, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();

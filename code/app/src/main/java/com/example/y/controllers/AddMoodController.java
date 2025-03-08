@@ -60,12 +60,11 @@ public class AddMoodController {
             }
         }
         //      photoURL (under 65,536 KB)
-//        if (photoUri != null && getImageSize(photoUri) >= 65536) {
-//            onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
-//        }
+        if (photoUri != null && getImageSize(photoUri) >= 65536) {
+            onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
+        }
         //      location
         //          Not sure if this needs to be validated
-
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();

@@ -3,8 +3,6 @@ package com.example.y.services;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.y.models.User;
-
 /**
  * Stores the log in session in a local cache.
  */
