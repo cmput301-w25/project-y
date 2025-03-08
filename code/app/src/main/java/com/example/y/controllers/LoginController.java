@@ -11,6 +11,10 @@ public class LoginController {
 
     private final AuthManager authManager;
 
+    /**
+     * Controller for handling user login functionality.
+     * @param context context
+     */
     public LoginController(Context context) {
         this.authManager = new AuthManager(context);
     }

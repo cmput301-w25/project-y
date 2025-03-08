@@ -17,6 +17,9 @@ public class MoodEventListFilter {
     private Emotion emotion = null;
     private String reasonWhyKeyword = null;
 
+    /**
+     * Filter list of mood events based on criteria
+     */
     public MoodEventListFilter() {
         minDateTime = null;
         maxDateTime = null;

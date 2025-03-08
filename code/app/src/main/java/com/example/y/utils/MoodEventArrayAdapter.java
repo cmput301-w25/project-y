@@ -218,6 +218,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         return view;
     }
 
+    /**
+     * Check if there is a image in mood event
+     * @param position The position of the item within the adapter's data set whose view type we
+     *        want.
+     * @return If there is a image url True, else false
+     */
     @Override
     public int getItemViewType(int position) {
         // Ensure the correct layout is the one being showed.
@@ -225,6 +231,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         return mood.getPhotoURL() == null ? 0 : 1;
     }
 
+    /**
+     * Returns number of different layouts
+     *  0 if no photo
+     *  1 if there is a photo
+     * @return number of view types used
+     */
     @Override
     public int getViewTypeCount() {
         return 2;
