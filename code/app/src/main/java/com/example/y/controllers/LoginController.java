@@ -41,6 +41,4 @@ public class LoginController {
         authManager.login(username, password, onSuccess, onFailure);
     }
 
-    public void setAuthManager(AuthManager authManager) { this.authManager = authManager; }
-
 }

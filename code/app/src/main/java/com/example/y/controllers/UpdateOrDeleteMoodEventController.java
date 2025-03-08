@@ -60,6 +60,7 @@ public class UpdateOrDeleteMoodEventController {
             onFailure.onFailure(new Exception("Trigger length cannot exceed 300"));
             return;
         }
+
         MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
     }
 
