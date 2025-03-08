@@ -91,9 +91,8 @@ public class AuthManager {
                         // If the user exists already then prevent sign up
                         onFailure.onFailure(new Exception("User " + username + " already exists."));
                     } else {
-                        // Get current timestamp, create user
-                        Timestamp now = Timestamp.now();
-                        User user = new User(username, hashPassword(password), name, email, now);
+                        // Create user
+                        User user = new User(username, hashPassword(password), name, email);
 
                         // Add user
                         UserRepository userRepo = UserRepository.getInstance();

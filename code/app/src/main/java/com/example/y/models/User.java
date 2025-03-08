@@ -17,6 +17,13 @@ public class User implements Serializable {
 
     public User() {};
 
+    public User(String username, String hashedPassword, String name, String email) {
+        this.username = username;
+        this.hashedPassword = hashedPassword;
+        this.name = name;
+        this.email = email;
+    }
+
     public User(String username, String hashedPassword, String name, String email, Timestamp joinDateTime) {
         this.username = username;
         this.hashedPassword = hashedPassword;
