@@ -13,15 +13,20 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.HashMap;
 
+/**
+ * Controller to display the mood history of a specific user
+ */
 public class MoodHistoryController extends MoodListController {
+
     private final String poster;
 
-
     /**
-     * Constructor
+     * Initializes the MoodHistoryController.
      *
-     * @param context Current context
-     * @param poster  Username of the user to get mood history for
+     * @param context   The application context.
+     * @param poster    The username of the user whose mood history is being displayed.
+     * @param onSuccess Callback for successful initialization.
+     * @param onFailure Callback for initialization failure.
      */
     public MoodHistoryController(Context context, String poster, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
@@ -55,11 +60,25 @@ public class MoodHistoryController extends MoodListController {
         }, onFailure);
     }
 
+    /**
+     * Check if mood event is owned by user
+     * @param mood
+     *      Mood event to check for.
+     * @return
+     *      True if mood event belongs to target user, else false
+     */
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
         return mood.getPosterUsername().equals(poster);
     }
 
+    /**
+     * Checks if a poster's mood events are allowed to be displayed
+     * @param poster
+     *      Username of poster to check for.
+     * @return
+     *      Return True if target user, else it is false
+     */
     @Override
     public boolean isPosterAllowed(String poster) {
         return poster.equals(this.poster);
