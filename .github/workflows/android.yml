@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -23,5 +23,5 @@ jobs:
       run: chmod +x gradlew
       working-directory: code
     - name: Build with Gradle
-      working-directory: ./code
       run: ./gradlew build
+      working-directory: code
