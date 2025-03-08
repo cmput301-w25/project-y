@@ -1,16 +1,7 @@
 package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
-
 import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
-
-import com.example.y.R;
-import com.example.y.controllers.AddMoodController;
-import com.example.y.models.Emotion;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -25,7 +16,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.y.R;
+import com.example.y.controllers.AddMoodController;
+import com.example.y.models.Emotion;
+import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
+import com.example.y.services.SessionManager;
+import com.google.firebase.Timestamp;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -51,7 +51,7 @@ public class MoodAddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addmoodform);
+        setContentView(R.layout.add_mood);
         SessionManager session = new SessionManager(this);
 
         addMoodController = new AddMoodController(this);
