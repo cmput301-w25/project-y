@@ -4,8 +4,8 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 import android.util.Log;
 
-import com.example.y.models.FollowRequest;
 import com.example.y.repositories.UserRepository.UserListener;
+import com.example.y.models.FollowRequest;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.User;

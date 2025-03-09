@@ -29,7 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ImageButton mapBtn;
     private ImageButton profileBtn;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

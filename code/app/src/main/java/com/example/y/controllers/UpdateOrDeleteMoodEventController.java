@@ -10,25 +10,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class UpdateOrDeleteMoodEventController {
-    SessionManager session;
-    MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
-    public UpdateOrDeleteMoodEventController(Context context){
 
+    private final SessionManager session;
+
+    public UpdateOrDeleteMoodEventController(Context context){
         session = new SessionManager(context);
     }
-    /***
-     *
-     * @return String OP's Username
-     */
-    public String getPosterUsername() {
-        return session.getUsername();
-    }
+
         //TODO: fix the signature of social situation, once the enum version is pushed
     public void onUpdateMoodEvent(MoodEvent moodEvent, String textExplanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
-
-        String posterUsername = getPosterUsername();
-
-        if (posterUsername == null || posterUsername.isEmpty()) {
+        if (session.getUsername() == null || session.getUsername().isEmpty()) {
             onFailureListener.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
         }
         if (textExplanation.length() > 20) {
@@ -38,7 +29,6 @@ public class UpdateOrDeleteMoodEventController {
 
         if (!textExplanation.isEmpty()) {
             moodEvent.setText(textExplanation);
-
         }
 
         if (socialSituation != null) {
@@ -54,13 +44,11 @@ public class UpdateOrDeleteMoodEventController {
                 onFailureListener.onFailure(new Exception("Text length must be at most 3 words"));
             }
         }
-
-        moodEventRepository.updateMoodEvent(moodEvent, onSuccessListener,onFailureListener);
+        MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccessListener,onFailureListener);
     }
-
 
     public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccessListener, OnFailureListener onFailureListener){
-    moodEventRepository.deleteMoodEvent(moodEvent.getId(),onSuccessListener,onFailureListener);
-
+        MoodEventRepository.getInstance().deleteMoodEvent(moodEvent.getId(),onSuccessListener,onFailureListener);
     }
+
 }

@@ -2,7 +2,6 @@ package com.example.y.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +24,6 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
-import com.example.y.views.FollowingMoodEventListActivity;
-import com.example.y.views.MoodHistoryActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 

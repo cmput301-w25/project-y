@@ -35,6 +35,18 @@ public class MoodEvent implements Serializable,Parcelable {
     private String photoURL;
     private GeoPoint location;
 
+    public static final Creator<MoodEvent> CREATOR = new Creator<MoodEvent>() {
+        @Override
+        public MoodEvent createFromParcel(Parcel in) {
+            return new MoodEvent(in);
+        }
+
+        @Override
+        public MoodEvent[] newArray(int size) {
+            return new MoodEvent[size];
+        }
+    };
+
     public MoodEvent() {};
 
     public MoodEvent(String id, Timestamp creationDateTime, String posterUsername, Timestamp dateTime, Emotion emotion) {
@@ -55,19 +67,6 @@ public class MoodEvent implements Serializable,Parcelable {
         reasonWhy = in.readString();
         photoURL = in.readString();
     }
-
-
-    public static final Creator<MoodEvent> CREATOR = new Creator<MoodEvent>() {
-        @Override
-        public MoodEvent createFromParcel(Parcel in) {
-            return new MoodEvent(in);
-        }
-
-        @Override
-        public MoodEvent[] newArray(int size) {
-            return new MoodEvent[size];
-        }
-    };
 
     @Exclude
     public String getId() {

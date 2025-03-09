@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;

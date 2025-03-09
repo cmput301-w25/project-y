@@ -16,8 +16,14 @@ import com.example.y.controllers.SignUpController;
 import com.example.y.services.AuthManager;
 
 public class SignUpActivity extends AppCompatActivity {
+
     private SignUpController signUpController;
-    private EditText nameField, emailField, confirmEmailField, usernameField, passwordField, confirmPasswordField;
+    private EditText nameField;
+    private EditText emailField;
+    private EditText confirmEmailField;
+    private EditText usernameField;
+    private EditText passwordField;
+    private EditText confirmPasswordField;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
