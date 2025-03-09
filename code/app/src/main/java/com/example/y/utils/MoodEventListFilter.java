@@ -15,20 +15,20 @@ public class MoodEventListFilter {
     private Timestamp minDateTime = null;
     private Timestamp maxDateTime = null;
     private Emotion emotion = null;
-    private String reasonWhyKeyword = null;
+    private String reasonWhyTextKeyword = null;
 
     public MoodEventListFilter() {
         minDateTime = null;
         maxDateTime = null;
         emotion = null;
-        reasonWhyKeyword = null;
+        reasonWhyTextKeyword = null;
     }
 
-    public MoodEventListFilter(Timestamp minDateTime, Timestamp maxDateTime, Emotion emotion, String reasonWhyKeyword) {
+    public MoodEventListFilter(Timestamp minDateTime, Timestamp maxDateTime, Emotion emotion, String reasonWhyTextKeyword) {
         this.minDateTime = minDateTime;
         this.maxDateTime = maxDateTime;
         this.emotion = emotion;
-        this.reasonWhyKeyword = reasonWhyKeyword;
+        this.reasonWhyTextKeyword = reasonWhyTextKeyword;
     }
 
     /**
@@ -63,7 +63,7 @@ public class MoodEventListFilter {
                 (minDateTime != null && mood.getDateTime().compareTo(minDateTime) < 0) ||
                 (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
                 (emotion != null && mood.getEmotion() != emotion) ||
-                (reasonWhyKeyword != null && mood.getText() != null && !(mood.getText().contains(reasonWhyKeyword))) ||
+                (reasonWhyTextKeyword != null && mood.getText() != null &&!(mood.getText().toLowerCase().contains(reasonWhyTextKeyword.toLowerCase()))) ||
                 (mood.getText() == null);
     }
 
@@ -85,10 +85,10 @@ public class MoodEventListFilter {
 
     public void clearEmotion() { emotion = null; }
 
-    public String getReasonWhyKeyword() { return reasonWhyKeyword; }
+    public String getReasonWhyTextKeyword() { return reasonWhyTextKeyword; }
 
-    public void setReasonWhyKeyword(String reasonWhyKeyword) { this.reasonWhyKeyword = reasonWhyKeyword; }
+    public void setReasonWhyTextKeyword(String reasonWhyTextKeyword) { this.reasonWhyTextKeyword = reasonWhyTextKeyword; }
 
-    public void clearReasonWhyKeyword() { reasonWhyKeyword = null; }
+    public void clearReasonWhyKeyword() { reasonWhyTextKeyword = null; }
 
 }

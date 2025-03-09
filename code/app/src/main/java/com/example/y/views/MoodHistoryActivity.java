@@ -28,19 +28,12 @@ public class MoodHistoryActivity extends MoodListActivity {
                 throw new RuntimeException(e);
             }
         }
-        SessionManager sessionManager = new SessionManager(this);
+
         // Initialize controller
-        ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new MoodHistoryController(this, user, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
+            initializeMoodClick();
         }, this::handleException);
-
-
-
-        moodListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Log.i("AHH","ITEM CLICKED!!!");
-            onMoodClick(controller.getFilteredMoodEvent(i),sessionManager.getUsername());
-        });
     }
 
     public String getUser() { return user; }

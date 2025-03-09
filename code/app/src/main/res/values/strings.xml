@@ -87,6 +87,10 @@
     <string name="edit_this_mood">Edit this mood.</string>
     <string name="update_this_mood">Update this mood</string>
 
+    <!-- Date filter buttons -->
+    <string name="minDateBtnText">Min Date</string>
+    <string name="maxDateBtnText">Max Date</string>
+
     <string-array name="mood_array">
         <item>😡</item>
         <item>😕</item>

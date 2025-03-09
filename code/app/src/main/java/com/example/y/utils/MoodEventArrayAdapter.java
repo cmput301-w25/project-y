@@ -143,8 +143,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         // Populate required fields (username, datetime, emotion emoticon)
         usernameTextView.setText(mood.getPosterUsername());
-        String dateTimeFormatted = new SimpleDateFormat("HH:mm MMM dd, yyyy", Locale.getDefault())
-                .format(mood.getDateTime().toDate());
+        String dateTimeFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
