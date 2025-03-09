@@ -81,7 +81,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Image insertion button listener
         btnInsertImage.setOnClickListener(v -> images());
-        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty"));
+        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty."));
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {

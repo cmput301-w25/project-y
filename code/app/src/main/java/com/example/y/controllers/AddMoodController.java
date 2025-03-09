@@ -14,9 +14,11 @@ import com.google.firebase.Timestamp;
 
 public class AddMoodController {
 
-    private final String loggedInUser;
-    private final Context context;
+    private String loggedInUser;
+    private Context context;
 
+    public AddMoodController() {
+    }
 
     public AddMoodController(Context context) {
         this.context = context;
@@ -123,6 +125,9 @@ public class AddMoodController {
         return imageSizeInBytes;
     }
 
+    public void setLoggedInUser(String loggedInUser) {
+        this.loggedInUser = loggedInUser;
+    }
 }
 
 
