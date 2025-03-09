@@ -155,7 +155,6 @@ public class MoodListActivity extends BaseActivity {
 
     private void initializeReasonWhyKeywordFilter() {
         EditText keywordEditText = findViewById(R.id.textContainsFilter);
-        keywordEditText.clearFocus();
         keywordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -164,10 +163,8 @@ public class MoodListActivity extends BaseActivity {
                 if (keyword.isEmpty()) {
                     controller.getFilter().clearReasonWhyKeyword();
                 } else {
-                    controller.getFilter().setReasonWhyKeyword(keyword);
+                    controller.getFilter().setReasonWhyTextKeyword(keyword);
                 }
-
-                Log.e("DEBUG", keyword);
 
                 controller.saveFilter();
             }
