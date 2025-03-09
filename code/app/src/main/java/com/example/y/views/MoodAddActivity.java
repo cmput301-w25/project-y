@@ -25,6 +25,7 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.services.SessionManager;
+import com.example.y.utils.GenericTextWatcher;
 import com.google.firebase.Timestamp;
 
 import java.text.DateFormat;
@@ -36,6 +37,8 @@ import java.util.Locale;
 
 public class MoodAddActivity extends AppCompatActivity {
 
+    int SELECT_PICTURE = 200;
+    ImageView IVPreviewImage;
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
@@ -44,9 +47,6 @@ public class MoodAddActivity extends AppCompatActivity {
     private EditText etExplanation;
     private EditText datePicked;
     private Uri selectedImageUri;
-
-    int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class MoodAddActivity extends AppCompatActivity {
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, support_simple_spinner_dropdown_item,Emotion.values());
+        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, support_simple_spinner_dropdown_item, Emotion.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
@@ -81,6 +81,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Image insertion button listener
         btnInsertImage.setOnClickListener(v -> images());
+        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty"));
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {
@@ -120,11 +121,12 @@ public class MoodAddActivity extends AppCompatActivity {
                 finish();
             }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         });
-        
+
     }
 
     /**
      * Basically a str -> datetime
+     *
      * @param datePicked Edit text of our date picker.
      */
     private void showDatePickerDialog(EditText datePicked) {
@@ -133,8 +135,8 @@ public class MoodAddActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,(view,selectedYear,selectedMonth,selectedDay) -> {
-            String formattedDate = String.format(Locale.getDefault(),"%02d-%02d-%04d",selectedDay,selectedMonth + 1,selectedYear);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            String formattedDate = String.format(Locale.getDefault(), "%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear);
             datePicked.setText(formattedDate);
         }, year, month, day);
         datePickerDialog.show();
@@ -156,6 +158,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
     /**
      * Method to make images visible
+     *
      * @param requestCode
      * @param resultCode
      * @param data
