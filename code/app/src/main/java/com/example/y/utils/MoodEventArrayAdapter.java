@@ -83,6 +83,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         SessionManager sessionManager = new SessionManager(context);
         if (mood.getPosterUsername().equals(sessionManager.getUsername())) {
             followBtn.setVisibility(View.GONE);
+        } else {
+            followBtn.setVisibility(View.VISIBLE);
         }
 
         String poster = mood.getPosterUsername();
