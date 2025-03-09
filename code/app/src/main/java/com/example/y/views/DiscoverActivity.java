@@ -15,9 +15,9 @@ public class DiscoverActivity extends MoodListActivity {
         selectDiscoverHeaderButton();
 
         // Initialize controller
-        ListView moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new DiscoverController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
+            initializeMoodClick();
         }, this::handleException);
     }
 

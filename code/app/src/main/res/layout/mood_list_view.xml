@@ -20,7 +20,7 @@
             android:paddingVertical="10dp"
             android:paddingHorizontal="14dp"
             android:layout_gravity="end"
-            android:text="min" />
+            android:text="@string/minDateBtnText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
             android:paddingVertical="10dp"
             android:paddingHorizontal="14dp"
             android:layout_gravity="end"
-            android:text="max" />
+            android:text="@string/maxDateBtnText" />
 
         <Spinner
             android:id="@+id/emotionFilterSpinner"
