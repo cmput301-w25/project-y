@@ -94,4 +94,32 @@ public class FollowRequestRepoTest {
         // Verify Firestore interaction
         verify(mockDocRef).set(testRequest);
     }
+
+    @Test
+    public void testAddFollowRequestFailure() {
+        // Arrange
+        FollowRequest testRequest = new FollowRequest("charlie", "david", null);
+
+        // Reset success listener configuration from setUp()
+        when(mockTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(mockTask);  // Don't trigger success
+
+        // Configure failure response
+        when(mockTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenAnswer(invocation -> {
+                    invocation.getArgument(0, OnFailureListener.class)
+                            .onFailure(new Exception("Simulated Firestore failure"));
+                    return mockTask;
+                });
+
+        // Act & Assert
+        followRequestRepo.addFollowRequest(testRequest,
+                addedRequest -> fail("Success callback should not be triggered"),
+                e -> assertEquals("Follow request record creation failed.", e.getMessage())
+        );
+
+        verify(mockFollowReqCollection).document("charlie_david");
+        verify(mockDocRef).set(testRequest);
+    }
+
 }
