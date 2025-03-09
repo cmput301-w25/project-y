@@ -25,8 +25,8 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
 
     private static FollowRequestRepository instance;  // Singleton instance
     public static final String FOLLOW_REQ_COLLECTION = "follow-requests";
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference followReqsRef = db.collection(FOLLOW_REQ_COLLECTION);
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference followReqsRef = db.collection(FOLLOW_REQ_COLLECTION);
 
     /**
      * Listens for follow requests being added or deleted.
@@ -48,6 +48,13 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
          */
         void onFollowRequestDeleted(String requester, String requestee);
     }
+
+
+    /**
+     * @param firestore
+     *      Firestore db instance.
+     */
+
 
     /**
      * Initialize the follow requests snapshot listener
@@ -86,6 +93,20 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
     public static synchronized FollowRequestRepository getInstance() {
         if (instance == null) instance = new FollowRequestRepository();
         return instance;
+    }
+
+    private FollowRequestRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        followReqsRef = db.collection(FOLLOW_REQ_COLLECTION );
+    }
+
+    /**
+     * Updates the singleton instance with a new db
+     * @param firestore
+     *      Testing db instance.
+     */
+    public static void setInstanceForTesting(FirebaseFirestore firestore) {
+        instance = new FollowRequestRepository(firestore);
     }
 
     /**
