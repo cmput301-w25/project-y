@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.HashMap;
 
 public class MoodHistoryController extends MoodListController {
-
     private final String poster;
 
     /**

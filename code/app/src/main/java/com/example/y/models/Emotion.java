@@ -18,7 +18,7 @@ public enum Emotion {
 
     private final int index;
 
-    private Emotion(int index) {
+    Emotion(int index) {
         this.index = index;
     }
 

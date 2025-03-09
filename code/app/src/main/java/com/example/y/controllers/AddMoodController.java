@@ -10,7 +10,6 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 
 public class AddMoodController {
 

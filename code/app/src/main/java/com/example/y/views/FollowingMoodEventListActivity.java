@@ -1,12 +1,8 @@
 package com.example.y.views;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ListView;
 
-import com.example.y.R;
 import com.example.y.controllers.FollowingMoodListController;
-import com.example.y.services.SessionManager;
 
 public class FollowingMoodEventListActivity extends MoodListActivity {
 

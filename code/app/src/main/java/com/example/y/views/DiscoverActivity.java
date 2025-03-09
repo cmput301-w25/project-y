@@ -1,10 +1,7 @@
 package com.example.y.views;
 
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.y.R;
 import com.example.y.controllers.DiscoverController;
 
 public class DiscoverActivity extends MoodListActivity {

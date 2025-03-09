@@ -16,10 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.y.R;
-import com.example.y.controllers.AddMoodController;
 import com.example.y.controllers.UpdateOrDeleteMoodEventController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
@@ -30,18 +28,16 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
+
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
 
-
-    private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText editTextUpdateTextExplanation;
     private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
