@@ -1,7 +1,5 @@
 package com.example.y.views;
 
-import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
-
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -131,7 +129,7 @@ public class MoodListActivity extends BaseActivity {
         });
 
         // Set up spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, support_simple_spinner_dropdown_item, adapterContent);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, adapterContent);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         emotionFilterSpinner.setAdapter(adapter);
         emotionFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
