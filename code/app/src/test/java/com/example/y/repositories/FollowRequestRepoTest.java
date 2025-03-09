@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.lang.reflect.Field;
 
 @RunWith(MockitoJUnitRunner.class) // Required for proper mock initialization
 public class FollowRequestRepoTest {
@@ -215,8 +218,272 @@ public class FollowRequestRepoTest {
 
         verify(mockFollowReqCollection).document("eve_frank");
     }
+    @Test
+    public void testDeleteFollowRequest_Success() {
+// Arrange
+        String requester = "alice";
+        String requestee = "bob";
+        String compoundId = "alice_bob";
+
+// Create a DocumentSnapshot mock to simulate an existing document.
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(true);
+
+// Create and stub a Task for the get() call.
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot);
+                    return mockGetTask;
+                });
+
+// Create and stub a Task for the delete() call.
+        Task<Void> mockDeleteTask = mock(Task.class);
+        when(mockDocRef.delete()).thenReturn(mockDeleteTask);
+        when(mockDeleteTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<Void> listener = invocation.getArgument(0);
+                    listener.onSuccess(null);
+                    return mockDeleteTask;
+                });
+
+// Act & Assert
+        followRequestRepo.deleteFollowRequest(requester, requestee,
+                unused -> {
+                    verify(mockFollowReqCollection).document(compoundId);
+                    verify(mockDocRef).delete();
+                },
+                e -> fail("Deletion should succeed")
+        );
+    }
+
+    @Test
+    public void testDeleteFollowRequest_DocNotExists() {
+// Arrange
+        String requester = "charlie";
+        String requestee = "david";
+        String compoundId = "charlie_david";
+// Create a DocumentSnapshot mock to simulate a non-existing document.
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(false);
+
+// Create and stub a Task for the get() call.
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot);  // simulate that the document does not exist
+                    return mockGetTask;
+                });
+
+// Act & Assert
+        followRequestRepo.deleteFollowRequest(requester, requestee,
+                unused -> fail("Should trigger failure for missing document"),
+                e -> assertEquals("Follow request document does not exist", e.getMessage())
+        );
+
+        verify(mockFollowReqCollection).document(compoundId);
+    }
+
+    @Test
+    public void testDeleteFollowRequest_DeleteFailure() {
+// Arrange
+        String requester = "eve";
+        String requestee = "frank";
+        String compoundId = "eve_frank";
+        Exception expectedError = new Exception("Simulated deletion failure");
+
+// Create a consistent DocumentSnapshot mock to simulate an existing document
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(true);
+
+// Create and stub a Task for get()
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot); // simulate that the document exists
+                    return mockGetTask;
+                });
+
+// Create and stub a Task for delete()
+        Task<Void> mockDeleteTask = mock(Task.class);
+        when(mockDocRef.delete()).thenReturn(mockDeleteTask);
+
+// Stub addOnSuccessListener so that the chaining returns the task (prevents null return)
+        when(mockDeleteTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(mockDeleteTask);
+
+// Stub addOnFailureListener to simulate deletion failure
+        when(mockDeleteTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenAnswer(invocation -> {
+                    OnFailureListener listener = invocation.getArgument(0);
+                    listener.onFailure(expectedError); // simulate deletion failure
+                    return mockDeleteTask;
+                });
+
+// Act & Assert
+        followRequestRepo.deleteFollowRequest(requester, requestee,
+                unused -> fail("Should trigger failure for delete error"),
+                e -> assertEquals("Failed to delete follow request document: " + expectedError.getMessage(), e.getMessage())
+        );
+
+        verify(mockFollowReqCollection).document(compoundId);
+    }
 
 
 
+    @Test
+    public void testDidRequest_DocumentExists() {
+        // Arrange
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(true);
 
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot);
+                    return mockGetTask;
+                });
+
+        // Act & Assert
+        followRequestRepo.didRequest("alice", "bob",
+                result -> assertTrue("Expected didRequest to return true", result),
+                e -> fail("Failure callback should not be triggered"));
+        verify(mockFollowReqCollection).document("alice_bob");
+    }
+
+    @Test
+    public void testDidRequest_DocumentNotExists() {
+        // Arrange
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(false);
+
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot);
+                    return mockGetTask;
+                });
+
+        // Act & Assert
+        followRequestRepo.didRequest("charlie", "david",
+                result -> assertFalse("Expected didRequest to return false", result),
+                e -> fail("Failure callback should not be triggered"));
+        verify(mockFollowReqCollection).document("charlie_david");
+    }
+
+    @Test
+    public void testDidRequest_FirestoreFailure() {
+        // Arrange
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+
+        // Stub addOnSuccessListener so its return is not null (chaining)
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenReturn(mockGetTask);
+
+        Exception expectedEx = new Exception("Simulated get failure");
+        when(mockGetTask.addOnFailureListener(any(OnFailureListener.class)))
+                .thenAnswer(invocation -> {
+                    OnFailureListener listener = invocation.getArgument(0);
+                    listener.onFailure(expectedEx);
+                    return mockGetTask;
+                });
+
+        // Act & Assert
+        followRequestRepo.didRequest("eve", "frank",
+                result -> fail("Success callback should not be triggered"),
+                e -> assertEquals("Failed to get follow request document: Simulated get failure", e.getMessage()));
+        verify(mockFollowReqCollection).document("eve_frank");
+    }
+
+    @Test
+    public void testAcceptRequest_Success() throws Exception {
+        // Arrange: Create a follow request instance.
+        FollowRequest testRequest = new FollowRequest("alice", "bob", null);
+
+        // Stub deletion: simulate that the document exists.
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(true);
+
+        // Stub the get() call for deletion.
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        when(mockGetTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+                    listener.onSuccess(mockSnapshot);
+                    return mockGetTask;
+                });
+
+        // Stub the delete() call.
+        Task<Void> mockDeleteTask = mock(Task.class);
+        when(mockDocRef.delete()).thenReturn(mockDeleteTask);
+        when(mockDeleteTask.addOnSuccessListener(any(OnSuccessListener.class)))
+                .thenAnswer(invocation -> {
+                    OnSuccessListener<Void> listener = invocation.getArgument(0);
+                    listener.onSuccess(null);
+                    return mockDeleteTask;
+                });
+
+        // Stub static FollowRepository.getInstance() and its addFollow method.
+        try (MockedStatic<FollowRepository> mockedFollowRepo = mockStatic(FollowRepository.class)) {
+            FollowRepository followRepoMock = mock(FollowRepository.class);
+            mockedFollowRepo.when(FollowRepository::getInstance).thenReturn(followRepoMock);
+            doAnswer(invocation -> {
+                Follow follow = invocation.getArgument(0);
+                OnSuccessListener<Follow> successCallback = invocation.getArgument(1);
+                successCallback.onSuccess(follow);
+                return null;
+            }).when(followRepoMock)
+                    .addFollow(any(Follow.class), any(OnSuccessListener.class), any(OnFailureListener.class));
+
+            final boolean[][] successCalled = {{false}};
+            final boolean[][] failureCalled = {{false}};
+            final Follow[][] capturedFollow = {new Follow[1]};
+
+            // Act: Call acceptRequest.
+            followRequestRepo.acceptRequest(testRequest,
+                    follow -> {
+                        successCalled[0] = new boolean[]{true};
+                        capturedFollow[0] = new Follow[]{follow};
+                    },
+                    e -> {
+                        failureCalled[0] = new boolean[]{true};
+                    }
+            );
+
+            // Assert: Verify the callbacks were triggered as expected.
+            assertTrue("Expected success callback to be invoked", successCalled[0]);
+            assertFalse("Failure callback should not be invoked", failureCalled[0]);
+            assertNotNull("Follow instance should not be null", capturedFollow[0]);
+
+            // Use reflection to read private fields from the Follow object.
+            Field requesterField = capturedFollow[0].getClass().getDeclaredField("requester");
+            requesterField.setAccessible(true);
+            String requester = (String) requesterField.get(capturedFollow[0]);
+            assertEquals("Requester should match", testRequest.getRequester(), requester);
+
+            Field requesteeField = capturedFollow[0].getClass().getDeclaredField("requestee");
+            requesteeField.setAccessible(true);
+            String requestee = (String) requesteeField.get(capturedFollow[0]);
+            assertEquals("Requestee should match", testRequest.getRequestee(), requestee);
+
+            Field timestampField = capturedFollow[0].getClass().getDeclaredField("timestamp");
+            timestampField.setAccessible(true);
+            Object timestamp = timestampField.get(capturedFollow[0]);
+            assertNotNull("Timestamp should be set", timestamp);
+
+            verify(mockFollowReqCollection).document("alice_bob");
+        }
+    }
 }
