@@ -1,29 +1,26 @@
 package com.example.y.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.FollowingMoodListController;
+import com.example.y.services.SessionManager;
 
-public class FollowingMoodEventListActivity extends BaseActivity {
-
-    FollowingMoodListController controller;
+public class FollowingMoodEventListActivity extends MoodListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectMoodFollowingListHeaderButton();
 
-        // Set up controller
-        ListView moodListView = findViewById(R.id.listviewMoodEvents);
+        // Initialize controller
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-        }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+            initializeMoodClick();
+        }, this::handleException);
     }
-
-    @Override
-    protected int getActivityLayout() { return R.layout.following_mood_event_list_view; }
 
 }
 

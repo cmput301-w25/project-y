@@ -14,6 +14,7 @@ public class FollowRequestsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        deselectAllHeaderButtons();
 
         ListView reqListView = findViewById(R.id.listviewFollowRequests);
         controller = new FollowRequestController(this, unused -> {

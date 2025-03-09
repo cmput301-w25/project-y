@@ -2,7 +2,21 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
@@ -11,24 +25,6 @@ import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.services.SessionManager;
 import com.google.firebase.Timestamp;
-
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,7 +39,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
-    private EditText etReason;
+    private EditText etReasonWhyText;
     private EditText etExplanation;
     private EditText datePicked;
     private Uri selectedImageUri;
@@ -54,27 +50,28 @@ public class MoodAddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addmoodform);
+        setContentView(R.layout.add_mood);
         SessionManager session = new SessionManager(this);
 
         addMoodController = new AddMoodController(this);
 
-        // Initialize all views
-        spinnerMood = findViewById(R.id.spinnerMood);
+        // Initialize (image) buttons
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
         Button btnSubmit = findViewById(R.id.btnSubmit);
+
+        // Initialize text views
+        spinnerMood = findViewById(R.id.spinnerMood);
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        etReason = findViewById(R.id.etReason);
-        etExplanation = findViewById(R.id.etExplanation);
+        etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
         IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, support_simple_spinner_dropdown_item,Emotion.values());
+        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
@@ -90,8 +87,7 @@ public class MoodAddActivity extends AppCompatActivity {
             Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
-            String reason = etReason.getText().toString().trim();
-            String explanation = etExplanation.getText().toString().trim();
+            String reasonWhyText = etReasonWhyText.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
 
@@ -112,7 +108,7 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setDateTime(moodDateTime);
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
-            newMood.setText(reason);
+            newMood.setText(reasonWhyText);
             // TODO: newMood.setLocation()
 
             // Submit form
@@ -121,9 +117,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
                 startActivity(intent);
                 finish();
-            }, e -> {
-                Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-            });
+            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         });
         
     }
@@ -133,7 +127,6 @@ public class MoodAddActivity extends AppCompatActivity {
      * @param datePicked Edit text of our date picker.
      */
     private void showDatePickerDialog(EditText datePicked) {
-
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -147,6 +140,10 @@ public class MoodAddActivity extends AppCompatActivity {
     }
 
     // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+
+    /***
+     * Used to grab images
+     */
     private void images() {
         Intent i = new Intent();
         i.setType("image/*");
@@ -155,18 +152,22 @@ public class MoodAddActivity extends AppCompatActivity {
     }
 
     // use to make image visible
+
+    /**
+     * Method to make images visible
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK && requestCode == SELECT_PICTURE) {
-
             selectedImageUri = data.getData();
             if (selectedImageUri != null) {
                 IVPreviewImage.setImageURI(selectedImageUri);
                 IVPreviewImage.setVisibility(View.VISIBLE);
             }
         }
-
     }
 
 }

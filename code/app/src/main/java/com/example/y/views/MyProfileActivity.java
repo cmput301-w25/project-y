@@ -2,15 +2,15 @@ package com.example.y.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.se.omapi.Session;
 import android.widget.Button;
 import android.widget.ImageButton;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
-public class ProfileActivity extends BaseActivity {
+public class MyProfileActivity extends BaseActivity {
+
      Button logout;
      Button followRequests;
 
@@ -20,6 +20,7 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectProfileHeaderButton();
 
         logout = findViewById(R.id.btnUserProfileLogout);
         addButton = findViewById(R.id.btn_addMoodEventFromProfile);
@@ -31,8 +32,10 @@ public class ProfileActivity extends BaseActivity {
         followRequests.setOnClickListener(view -> onFollowRequests());
 
         // Open my mood history
+        SessionManager session = new SessionManager(this);
         findViewById(R.id.btnUserProfileMyMoodHistory).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyMoodHistoryActivity.class);
+            Intent intent = new Intent(this, MoodHistoryActivity.class);
+            intent.putExtra("user", session.getUsername());
             startActivity(intent);
         });
     }
@@ -40,7 +43,6 @@ public class ProfileActivity extends BaseActivity {
     private void onAddButtonClick() {
         Intent intent = new Intent(this, MoodAddActivity.class);
         startActivity(intent);
-
     }
 
     private void onLogoutButtonClick() {

@@ -1,4 +1,5 @@
 .DS_Store
+
 # Gradle files
 **/.gradle/
 **/build/
@@ -55,3 +56,8 @@
 # Virtual machine crash logs
 **/hs_err_pid*
 **/replay_pid*
+
+# FireBase Testing Stuff
+**/firebase.json
+**/.firebaserc
+

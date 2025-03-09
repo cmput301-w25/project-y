@@ -16,10 +16,13 @@ import java.util.ArrayList;
 
 public class FollowRequestController implements FollowRequestRepository.FollowRequestListener {
 
-    private final String user;
-    private final Context context;
+    private String user;
+    private Context context;
     private FollowRequestArrayAdapter adapter;
+
     private ArrayList<FollowRequest> reqs;
+
+    public FollowRequestController() {}
 
     public FollowRequestController(Context context, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         this.context = context;
@@ -39,7 +42,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             adapter = new FollowRequestArrayAdapter(context, this.reqs);
 
             onSuccess.onSuccess(null);
-        }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, onFailure);
     }
 
     @Override
@@ -111,4 +114,11 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     public FollowRequestArrayAdapter getAdapter() { return adapter; }
 
+    public ArrayList<FollowRequest> getReqs() {
+        return reqs;
+    }
+
+    public void setReqs(ArrayList<FollowRequest> reqs) {
+        this.reqs = reqs;
+    }
 }
