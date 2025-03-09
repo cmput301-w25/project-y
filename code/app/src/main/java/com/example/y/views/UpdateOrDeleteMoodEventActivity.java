@@ -45,9 +45,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // Set dark mode before creating views
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
@@ -89,8 +86,8 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
         // Find the Emotion spinner view, then set it's adapter
         spinnerMood = findViewById(R.id.spinnerMood);
-        ArrayAdapter<Emotion> moodAdapter =  new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, Emotion.values());
-        moodAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<Emotion> moodAdapter =  new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
+        moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(moodAdapter);
 
 
@@ -107,8 +104,8 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
             // It's the same deal with the social situation
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, SocialSituation.values());
-        socialAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, SocialSituation.values());
+        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
         spinnerSocial.setSelection(moodEventToUpdateOrDelete.getSocialSituation().getIndex());
 
