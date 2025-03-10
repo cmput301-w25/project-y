@@ -13,13 +13,19 @@ public class Follow implements Serializable {
     private String followedUsername;
     private Timestamp timestamp;
 
-    public Follow(String followerUser, String followedUser) {};
+    public Follow(String followerUser, String followedUser) {
+        this.followerUsername = followerUser;
+        this.followedUsername = followedUser;
+    }
+
 
     public Follow(String followerUsername, String followedUsername, Timestamp timestamp) {
         this.followerUsername = followerUsername;
         this.followedUsername = followedUsername;
         this.timestamp = timestamp;
     }
+
+
 
     public String getFollowerUsername() { return followerUsername; }
 

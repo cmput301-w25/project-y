@@ -54,50 +54,41 @@ public class FollowRepositoryTest {
 
 
     private FollowRepository repo;
-
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-
         try (MockedStatic<FirebaseFirestore> mockedFirestore = mockStatic(FirebaseFirestore.class)) {
-            // Mock static FirebaseFirestore.getInstance()
             mockedFirestore.when(FirebaseFirestore::getInstance).thenReturn(mockFirestore);
+            when(mockFirestore.collection(FollowRepository.FOLLOW_COLLECTION)).thenReturn(mockFollowsCollection);
 
-            // Configure collection reference using actual collection name
-            when(mockFirestore.collection("follows"))
-                    .thenReturn(mockFollowsCollection);
-
-            // Initialize repository INSIDE static mock scope
-            FollowRequestRepository.setInstanceForTesting(mockFirestore);
-            followsRepo = FollowRepository.getInstance();
+            FollowRepository.setInstanceForTesting(mockFirestore);
+            followsRepo = FollowRepository.getInstance(); // Ensure correct initialization
         }
 
-        // Configure common document behavior
         when(mockFollowsCollection.document(anyString())).thenReturn(mockDocRef);
         when(mockDocRef.set(any(Follow.class))).thenReturn(mockTask);
 
-        // Configure task success listener
+        // Mock task success behavior
         when(mockTask.addOnSuccessListener(any(OnSuccessListener.class)))
                 .thenAnswer(invocation -> {
                     invocation.getArgument(0, OnSuccessListener.class).onSuccess(null);
                     return mockTask;
                 });
-
     }
+
 
 
     @Test
     public void addFollow_success() {
-        // Arrange
         Follow testFollow = new Follow("followerUser", "followedUser");
+        testFollow.setTimestamp(Timestamp.now());
+
         OnSuccessListener<Follow> mockSuccess = mock(OnSuccessListener.class);
         OnFailureListener mockFailure = mock(OnFailureListener.class);
 
-        // Act
         followsRepo.addFollow(testFollow, mockSuccess, mockFailure);
 
-        // Assert
         String expectedDocId = FollowRepository.getCompoundId("followerUser", "followedUser");
         verify(mockFollowsCollection).document(expectedDocId);
 
@@ -108,6 +99,9 @@ public class FollowRepositoryTest {
         verify(mockSuccess).onSuccess(testFollow);
         verify(mockFailure, never()).onFailure(any(Exception.class));
     }
+
+
+
 
     @Test
     public void getFollow_exists() {
