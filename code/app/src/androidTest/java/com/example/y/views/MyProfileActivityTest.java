@@ -9,14 +9,15 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.content.Context;
 import android.util.Log;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
@@ -51,7 +52,8 @@ public class MyProfileActivityTest {
     public static AddMoodController addMoodController;
     public static MoodHistoryController moodHistoryController;
     public static FollowingMoodListController followingMoodListController;
-    static SessionManager mockSessionManager = new SessionManager(ApplicationProvider.getApplicationContext());
+    static Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    static SessionManager mockSessionManager = new SessionManager(context);
     private static FirebaseFirestore db;
     public FollowRequestController followRequestController;
     @Rule
@@ -78,7 +80,7 @@ public class MyProfileActivityTest {
      * This method seeds the database with test data for the mood events.
      */
     public void seedDatabase() {
-        addMoodController = new AddMoodController(ApplicationProvider.getApplicationContext());
+        addMoodController = new AddMoodController(context);
         addMoodController.setLoggedInUser(userId);
 
         AtomicReference<OnSuccessListener<Void>> onSuccessListener = new AtomicReference<>(aVoid -> Log.d("TAG", "onSuccess: "));
@@ -86,9 +88,9 @@ public class MyProfileActivityTest {
 
         };
         // This might actually might not be needed lols.
-        moodHistoryController = new MoodHistoryController(ApplicationProvider.getApplicationContext(), mockSessionManager.getUsername(), onSuccessListener.get(), onFailureListener);
-        followingMoodListController = new FollowingMoodListController(ApplicationProvider.getApplicationContext(), onSuccessListener.get(), onFailureListener);
-        followRequestController = new FollowRequestController(ApplicationProvider.getApplicationContext(), onSuccessListener.get(), onFailureListener);
+        moodHistoryController = new MoodHistoryController(context, mockSessionManager.getUsername(), onSuccessListener.get(), onFailureListener);
+        followingMoodListController = new FollowingMoodListController(context, onSuccessListener.get(), onFailureListener);
+        followRequestController = new FollowRequestController(context, onSuccessListener.get(), onFailureListener);
 
 
 

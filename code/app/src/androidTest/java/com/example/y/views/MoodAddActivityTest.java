@@ -7,13 +7,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
@@ -40,11 +41,12 @@ public class MoodAddActivityTest {
     private static final String userId = "Tegen";
     public static AddMoodController addMoodController;
     public MoodHistoryController moodHistoryController;
+    static Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     @Rule
     public ActivityScenarioRule<MoodAddActivity> scenario = new // We have this to make sure that we're only testing
             ActivityScenarioRule<MoodAddActivity>(MoodAddActivity.class);
 
-    static SessionManager mockSessionManager = new SessionManager(ApplicationProvider.getApplicationContext());
+    static SessionManager mockSessionManager = new SessionManager(context);
 
     @BeforeClass
     public static void setUp() {
@@ -58,7 +60,7 @@ public class MoodAddActivityTest {
     @Before
     public void setUpSession() {
         mockSessionManager.saveSession(userId);
-        addMoodController = new AddMoodController(ApplicationProvider.getApplicationContext());
+        addMoodController = new AddMoodController(context);
     }
 
 
