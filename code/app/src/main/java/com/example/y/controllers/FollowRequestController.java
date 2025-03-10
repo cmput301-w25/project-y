@@ -22,6 +22,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     private String user;
     private Context context;
     private FollowRequestArrayAdapter adapter;
+
     private ArrayList<FollowRequest> reqs;
 
     public FollowRequestController() {}
@@ -132,9 +133,11 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
         }
     }
 
-    public FollowRequestArrayAdapter getAdapter() {
-        return adapter;
-    }
+    /**
+     * Returns the adapter for the list of follow requests
+     * @return FollowRequestArrayAdapter
+     */
+    public FollowRequestArrayAdapter getAdapter() { return adapter; }
 
     public ArrayList<FollowRequest> getReqs() {
         return reqs;
@@ -143,5 +146,5 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void setReqs(ArrayList<FollowRequest> reqs) {
         this.reqs = reqs;
     }
-
+  
 }
