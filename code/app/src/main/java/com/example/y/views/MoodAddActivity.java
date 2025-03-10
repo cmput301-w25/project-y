@@ -2,16 +2,6 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static androidx.appcompat.R.layout.support_simple_spinner_dropdown_item;
-
-import com.example.y.R;
-import com.example.y.controllers.AddMoodController;
-import com.example.y.models.Emotion;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,7 +15,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.y.R;
+import com.example.y.controllers.AddMoodController;
+import com.example.y.models.Emotion;
+import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
+import com.example.y.services.SessionManager;
+import com.example.y.utils.GenericTextWatcher;
+import com.google.firebase.Timestamp;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,22 +36,21 @@ import java.util.Locale;
 
 public class MoodAddActivity extends AppCompatActivity {
 
+    int SELECT_PICTURE = 200;
+    ImageView IVPreviewImage;
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
-    private EditText etExplanation;
+    private EditText etTrigger;
     private EditText datePicked;
     private Uri selectedImageUri;
-
-    int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addmoodform);
+        setContentView(R.layout.add_mood);
         SessionManager session = new SessionManager(this);
 
         addMoodController = new AddMoodController(this);
@@ -66,13 +65,16 @@ public class MoodAddActivity extends AppCompatActivity {
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
+        etTrigger = findViewById(R.id.etTrigger);
         datePicked = findViewById(R.id.datePickerAddMood);
         IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, support_simple_spinner_dropdown_item,Emotion.values());
+
+        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
@@ -81,6 +83,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Image insertion button listener
         btnInsertImage.setOnClickListener(v -> images());
+        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty!","yes"));
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {
@@ -89,6 +92,7 @@ public class MoodAddActivity extends AppCompatActivity {
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
+            String triggerText = etTrigger.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
 
@@ -110,6 +114,7 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
             newMood.setText(reasonWhyText);
+            newMood.setTrigger(triggerText);
             // TODO: newMood.setLocation()
 
             // Submit form
@@ -120,11 +125,12 @@ public class MoodAddActivity extends AppCompatActivity {
                 finish();
             }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         });
-        
+
     }
 
     /**
      * Basically a str -> datetime
+     *
      * @param datePicked Edit text of our date picker.
      */
     private void showDatePickerDialog(EditText datePicked) {
@@ -133,8 +139,8 @@ public class MoodAddActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,(view,selectedYear,selectedMonth,selectedDay) -> {
-            String formattedDate = String.format(Locale.getDefault(),"%02d-%02d-%04d",selectedDay,selectedMonth + 1,selectedYear);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            String formattedDate = String.format(Locale.getDefault(), "%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear);
             datePicked.setText(formattedDate);
         }, year, month, day);
         datePickerDialog.show();
@@ -156,6 +162,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
     /**
      * Method to make images visible
+     *
      * @param requestCode
      * @param resultCode
      * @param data

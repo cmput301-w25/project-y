@@ -2,7 +2,6 @@ package com.example.y.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +19,12 @@ import androidx.annotation.Nullable;
 import com.example.y.R;
 import com.example.y.models.FollowRequest;
 import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
 import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
-import com.example.y.views.FollowingMoodEventListActivity;
-import com.example.y.views.MoodHistoryActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -71,8 +69,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(
-                    mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
-                    parent, false
+                mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
+                parent, false
             );
         }
 
@@ -83,6 +81,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         SessionManager sessionManager = new SessionManager(context);
         if (mood.getPosterUsername().equals(sessionManager.getUsername())) {
             followBtn.setVisibility(View.GONE);
+        } else {
+            followBtn.setVisibility(View.VISIBLE);
         }
 
         String poster = mood.getPosterUsername();
@@ -137,14 +137,13 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
         TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
-        TextView reasonWhyTextTextView = view.findViewById(R.id.reasonWhyText);
+        TextView reasonWhyTextTextView = view.findViewById(R.id.text);
         TextView locationTextView = view.findViewById(R.id.location);
         ImageView photoImgView = view.findViewById(R.id.photo);
 
         // Populate required fields (username, datetime, emotion emoticon)
         usernameTextView.setText(mood.getPosterUsername());
-        String dateTimeFormatted = new SimpleDateFormat("HH:mm MMM dd, yyyy", Locale.getDefault())
-                .format(mood.getDateTime().toDate());
+        String dateTimeFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
@@ -152,7 +151,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         border.setBackgroundColor(mood.getEmotion().getColor(context));
 
         // Optional fields: (location and social situation)
-        String socialSituation = mood.getSocialSituation().getText(context);
+        SocialSituation socialSituation = mood.getSocialSituation();
         GeoPoint location = mood.getLocation();
         if (socialSituation == null && location == null) {
             // Hide layout if they're both null
@@ -160,7 +159,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             // Otherwise ony fill in the non-null fields
             if (socialSituation != null) {
-                socialSituationTextView.setText(socialSituation);
+                socialSituationTextView.setText(socialSituation.getText(context));
                 socialSituationTextView.setVisibility(View.VISIBLE);
             } else {
                 socialSituationTextView.setVisibility(View.GONE);
@@ -175,9 +174,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Optional field: reason why text
-        String text = mood.getText();
-        if (text != null) {
-            reasonWhyTextTextView.setText(text);
+        String reasonWhyText = mood.getText();
+        if (reasonWhyText != null) {
+            reasonWhyTextTextView.setText(reasonWhyText);
             reasonWhyTextTextView.setVisibility(View.VISIBLE);
         } else {
             reasonWhyTextTextView.setVisibility(View.GONE);
@@ -197,7 +196,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
                 if (cachedBitmap != null) {
                     photoImgView.setImageBitmap(cachedBitmap);
                 } else {
-                    MoodEventRepository.getInstance().downloadImage( photoURL, bitmap -> {
+                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
                         // Cache downloaded image
                         imageCache.put(photoURL, bitmap);
 
@@ -218,6 +217,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         return view;
     }
 
+    /**
+     * Check if there is a image in mood event
+     * @param position The position of the item within the adapter's data set whose view type we
+     *        want.
+     * @return If there is a image url True, else false
+     */
     @Override
     public int getItemViewType(int position) {
         // Ensure the correct layout is the one being showed.
@@ -225,6 +230,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         return mood.getPhotoURL() == null ? 0 : 1;
     }
 
+    /**
+     * Returns number of different layouts
+     *  0 if no photo
+     *  1 if there is a photo
+     * @return number of view types used
+     */
     @Override
     public int getViewTypeCount() {
         return 2;

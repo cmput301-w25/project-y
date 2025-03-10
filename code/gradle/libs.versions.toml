@@ -9,6 +9,10 @@ activity = "1.10.0"
 constraintlayout = "2.2.0"
 firebaseFirestore = "25.1.2"
 monitor = "1.7.1"
+mockitoCore = "5.7.0"
+mockitoInline = "5.2.0"
+rules = "1.0.2"
+runner = "1.0.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -19,6 +23,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
+runner = { module = "com.android.support.test:runner", version.ref = "runner" }
+rules = { module = "com.android.support.test:rules", version.ref = "rules" }
 monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 
 [plugins]

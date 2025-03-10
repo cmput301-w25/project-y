@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:background="@color/white">
+
     android:descendantFocusability="blocksDescendants"
 
     <LinearLayout
@@ -123,7 +124,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/reasonWhyText"
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"

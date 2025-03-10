@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;
@@ -14,13 +13,25 @@ import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
 
+/**
+ * Controller to manage follow requests
+ * Listens for follow requests and updates UI
+ */
 public class FollowRequestController implements FollowRequestRepository.FollowRequestListener {
 
-    private final String user;
-    private final Context context;
+    private String user;
+    private Context context;
     private FollowRequestArrayAdapter adapter;
     private ArrayList<FollowRequest> reqs;
 
+    public FollowRequestController() {}
+
+    /**
+     * Starts controller and gets follow requests sent to current user
+     * @param context the context
+     * @param onSuccess Callback for successful initialization
+     * @param onFailure Callback for initialization failure
+     */
     public FollowRequestController(Context context, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         this.context = context;
 
@@ -39,9 +50,14 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             adapter = new FollowRequestArrayAdapter(context, this.reqs);
 
             onSuccess.onSuccess(null);
-        }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, onFailure);
     }
 
+    /**
+     * Call when a new follow request is sent to user
+     * @param followRequest
+     *      Follow request record to be added.
+     */
     @Override
     public void onFollowRequestAdded(FollowRequest followRequest) {
         if (followRequest.getRequestee().equals(user)) {
@@ -50,6 +66,13 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
         }
     }
 
+    /**
+     * call when user declines a follow request
+     * @param requester
+     *      Username of the requester of the follow request that was deleted.
+     * @param requestee
+     *      Username of the requestee of the follow record that was deleted.
+     */
     @Override
     public void onFollowRequestDeleted(String requester, String requestee) {
         if (requestee.equals(user)) {
@@ -109,6 +132,20 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
         }
     }
 
-    public FollowRequestArrayAdapter getAdapter() { return adapter; }
+    /**
+     * Returns the adapter for the list of follow requests
+     * @return FollowRequestArrayAdapter
+     */
+    public FollowRequestArrayAdapter getAdapter() {
+        return adapter;
+    }
+
+    public ArrayList<FollowRequest> getReqs() {
+        return reqs;
+    }
+
+    public void setReqs(ArrayList<FollowRequest> reqs) {
+        this.reqs = reqs;
+    }
 
 }

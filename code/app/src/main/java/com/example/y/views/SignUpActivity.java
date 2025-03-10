@@ -14,10 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.y.R;
 import com.example.y.controllers.SignUpController;
 import com.example.y.services.AuthManager;
+import com.example.y.utils.GenericTextWatcher;
 
 public class SignUpActivity extends AppCompatActivity {
+
     private SignUpController signUpController;
-    private EditText nameField, emailField, confirmEmailField, usernameField, passwordField, confirmPasswordField;
+    private EditText nameField;
+    private EditText emailField;
+    private EditText confirmEmailField;
+    private EditText usernameField;
+    private EditText passwordField;
+
+    private EditText confirmPasswordField;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +42,15 @@ public class SignUpActivity extends AppCompatActivity {
         confirmEmailField = findViewById(R.id.confirm_email);
         passwordField = findViewById(R.id.password);
         confirmPasswordField = findViewById(R.id.confirmPassword);
+        // add text watcher to all fields
+        nameField.addTextChangedListener(new GenericTextWatcher(nameField, "Name cannot be empty!"));
+        usernameField.addTextChangedListener(new GenericTextWatcher(usernameField,"Username cannot be empty!"));
+        emailField.addTextChangedListener(new GenericTextWatcher(emailField, "Email cannot be empty!"));
+        confirmEmailField.addTextChangedListener(new GenericTextWatcher(emailField,confirmEmailField, "Emails do not match!"));
+        passwordField.addTextChangedListener(new GenericTextWatcher(passwordField, "Password cannot be empty!"));
 
+        confirmPasswordField.addTextChangedListener(new GenericTextWatcher(passwordField,confirmPasswordField, "Passwords do not match!"));
+        // find buttons
         Button createAccountButton = findViewById(R.id.create_account);
         Button backToLoginButton = findViewById(R.id.back_to_login);
 
@@ -44,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // return to loginActivity if pressed
         backToLoginButton.setOnClickListener(v -> {
-            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
@@ -56,17 +72,15 @@ public class SignUpActivity extends AppCompatActivity {
         String email = emailField.getText().toString().trim();
         String confirmEmail = confirmEmailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
-        String confirmPassword = passwordField.getText().toString().trim();
+        String confirmPassword = confirmPasswordField.getText().toString().trim();
 
         signUpController.onSignUpUser(email, confirmEmail, name, username, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();
-            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
 
-        }, e -> {
-            Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-        });
+        }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
 }
 
