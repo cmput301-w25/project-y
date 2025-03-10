@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;
@@ -46,7 +45,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             updateEmptyState();
 
             onSuccess.onSuccess(null);
-        }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, onFailure);
     }
 
     @Override
@@ -120,7 +119,6 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     public FollowRequestArrayAdapter getAdapter() { return adapter; }
 
-
     private void updateEmptyState() {
         if (context instanceof Activity) {
             ((Activity) context).runOnUiThread(() -> {
@@ -132,4 +130,5 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             });
         }
     }
+
 }
