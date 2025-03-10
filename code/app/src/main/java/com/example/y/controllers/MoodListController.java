@@ -35,6 +35,8 @@ public abstract class MoodListController
     protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
     protected final SessionManager session;
 
+
+
     public MoodListController(Context context) {
         filter = new MoodEventListFilter();
         this.context = context;
@@ -47,7 +49,7 @@ public abstract class MoodListController
      * @param moodEvents
      *      Initial list of mood events.
      */
-    protected void initializeArrayAdapter(ArrayList<MoodEvent> moodEvents, HashMap<String, UserRepository.FollowStatus> followStatus) {
+    public void initializeArrayAdapter(ArrayList<MoodEvent> moodEvents, HashMap<String, UserRepository.FollowStatus> followStatus) {
         // Populate original and filtered lists
         originalMoodEventList = new ArrayList<>(moodEvents);
         filteredMoodEventList = new ArrayList<>(moodEvents);
@@ -269,4 +271,7 @@ public abstract class MoodListController
         return filteredMoodEventList.get(position);
     }
 
+
 }
+
+
