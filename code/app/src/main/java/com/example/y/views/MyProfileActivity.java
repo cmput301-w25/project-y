@@ -48,9 +48,9 @@ public class MyProfileActivity extends BaseActivity {
         sessionManager.logout();
 
         Intent intent = new Intent(this, LoginActivity.class);
-
         startActivity(intent);
-        finish();
+
+        finishAffinity();
     }
 
     private void onFollowRequests() {

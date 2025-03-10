@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
         emailField = findViewById(R.id.email);
         confirmEmailField = findViewById(R.id.confirm_email);
         passwordField = findViewById(R.id.password);
-        EditText confirmPasswordField = findViewById(R.id.confirmPassword);
+        confirmPasswordField = findViewById(R.id.confirmPassword);
         // add text watcher to all fields
         nameField.addTextChangedListener(new GenericTextWatcher(nameField, "Name cannot be empty!"));
         usernameField.addTextChangedListener(new GenericTextWatcher(usernameField,"Username cannot be empty!"));
@@ -60,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // return to loginActivity if pressed
         backToLoginButton.setOnClickListener(v -> {
-            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
@@ -76,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         signUpController.onSignUpUser(email, confirmEmail, name, username, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();
-            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
 
