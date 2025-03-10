@@ -82,14 +82,14 @@ public class AddMoodController {
         //      socialSituation (alone, with one other person, with two to several people, with a crowd))
         //          No need to validate this one I don't think
         //      reason why text (at most 20 characters or 3 words)
-        if (mood.getTrigger() != null) {
-            if (mood.getTrigger().length() > 20) {
-                onFailure.onFailure(new Exception("Trigger length must be at most 20 characters"));
+        if (mood.getText() != null) {
+            if (mood.getText().length() > 20) {
+                onFailure.onFailure(new Exception("Reason why text length must be at most 20 characters"));
                 return;
             }
-            int textWordCount = mood.getTrigger().isEmpty() ? 0 : mood.getTrigger().split("\\s+").length;
+            int textWordCount = mood.getText().isEmpty() ? 0 : mood.getText().split("\\s+").length;
             if (textWordCount > 3) {
-                onFailure.onFailure(new Exception("Trigger length must be at most 3 words"));
+                onFailure.onFailure(new Exception("Reason why text length must be at most 3 words"));
                 return;
             }
         }

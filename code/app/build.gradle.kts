@@ -47,11 +47,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.ext.junit)
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.7.0")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
     implementation("net.bytebuddy:byte-buddy:1.17.1")
-
-    testImplementation(libs.monitor)
     testImplementation(libs.monitor)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
