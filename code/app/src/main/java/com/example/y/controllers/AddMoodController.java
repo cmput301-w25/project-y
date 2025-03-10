@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
  *   <li>The optional photo must be under 65,536 KB in size.</li>
  * </ul>
  *
- * @author Justin
  * @see MoodEvent
  * @see MoodEventRepository
  * @see SessionManager

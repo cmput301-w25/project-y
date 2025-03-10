@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.y.models.MoodEvent;
+import com.example.y.repositories.MoodEventRepository.MoodEventListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * Adds, updates, gets, deletes documents from the mood events collection in the firestore database.
  * Notifies mood event listeners when an action is taken.
  */
-public class MoodEventRepository extends GenericRepository<MoodEventRepository.MoodEventListener> {
+public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
     private static MoodEventRepository instance; // Singleton instance
     public static final String MOOD_EVENT_COLLECTION = "mood-events";
