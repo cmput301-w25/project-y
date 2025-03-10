@@ -9,13 +9,16 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.content.Context;
 import android.view.View;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.y.R;
+import com.example.y.services.SessionManager;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -27,14 +30,15 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SignUpActivityTest {
-
+    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     @Rule
     public ActivityScenarioRule<SignUpActivity> activityRule = new ActivityScenarioRule<>(SignUpActivity.class);
-
+    private static SessionManager session;
 
     @Before
     public void setUp() throws Exception {
-
+    session = new SessionManager(context);
+    session.saveSession("tegen");
     }
 
     @After
@@ -121,13 +125,18 @@ public class SignUpActivityTest {
     }
 
     @Test
-    public void checkPasswordValidation(){
+    public void checkPasswordValidation() throws InterruptedException {
         Matcher<View> password = withId(R.id.password);
         Matcher<View> cPassword = withId(R.id.confirmPassword);
         onView(password).check(matches(isDisplayed()));
         onView(cPassword).check(matches(isDisplayed()));
         onView(password).perform(typeText("tegen"));
-        onView(cPassword).perform(typeText("tege"));
+        onView(cPassword).perform(typeText("tegn"));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
 
