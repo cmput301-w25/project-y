@@ -17,11 +17,18 @@ import com.example.y.repositories.FollowRequestRepository;
 
 import java.util.ArrayList;
 
+/**
+ * Array adapter for showing follow requests in a list
+ */
 public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
 
     private final Context context;
     private final ArrayList<FollowRequest> requests;
-
+    /**
+     * Initializes the adapter
+     * @param context  The application context
+     * @param reqs The list of follow requests to display
+     */
     public FollowRequestArrayAdapter(Context context, ArrayList<FollowRequest> reqs) {
         super(context, 0, reqs);
         requests = reqs;
@@ -50,6 +57,10 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
         return view;
     }
 
+    /**
+     * Handle exception by shwoing a message
+     * @param e exception
+     */
     private void handleException(Exception e) {
         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
