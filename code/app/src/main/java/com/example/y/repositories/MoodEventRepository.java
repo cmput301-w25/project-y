@@ -29,8 +29,8 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
     private static MoodEventRepository instance; // Singleton instance
     public static final String MOOD_EVENT_COLLECTION = "mood-events";
     public static final String MOOD_PHOTO_STORAGE_NAME = "mood-images";
-    private final FirebaseFirestore db = getFirebaseFirestore();
-    private final CollectionReference moodEventRef = getMoodEventCollection();
+    private final FirebaseFirestore db;
+    private final CollectionReference moodEventRef;
 
     /**
      * Listens for mood event being added, updated, or removed.
@@ -58,45 +58,20 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
         void onMoodEventDeleted(String deletedId);
     }
 
+    private MoodEventRepository() {
+        db = FirebaseFirestore.getInstance();
+        moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
+        startListening();
+    }
+
     /**
-     * Initialize the mood event snapshot listener
+     * @param firestore
+     *      Firestore db instance.
      */
-    MoodEventRepository() {
-        // Listen for real-time updates and notify all listeners
-        moodEventRef.addSnapshotListener((snapshots, error) -> {
-            if (error != null) {
-                Log.e("FirestoreError", "Error listening for mood event changes", error);
-                return;
-            }
-
-            if (snapshots == null || snapshots.isEmpty()) return;
-            for (DocumentChange docChange : snapshots.getDocumentChanges()) {
-                MoodEvent moodEvent = docChange.getDocument().toObject(MoodEvent.class);
-                if (moodEvent != null) {
-                    moodEvent.setId(docChange.getDocument().getId());
-                    // Notify listeners
-                    switch (docChange.getType()) {
-                        case ADDED:
-                            onMoodEventAdded(moodEvent);
-                            break;
-                        case MODIFIED:
-                            onMoodEventUpdated(moodEvent);
-                            break;
-                        case REMOVED:
-                            onMoodEventDeleted(moodEvent.getId());
-                            break;
-                    }
-                }
-            }
-        });
-    }
-
-    protected FirebaseFirestore getFirebaseFirestore() {
-        return FirebaseFirestore.getInstance();
-    }
-
-    protected CollectionReference getMoodEventCollection() {
-        return getFirebaseFirestore().collection(MOOD_EVENT_COLLECTION);
+    private MoodEventRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
+        startListening();
     }
 
     /**
@@ -112,6 +87,46 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
     }
 
     /**
+     * Initialize the mood event snapshot listener
+     */
+    private void startListening() {
+        // Listen for real-time updates and notify all listeners
+        moodEventRef.addSnapshotListener((snapshots, error) -> {
+            if (error != null) {
+                Log.e("FirestoreError", "Error listening for mood event changes", error);
+                return;
+            }
+
+            if (snapshots == null || snapshots.isEmpty()) return;
+            for (DocumentChange docChange : snapshots.getDocumentChanges()) {
+                MoodEvent moodEvent = docChange.getDocument().toObject(MoodEvent.class);
+                moodEvent.setId(docChange.getDocument().getId());
+                // Notify listeners
+                switch (docChange.getType()) {
+                    case ADDED:
+                        onMoodEventAdded(moodEvent);
+                        break;
+                    case MODIFIED:
+                        onMoodEventUpdated(moodEvent);
+                        break;
+                    case REMOVED:
+                        onMoodEventDeleted(moodEvent.getId());
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * Updates the singleton instance with a new db
+     * @param firestore
+     *      Testing db instance.
+     */
+    public static void setInstanceForTesting(FirebaseFirestore firestore) {
+        instance = new MoodEventRepository(firestore);
+    }
+
+    /**
      * Add a mood event to the database.
      *
      * @param moodEvent Mood event to be added.
@@ -120,7 +135,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      */
     public void addMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
         moodEvent.setCreationDateTime(Timestamp.now());
-        getMoodEventCollection().add(moodEvent)
+        moodEventRef.add(moodEvent)
                 .addOnSuccessListener(doc -> {
                     moodEvent.setId(doc.getId());
                     onSuccess.onSuccess(moodEvent);
@@ -138,7 +153,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      * @param onFailure Failure callback function
      */
     public void getMoodEvent(String id, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
-        getMoodEventCollection().document(id)
+        moodEventRef.document(id)
                 .get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
@@ -167,7 +182,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      * @param onFailure Failure callback function.
      */
     public void updateMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
-        getMoodEventCollection().document(moodEvent.getId())
+        moodEventRef.document(moodEvent.getId())
                 .set(moodEvent)
                 .addOnSuccessListener(unused -> onSuccess.onSuccess(moodEvent))
                 .addOnFailureListener(e -> {
@@ -183,7 +198,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      * @param onFailure Failure callback function
      */
     public void deleteMoodEvent(String id, OnSuccessListener<String> onSuccess, OnFailureListener onFailure) {
-        DocumentReference docRef = getMoodEventCollection().document(id);
+        DocumentReference docRef = moodEventRef.document(id);
         docRef.get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
@@ -208,7 +223,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      * @param onFailure Failure callback function.
      */
     public void getAllMoodEvents(OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
-        getMoodEventCollection()
+        moodEventRef
                 .orderBy("dateTime", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -216,10 +231,8 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
                         ArrayList<MoodEvent> allMoods = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
                             MoodEvent mood = doc.toObject(MoodEvent.class);
-                            if (mood != null) {
-                                mood.setId(doc.getId());
-                                allMoods.add(mood);
-                            }
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
                         }
                         onSuccess.onSuccess(allMoods);
                     } else
@@ -235,7 +248,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
      * @param onFailure Failure callback function.
      */
     public void getAllMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
-        getMoodEventCollection()
+        moodEventRef
                 .whereEqualTo("posterUsername", username)
                 .orderBy("dateTime", Query.Direction.DESCENDING)
                 .get()
@@ -244,10 +257,8 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
                         ArrayList<MoodEvent> allMoods = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
                             MoodEvent mood = doc.toObject(MoodEvent.class);
-                            if (mood != null) {
-                                mood.setId(doc.getId());
-                                allMoods.add(mood);
-                            }
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
                         }
                         onSuccess.onSuccess(allMoods);
                     } else
@@ -332,4 +343,5 @@ public class MoodEventRepository extends GenericRepository<MoodEventRepository.M
     private synchronized void onMoodEventDeleted(String deletedId) {
         listeners.forEach(listener -> listener.onMoodEventDeleted(deletedId));
     }
+
 }

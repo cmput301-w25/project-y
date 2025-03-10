@@ -73,17 +73,7 @@ public class MoodEventRepositoryTest {
         MockitoAnnotations.openMocks(this);
 
         // Initialize repository with mockFirestore
-        repository = new MoodEventRepository() {
-            @Override
-            protected FirebaseFirestore getFirebaseFirestore() {
-                return mockFirestore;
-            }
-
-            @Override
-            protected CollectionReference getMoodEventCollection() {
-                return mockCollectionRef;
-            }
-        };
+        when(mockFirestore.collection(MoodEventRepository.MOOD_EVENT_COLLECTION)).thenReturn(mockCollectionRef);
 
         // Setup mock behavior for Firestore
         when(mockCollectionRef.add(any(MoodEvent.class))).thenReturn(mockDocRefTask);
@@ -121,6 +111,10 @@ public class MoodEventRepositoryTest {
 
         // Setup test MoodEvent
         testMoodEvent = createTestMoodEvent();
+
+        // Set up the mood repo
+        MoodEventRepository.setInstanceForTesting(mockFirestore);
+        repository = MoodEventRepository.getInstance();
     }
 
     @Test
@@ -358,7 +352,7 @@ public class MoodEventRepositoryTest {
         moodEvent.setSocialSituation(SocialSituation.ALONE);
         moodEvent.setTrigger("Good test results");
         moodEvent.setText("Test passed successfully");
-        moodEvent.setReasonWhy("Hard work pays off");
         return moodEvent;
     }
+
 }
