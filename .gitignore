@@ -3,7 +3,7 @@
 # Gradle files
 **/.gradle/
 **/build/
-
+!code/gradle/wrapper/gradle-wrapper.jar
 # Local configuration file
 **/local.properties
 
