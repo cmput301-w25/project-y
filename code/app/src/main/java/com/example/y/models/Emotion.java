@@ -6,9 +6,10 @@ import android.graphics.Color;
 import com.example.y.R;
 
 /**
- * Shows different emotions
+ * Holds one of many emotions
  */
 public enum Emotion {
+  
     ANGER(0),
     CONFUSION(1),
     DISGUST(2),
@@ -25,9 +26,10 @@ public enum Emotion {
      * Constructor for emotion enum
      * @param index index in emotion array
      */
-    private Emotion(int index) {
+    Emotion(int index) {
         this.index = index;
     }
+  
     /**
      * Returns the color connected with the emotion
      * @param context The  context
@@ -37,6 +39,7 @@ public enum Emotion {
         String[] colorAsStrings = context.getResources().getStringArray(R.array.emotionColorArray);
         return Color.parseColor(colorAsStrings[index]);
     }
+  
     /**
      * Returns the emoticon connected with the emotion
      * @param context The application context
@@ -46,6 +49,7 @@ public enum Emotion {
         String[] emoticons = context.getResources().getStringArray(R.array.emotionEmoticonArray);
         return emoticons[index];
     }
+  
     /**
      * Returns the index of the emotion.
      * @return The index as an integer.
@@ -53,4 +57,5 @@ public enum Emotion {
     public int getIndex() {
         return index;
     }
+
 }

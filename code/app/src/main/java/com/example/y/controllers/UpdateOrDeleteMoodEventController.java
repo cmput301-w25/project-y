@@ -13,21 +13,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
  * Controller for updating or deleting mood events
  */
 public class UpdateOrDeleteMoodEventController {
-    SessionManager session;
-    MoodEventRepository moodEventRepository = MoodEventRepository.getInstance();
-    public UpdateOrDeleteMoodEventController(Context context){
 
+    private final SessionManager session;
+
+    public UpdateOrDeleteMoodEventController(Context context){
         session = new SessionManager(context);
     }
-    /***
-     *
-     * @return String OP's Username
-     */
-    public String getPosterUsername() {
-        return session.getUsername();
-    }
-        //TODO: fix the signature of social situation, once the enum version is pushed
-
+  
     /**
      * Update a mood event with new text and social situation.
      * @param moodEvent         The mood event to update.
@@ -36,22 +28,17 @@ public class UpdateOrDeleteMoodEventController {
      * @param onSuccessListener Callback for successful update.
      * @param onFailureListener Callback for update failure.
      */
-
-    public void onUpdateMoodEvent(MoodEvent moodEvent, String textExplanation, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccessListener, OnFailureListener onFailureListener){
-
-        String posterUsername = getPosterUsername();
-
-        if (posterUsername == null || posterUsername.isEmpty()) {
-            onFailureListener.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
+    public void onUpdateMoodEvent(MoodEvent moodEvent, String reasonWhyText, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure){
+        if (session.getUsername() == null || session.getUsername().isEmpty()) {
+            onFailure.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
         }
-        if (textExplanation.length() > 20) {
-            onFailureListener.onFailure(new IllegalArgumentException("Reason should not exceed 20 characters"));
+        if (reasonWhyText.length() > 20) {
+            onFailure.onFailure(new IllegalArgumentException("Reason should not exceed 20 characters"));
             return;
         }
 
-        if (!textExplanation.isEmpty()) {
-            moodEvent.setText(textExplanation);
-
+        if (!reasonWhyText.isEmpty()) {
+            moodEvent.setText(reasonWhyText);
         }
 
         if (socialSituation != null) {
@@ -60,26 +47,31 @@ public class UpdateOrDeleteMoodEventController {
 
         if (moodEvent.getText() != null) {
             if (moodEvent.getText().length() > 20) {
-                onFailureListener.onFailure(new Exception("Text length must be at most 20 characters"));
+                onFailure.onFailure(new Exception("Reason why text length must be at most 20 characters"));
+                return;
             }
-            int textWordCount = moodEvent.getText().isEmpty() ? 0 : moodEvent.getText().split("\\s+").length;
-            if (textWordCount > 3) {
-                onFailureListener.onFailure(new Exception("Text length must be at most 3 words"));
+            int reasonWhyTextWordCount = moodEvent.getText().isEmpty() ? 0 : moodEvent.getText().split("\\s+").length;
+            if (reasonWhyTextWordCount > 3) {
+                onFailure.onFailure(new Exception("Reason why text length must be at most 3 words"));
+                return;
             }
         }
-
-        moodEventRepository.updateMoodEvent(moodEvent, onSuccessListener,onFailureListener);
+        if (moodEvent.getTrigger() != null && moodEvent.getTrigger().length() > 300) {
+            onFailure.onFailure(new Exception("Trigger length cannot exceed 300"));
+            return;
+        }
+        MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
     }
 
     /**
      * Delete a mood event.
      *
      * @param moodEvent         The mood event to delete.
-     * @param onSuccessListener Callback for successful deletion.
-     * @param onFailureListener Callback for deletion failure.
+     * @param onSuccess Callback for successful deletion.
+     * @param onFailure Callback for deletion failure.
      */
-    public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccessListener, OnFailureListener onFailureListener){
-    moodEventRepository.deleteMoodEvent(moodEvent.getId(),onSuccessListener,onFailureListener);
-
+    public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccess, OnFailureListener onFailure) {
+        MoodEventRepository.getInstance().deleteMoodEvent(moodEvent.getId(), onSuccess, onFailure);
     }
+
 }

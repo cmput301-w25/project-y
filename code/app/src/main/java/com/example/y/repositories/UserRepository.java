@@ -4,8 +4,8 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 import android.util.Log;
 
-import com.example.y.models.FollowRequest;
 import com.example.y.repositories.UserRepository.UserListener;
+import com.example.y.models.FollowRequest;
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.User;
@@ -38,7 +38,7 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     public enum FollowStatus { FOLLOWING, REQUESTED, NEITHER };
     private static UserRepository instance;  // Singleton instance
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
     public static final String USER_COLLECTION = "users";
     private final CollectionReference usersRef;
 
@@ -123,12 +123,34 @@ public class UserRepository extends GenericRepository<UserListener> {
      *      Failure callback function.
      */
     public void addUser(User user, OnSuccessListener<User> onSuccess, OnFailureListener onFailure) {
+        if (user.getUsername() == null) {
+            onFailure.onFailure(new Exception("Error: Username is null."));
+        }
+
         user.setJoinDateTime(Timestamp.now());
         usersRef.document(user.getUsername())
                 .set(user)
                 .addOnSuccessListener(doc -> onSuccess.onSuccess(user))
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("User document creation failed."));
+                });
+    }
+
+    /**
+     * Checks if a user exists.
+     * @param username
+     *      Username of the user.
+     * @param onSuccess
+     *      Success callback function to which a boolean value is passed to, indicating if the user exists or not.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void doesUserExist(String username, OnSuccessListener<User> onSuccess, OnFailureListener onFailure) {
+        usersRef.document(username)
+                .get()
+                .addOnSuccessListener(doc -> onSuccess.onSuccess(doc.toObject(User.class)))
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Error: Failed to check if user '" + username + "' exists.", e));
                 });
     }
 

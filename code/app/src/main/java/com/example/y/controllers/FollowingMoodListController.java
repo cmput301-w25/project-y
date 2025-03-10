@@ -7,7 +7,6 @@ import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -19,7 +18,6 @@ import java.util.HashMap;
  */
 public class FollowingMoodListController extends MoodListController {
 
-    private final SessionManager session;
     private ArrayList<String> followingList = null;
 
     /**
@@ -33,7 +31,6 @@ public class FollowingMoodListController extends MoodListController {
         super(context);
 
         UserRepository userRepo = UserRepository.getInstance();
-        session = new SessionManager(context);
 
         // Cache all users username is following
         userRepo.getFollowing(session.getUsername(), followingList -> {
@@ -41,11 +38,10 @@ public class FollowingMoodListController extends MoodListController {
         }, onFailure);
 
         // Initialize the array adapter
-        String user = session.getUsername();
-        userRepo.getFollowingMoodList(user, moodEvents -> {
+        userRepo.getFollowingMoodList(session.getUsername(), moodEvents -> {
 
             // Hashmap consists only of users being followed
-            userRepo.getFollowing(user, followingList -> {
+            userRepo.getFollowing(session.getUsername(), followingList -> {
                 HashMap<String, UserRepository.FollowStatus> followStatus = new HashMap<>();
                 for (String followee : followingList) {
                     // Create hashmap and initialize array adapter

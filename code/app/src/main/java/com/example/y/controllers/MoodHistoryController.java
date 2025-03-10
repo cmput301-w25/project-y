@@ -17,8 +17,8 @@ import java.util.HashMap;
  * Controller to display the mood history of a specific user
  */
 public class MoodHistoryController extends MoodListController {
-
     private final String poster;
+
 
     /**
      * Initializes the MoodHistoryController.

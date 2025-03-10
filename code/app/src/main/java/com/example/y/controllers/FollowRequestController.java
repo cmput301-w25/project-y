@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;
@@ -20,10 +19,13 @@ import java.util.ArrayList;
  */
 public class FollowRequestController implements FollowRequestRepository.FollowRequestListener {
 
-    private final String user;
-    private final Context context;
+    private String user;
+    private Context context;
     private FollowRequestArrayAdapter adapter;
+
     private ArrayList<FollowRequest> reqs;
+
+    public FollowRequestController() {}
 
     /**
      * Starts controller and gets follow requests sent to current user
@@ -49,7 +51,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             adapter = new FollowRequestArrayAdapter(context, this.reqs);
 
             onSuccess.onSuccess(null);
-        }, e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show());
+        }, onFailure);
     }
 
     /**
@@ -137,4 +139,12 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
      */
     public FollowRequestArrayAdapter getAdapter() { return adapter; }
 
+    public ArrayList<FollowRequest> getReqs() {
+        return reqs;
+    }
+
+    public void setReqs(ArrayList<FollowRequest> reqs) {
+        this.reqs = reqs;
+    }
+  
 }

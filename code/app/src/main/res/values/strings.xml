@@ -77,7 +77,8 @@
     <!--add mood form strings-->
     <string name="back">Back</string>
     <string name="insert_image">Insert Image</string>
-    <string name="hint_reason">Why do you feel this way?</string>
+    <string name="hint_reason_why_text">Why do you feel this way?</string>
+    <string name="hint_trigger">What was the trigger?</string>
     <string name="hint_explanation">Explain your mood...</string>
     <string name="share_location">Share location with others</string>
     <string name="submit">Submit</string>
@@ -86,6 +87,10 @@
     <string name="delete_this_mood">Delete this mood</string>
     <string name="edit_this_mood">Edit this mood.</string>
     <string name="update_this_mood">Update this mood</string>
+
+    <!-- Date filter buttons -->
+    <string name="minDateBtnText">Min Date</string>
+    <string name="maxDateBtnText">Max Date</string>
 
     <string-array name="mood_array">
         <item>😡</item>
