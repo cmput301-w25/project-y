@@ -1,5 +1,5 @@
 .DS_Store
-
+./code/app/.attach*
 # Gradle files
 **/.gradle/
 **/build/
