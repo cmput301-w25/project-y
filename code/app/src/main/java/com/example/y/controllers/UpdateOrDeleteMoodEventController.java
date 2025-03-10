@@ -28,19 +28,19 @@ public class UpdateOrDeleteMoodEventController {
         }
 
         if (!reasonWhyText.isEmpty()) {
-            moodEvent.setReasonWhyText(reasonWhyText);
+            moodEvent.setText(reasonWhyText);
         }
 
         if (socialSituation != null) {
             moodEvent.setSocialSituation(socialSituation);
         }
 
-        if (moodEvent.getReasonWhyText() != null) {
-            if (moodEvent.getReasonWhyText().length() > 20) {
+        if (moodEvent.getText() != null) {
+            if (moodEvent.getText().length() > 20) {
                 onFailure.onFailure(new Exception("Reason why text length must be at most 20 characters"));
                 return;
             }
-            int reasonWhyTextWordCount = moodEvent.getReasonWhyText().isEmpty() ? 0 : moodEvent.getReasonWhyText().split("\\s+").length;
+            int reasonWhyTextWordCount = moodEvent.getText().isEmpty() ? 0 : moodEvent.getText().split("\\s+").length;
             if (reasonWhyTextWordCount > 3) {
                 onFailure.onFailure(new Exception("Reason why text length must be at most 3 words"));
                 return;

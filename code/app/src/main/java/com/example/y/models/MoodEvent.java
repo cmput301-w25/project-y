@@ -29,7 +29,7 @@ public class MoodEvent implements Serializable, Parcelable {
     // Optional
     private SocialSituation socialSituation;
     private String trigger;
-    private String reasonWhyText;
+    private String text;
     private String photoURL;
     private GeoPoint location;
 
@@ -61,7 +61,7 @@ public class MoodEvent implements Serializable, Parcelable {
         posterUsername = in.readString();
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
         trigger = in.readString();
-        reasonWhyText = in.readString();
+        text = in.readString();
         photoURL = in.readString();
     }
 
@@ -106,9 +106,9 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setSocialSituation(SocialSituation socialSituation) { this.socialSituation = socialSituation; }
 
-    public String getReasonWhyText() { return reasonWhyText; }
+    public String getText() { return text; }
 
-    public void setReasonWhyText(String reasonWhyText) { this.reasonWhyText = reasonWhyText; }
+    public void setText(String text) { this.text = text; }
 
     public String getPhotoURL() { return photoURL; }
 
@@ -130,7 +130,7 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeString(posterUsername);
         parcel.writeParcelable(dateTime, i);
         parcel.writeString(trigger);
-        parcel.writeString(reasonWhyText);
+        parcel.writeString(text);
         parcel.writeString(photoURL);
     }
 }

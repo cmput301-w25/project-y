@@ -136,7 +136,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
         TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
-        TextView reasonWhyTextTextView = view.findViewById(R.id.reasonWhyText);
+        TextView reasonWhyTextTextView = view.findViewById(R.id.text);
         TextView locationTextView = view.findViewById(R.id.location);
         ImageView photoImgView = view.findViewById(R.id.photo);
 
@@ -173,7 +173,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Optional field: reason why text
-        String reasonWhyText = mood.getReasonWhyText();
+        String reasonWhyText = mood.getText();
         if (reasonWhyText != null) {
             reasonWhyTextTextView.setText(reasonWhyText);
             reasonWhyTextTextView.setVisibility(View.VISIBLE);

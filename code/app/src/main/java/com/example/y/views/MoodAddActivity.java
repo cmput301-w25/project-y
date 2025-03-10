@@ -113,7 +113,7 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setDateTime(moodDateTime);
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
-            newMood.setReasonWhyText(reasonWhyText);
+            newMood.setText(reasonWhyText);
             newMood.setTrigger(triggerText);
             // TODO: newMood.setLocation()
 
