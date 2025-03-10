@@ -165,4 +165,62 @@ public class FollowRepositoryTest {
         verify(mockSuccess).onSuccess(null);
         verify(mockFailure, never()).onFailure(any(Exception.class));
     }
+
+
+    @Test
+    public void testGetFollowDocumentExists() {
+// Arrange: Create a valid Follow object with the correct usernames.
+        Follow expectedFollow = new Follow("followerUser", "followedUser");
+        expectedFollow.setTimestamp(Timestamp.now());
+
+// Set up a mock document snapshot that exists.
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(true);
+        when(mockSnapshot.toObject(Follow.class)).thenReturn(expectedFollow);
+
+// Configure get() on the document reference.
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        doAnswer(invocation -> {
+            OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+            listener.onSuccess(mockSnapshot);
+            return mockGetTask;
+        }).when(mockGetTask).addOnSuccessListener(any(OnSuccessListener.class));
+
+        OnSuccessListener<Follow> onSuccess = mock(OnSuccessListener.class);
+        OnFailureListener onFailure = mock(OnFailureListener.class);
+
+// Act: call getFollow()
+        followsRepo.getFollow("followerUser", "followedUser", onSuccess, onFailure);
+
+// Assert: Verify that the success callback was called and failure was never called.
+        verify(onSuccess, times(1)).onSuccess(expectedFollow);
+        verify(onFailure, never()).onFailure(any(Exception.class));
+    }
+
+    @Test
+    public void testGetFollowRequestDocumentNotExists() {
+// Arrange: Create a mock snapshot that does not exist.
+        DocumentSnapshot mockSnapshot = mock(DocumentSnapshot.class);
+        when(mockSnapshot.exists()).thenReturn(false);
+
+// Configure get() on the document reference.
+        Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+        when(mockDocRef.get()).thenReturn(mockGetTask);
+        doAnswer(invocation -> {
+            OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
+            listener.onSuccess(mockSnapshot);
+            return mockGetTask;
+        }).when(mockGetTask).addOnSuccessListener(any(OnSuccessListener.class));
+
+        OnSuccessListener<Follow> onSuccess = mock(OnSuccessListener.class);
+        OnFailureListener onFailure = mock(OnFailureListener.class);
+
+// Act: call getFollow(), which should now trigger onFailure since the document doesn't exist.
+        followsRepo.getFollow("followerUser", "followedUser", onSuccess, onFailure);
+
+// Assert: Verify that the failure callback is invoked and success is never called.
+        verify(onFailure, times(1)).onFailure(any(Exception.class));
+        verify(onSuccess, never()).onSuccess(any(Follow.class));
+    }
 }
