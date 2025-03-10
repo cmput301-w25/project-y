@@ -3,8 +3,6 @@ package com.example.y.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import android.net.Uri;
-
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.google.firebase.Timestamp;
@@ -54,20 +52,20 @@ public class AddMoodControllerTest {
         });
         mockMoodEvent.setEmotion(Emotion.SADNESS);
 
-        // Test trigger length <= 20
-        mockMoodEvent.setTrigger("123456789012345678901");
+        // Test reason length <= 20
+        mockMoodEvent.setText("123456789012345678901");
         addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when trigger is of length > 20");
+            fail("Mood submitted when reason is of length > 20");
         }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Trigger length must be at most 20 characters");
+            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "The reason why must be at most 20 characters");
         });
 
-        // Test trigger word length <= 3
-        mockMoodEvent.setTrigger("1 2 3 4");
+        // Test reason word length <= 3
+        mockMoodEvent.setText("1 2 3 4");
         addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when trigger is of word length > 4");
+            fail("Mood submitted when reason is of word length > 4");
         }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Trigger length must be at most 3 words");
+            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Reason must be at most 3 words");
         });
     }
 
