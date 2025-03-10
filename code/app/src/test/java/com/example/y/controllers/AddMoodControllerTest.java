@@ -2,13 +2,18 @@ package com.example.y.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
+import com.example.y.repositories.MoodEventRepository;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class AddMoodControllerTest {
 
@@ -22,51 +27,86 @@ public class AddMoodControllerTest {
     }
 
     @Test
-    public void testOnSubmitMood() {
+    public void testSubmittedMoodEventMustBelongToLoggedInUser() {
         MoodEvent mockMoodEvent = new MoodEvent();
 
-        // Test logged in user posting
         mockMoodEvent.setPosterUsername("otherUser");
-        addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Cannot post a mood that does not belong to the logged in user", e.getMessage());
+            });
+        } catch (Exception e) {
             fail("Mood submitted when logged in user is not owner of mood event");
-        }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Cannot post a mood that does not belong to the logged in user");
-        });
+        }
+    }
+
+    @Test
+    public void testSubmittedMoodEventRequiresDateTime() {
+        MoodEvent mockMoodEvent = new MoodEvent();
         mockMoodEvent.setPosterUsername(testUser);
 
         // Test date time not null
         mockMoodEvent.setDateTime(null);
-        addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when date time is null");
-        }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Date time is required");
-        });
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Date time is required", e.getMessage());
+            });
+        } catch (Exception e) {
+                fail("Mood submitted when date time is null");
+        }
+    }
+
+    @Test
+    public void testSubmittedMoodEventRequiresEmotion() {
+        MoodEvent mockMoodEvent = new MoodEvent();
+        mockMoodEvent.setPosterUsername(testUser);
         mockMoodEvent.setDateTime(Timestamp.now());
 
         // Test emotion not null
         mockMoodEvent.setEmotion(null);
-        addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when emotion is null");
-        }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Emotion required");
-        });
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Emotion required", e.getMessage());
+            });
+        } catch (Exception e) {
+                fail("Mood submitted when emotion is null");
+        }
+    }
+
+    @Test
+    public void textSubmittedMoodEventMustHaveReasonWhyTextLengthAtMost20() {
+        MoodEvent mockMoodEvent = new MoodEvent();
+        mockMoodEvent.setPosterUsername(testUser);
+        mockMoodEvent.setDateTime(Timestamp.now());
         mockMoodEvent.setEmotion(Emotion.SADNESS);
 
-        // Test reason length <= 20
+        // Test reason why text length <= 20
         mockMoodEvent.setText("123456789012345678901");
-        addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when reason is of length > 20");
-        }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "The reason why must be at most 20 characters");
-        });
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 20 characters", e.getMessage());
+            });
+        } catch (Exception e) {
+                fail("Mood submitted when reason is of length > 20");
+        }
+    }
 
-        // Test reason word length <= 3
+    @Test
+    public void textSubmittedMoodEventMustHaveReasonWhyTextWordLengthAtMost3() {
+        MoodEvent mockMoodEvent = new MoodEvent();
+        mockMoodEvent.setPosterUsername(testUser);
+        mockMoodEvent.setDateTime(Timestamp.now());
+        mockMoodEvent.setEmotion(Emotion.SADNESS);
+
+        // Test reason why text word length <= 3
         mockMoodEvent.setText("1 2 3 4");
-        addMoodController.onSubmitMood(mockMoodEvent, null, moodEvent -> {
-            fail("Mood submitted when reason is of word length > 4");
-        }, e -> {
-            assertEquals("Wrong error: " + e.getMessage(), e.getMessage(), "Reason must be at most 3 words");
-        });
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 3 words", e.getMessage());
+            });
+        } catch (Exception e) {
+                fail("Mood submitted when reason is of word length > 4");
+        }
     }
 
 }
