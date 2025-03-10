@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.example.y.R;
 import com.example.y.models.FollowRequest;
 import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
 import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
@@ -150,7 +151,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         border.setBackgroundColor(mood.getEmotion().getColor(context));
 
         // Optional fields: (location and social situation)
-        String socialSituation = mood.getSocialSituation().getText(context);
+        SocialSituation socialSituation = mood.getSocialSituation();
         GeoPoint location = mood.getLocation();
         if (socialSituation == null && location == null) {
             // Hide layout if they're both null
@@ -158,7 +159,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             // Otherwise ony fill in the non-null fields
             if (socialSituation != null) {
-                socialSituationTextView.setText(socialSituation);
+                socialSituationTextView.setText(socialSituation.getText(context));
                 socialSituationTextView.setVisibility(View.VISIBLE);
             } else {
                 socialSituationTextView.setVisibility(View.GONE);

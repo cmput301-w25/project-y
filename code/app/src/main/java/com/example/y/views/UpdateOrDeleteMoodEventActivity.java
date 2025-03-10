@@ -88,7 +88,11 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, SocialSituation.values());
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
-        spinnerSocial.setSelection(moodEventToUpdateOrDelete.getSocialSituation().getIndex());
+
+        SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
+        if (socialSituation != null) {
+            spinnerSocial.setSelection(socialSituation.getIndex());
+        }
 
         // Grab the text explanation view as well as the date
         //https://developer.android.com/training/permissions/requesting
