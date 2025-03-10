@@ -1,10 +1,17 @@
 package com.example.y.models;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.y.R;
+import com.example.y.controllers.LocationController;
+import com.example.y.views.MapActivity;
+import com.example.y.views.MoodAddActivity;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;

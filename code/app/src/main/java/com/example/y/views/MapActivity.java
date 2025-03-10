@@ -2,16 +2,19 @@ package com.example.y.views;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 
 import com.example.y.R;
+import com.example.y.controllers.LocationController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,9 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapActivity extends BaseActivity implements OnMapReadyCallback {
-    private GoogleMap mMap;
 
-    // Simple data class to hold marker data.
+    private GoogleMap mMap;
+    private Location currentLocation;
+    private LocationController locationController;
+
+    // Simple data class for marker details.
     private static class MarkerData {
         LatLng coordinate;
         String emoticon;
@@ -51,7 +57,19 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
             return insets;
         });
 
-        // Retrieve the SupportMapFragment and register for the map callback.
+        // Initialize the LocationController.
+        locationController = new LocationController(this);
+        locationController.getCurrentLocation(location -> {
+            currentLocation = location;
+            Toast.makeText(this, "current location " + currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+            // Refresh the map when the location is updated.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(MapActivity.this);
+            }
+        });
+
+        // Retrieve the map fragment and register for the map callback.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
@@ -66,56 +84,53 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        // Create a list of markers with sample data.
-        // Replace with your actual data as needed.
+        // Prepare marker data.
         List<MarkerData> markerDataList = new ArrayList<>();
-        markerDataList.add(new MarkerData(
-                new LatLng(-34, 151),
+        markerDataList.add(new MarkerData(new LatLng(-34, 151),
                 getString(R.string.emotion_happiness_emoji),
-                "User1"
-        ));
-        markerDataList.add(new MarkerData(
-                new LatLng(-35, 150),
+                "User1"));
+        markerDataList.add(new MarkerData(new LatLng(-35, 150),
                 getString(R.string.emotion_anger_emoji),
-                "User2"
-        ));
-        // Add more markers as needed.
+                "User2"));
 
-        // Loop through each marker and add it to the map.
+        // Use the current location if available; otherwise, use a default.
+        if (currentLocation != null) {
+            markerDataList.add(new MarkerData(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                    getString(R.string.emotion_anger_emoji),
+                    "Anmol"));
+        } else {
+            markerDataList.add(new MarkerData(new LatLng(-33.865143, 151.209900),
+                    getString(R.string.emotion_anger_emoji),
+                    "Anmol - default"));
+        }
+
+        // Add markers to the map.
         for (MarkerData markerData : markerDataList) {
-            // Inflate the custom marker layout.
             View markerView = LayoutInflater.from(this).inflate(R.layout.geolocation_pointer, null);
-
-            // Set the emoticon and username on the marker view.
             TextView moodTextView = markerView.findViewById(R.id.mood);
             TextView usernameTextView = markerView.findViewById(R.id.username);
             moodTextView.setText(markerData.emoticon);
             usernameTextView.setText(markerData.username);
 
-            // Convert the marker view to a bitmap.
             Bitmap markerBitmap = getBitmapFromView(markerView);
-
-            // Create marker options with the custom icon.
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(markerData.coordinate)
                     .icon(BitmapDescriptorFactory.fromBitmap(markerBitmap))
-                    .title(markerData.username);  // Optional: set a title for the marker.
-
-            // Add the marker to the map.
+                    .title(markerData.username);
             mMap.addMarker(markerOptions);
         }
 
-        // Optionally, move the camera to the first marker.
+        // Move the camera to the first marker.
         if (!markerDataList.isEmpty()) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerDataList.get(0).coordinate, 10));
         }
     }
 
     /**
-     * Converts a view into a Bitmap.
+     * Helper method to convert a view into a bitmap for a custom marker.
      *
-     * @param view the view to convert.
-     * @return a bitmap representation of the view.
+     * @param view The view to convert.
+     * @return A bitmap representation of the view.
      */
     private Bitmap getBitmapFromView(View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);

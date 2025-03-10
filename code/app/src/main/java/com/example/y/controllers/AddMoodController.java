@@ -31,7 +31,7 @@ public class AddMoodController {
      * @param onSuccess
      * @param onFailure
      */
-    public void onSubmitMood(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+    public void onSubmitMood(MoodEvent mood, Uri photoUri,OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
         // Required:
         //      posterUsername
         if (!mood.getPosterUsername().equals(loggedInUser)) {
