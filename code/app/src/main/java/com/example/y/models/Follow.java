@@ -13,7 +13,7 @@ public class Follow implements Serializable {
     private String followedUsername;
     private Timestamp timestamp;
 
-    public Follow() {};
+    public Follow(String followerUser, String followedUser) {};
 
     public Follow(String followerUsername, String followedUsername, Timestamp timestamp) {
         this.followerUsername = followerUsername;

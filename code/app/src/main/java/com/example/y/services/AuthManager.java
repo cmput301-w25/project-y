@@ -8,7 +8,6 @@ import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -99,7 +98,7 @@ public class AuthManager {
                         userRepo.addUser(user, newUser -> {
 
                             // Make the new user follow themselves
-                            Follow reflexiveFollow = new Follow();
+                            Follow reflexiveFollow = new Follow("followerUser", "followedUser");
                             reflexiveFollow.setFollowerUsername(newUser.getUsername());
                             reflexiveFollow.setFollowedUsername(newUser.getUsername());
                             FollowRepository.getInstance().addFollow(reflexiveFollow, follow -> {

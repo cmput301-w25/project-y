@@ -20,8 +20,9 @@ public class FollowRepository extends GenericRepository<FollowListener> {
 
     private static FollowRepository instance;  // Singleton instance
     public static final String FOLLOW_COLLECTION = "follows";
-    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private static CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private  CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
+
 
     /**
      * Listens for follows being added or deleted.
@@ -110,7 +111,7 @@ public class FollowRepository extends GenericRepository<FollowListener> {
      * @param onFailure
      *      Failure callback function.
      */
-    public static void addFollow(Follow follow, OnSuccessListener<Follow> onSuccess, OnFailureListener onFailure) {
+    public void addFollow(Follow follow, OnSuccessListener<Follow> onSuccess, OnFailureListener onFailure) {
         String compoundId = getCompoundId(follow.getFollowerUsername(), follow.getFollowedUsername());
         follow.setTimestamp(Timestamp.now());
         followsRef.document(compoundId)
