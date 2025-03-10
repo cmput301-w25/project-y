@@ -43,7 +43,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
-    private EditText etExplanation;
+    private EditText etTrigger;
     private EditText datePicked;
     private Uri selectedImageUri;
 
@@ -65,6 +65,7 @@ public class MoodAddActivity extends AppCompatActivity {
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
+        etTrigger = findViewById(R.id.etTrigger);
         datePicked = findViewById(R.id.datePickerAddMood);
         IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
@@ -91,6 +92,7 @@ public class MoodAddActivity extends AppCompatActivity {
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
+            String triggerText = etTrigger.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
 
@@ -111,7 +113,8 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setDateTime(moodDateTime);
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
-            newMood.setText(reasonWhyText);
+            newMood.setReasonWhyText(reasonWhyText);
+            newMood.setTrigger(triggerText);
             // TODO: newMood.setLocation()
 
             // Submit form

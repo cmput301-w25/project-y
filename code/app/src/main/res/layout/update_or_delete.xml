@@ -31,30 +31,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
-
     <EditText
         android:id="@+id/EditTextUpdateTextExplanation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/hint_reason"
-        android:maxLength="200"
-        android:padding="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:maxLength="20"
+        android:hint="@string/hint_reason_why_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerMood" />
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
+    <EditText
+        android:id="@+id/etTrigger"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:maxLength="20"
+        android:hint="@string/hint_trigger"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/EditTextUpdateTextExplanation" />
 
+    <!-- Social Situation Section -->
     <Spinner
         android:id="@+id/spinnerSocialSituation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
         android:entries="@array/social_situation_array"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/EditTextUpdateTextExplanation" />
-
+        app:layout_constraintTop_toBottomOf="@id/etTrigger" />
 
     <CheckBox
         android:id="@+id/checkboxShareLocation"

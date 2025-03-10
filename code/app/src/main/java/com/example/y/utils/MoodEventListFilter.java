@@ -63,8 +63,8 @@ public class MoodEventListFilter {
                 (minDateTime != null && mood.getDateTime().compareTo(minDateTime) < 0) ||
                 (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
                 (emotion != null && mood.getEmotion() != emotion) ||
-                (reasonWhyTextKeyword != null && mood.getText() != null &&!(mood.getText().toLowerCase().contains(reasonWhyTextKeyword.toLowerCase()))) ||
-                (mood.getText() == null);
+                (reasonWhyTextKeyword != null && mood.getReasonWhyText() != null &&!(mood.getReasonWhyText().toLowerCase().contains(reasonWhyTextKeyword.toLowerCase()))) ||
+                (mood.getReasonWhyText() == null);
     }
 
     public Timestamp getMinDateTime() { return minDateTime; }

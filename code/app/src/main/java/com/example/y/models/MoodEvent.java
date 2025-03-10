@@ -10,12 +10,11 @@ import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * Stores data of a mood event posted by a user.
  */
-public class MoodEvent implements Serializable,Parcelable {
+public class MoodEvent implements Serializable, Parcelable {
 
     // Hidden requirements
     @Exclude
@@ -30,8 +29,7 @@ public class MoodEvent implements Serializable,Parcelable {
     // Optional
     private SocialSituation socialSituation;
     private String trigger;
-    private String text;
-    private String reasonWhy;
+    private String reasonWhyText;
     private String photoURL;
     private GeoPoint location;
 
@@ -63,8 +61,7 @@ public class MoodEvent implements Serializable,Parcelable {
         posterUsername = in.readString();
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
         trigger = in.readString();
-        text = in.readString();
-        reasonWhy = in.readString();
+        reasonWhyText = in.readString();
         photoURL = in.readString();
     }
 
@@ -109,13 +106,9 @@ public class MoodEvent implements Serializable,Parcelable {
 
     public void setSocialSituation(SocialSituation socialSituation) { this.socialSituation = socialSituation; }
 
-    public String getText() { return text; }
+    public String getReasonWhyText() { return reasonWhyText; }
 
-    public void setText(String text) { this.text = text; }
-
-    public String getReasonWhy() { return reasonWhy; }
-
-    public void setReasonWhy(String reasonWhy) { this.reasonWhy = reasonWhy; }
+    public void setReasonWhyText(String reasonWhyText) { this.reasonWhyText = reasonWhyText; }
 
     public String getPhotoURL() { return photoURL; }
 
@@ -137,8 +130,7 @@ public class MoodEvent implements Serializable,Parcelable {
         parcel.writeString(posterUsername);
         parcel.writeParcelable(dateTime, i);
         parcel.writeString(trigger);
-        parcel.writeString(text);
-        parcel.writeString(reasonWhy);
+        parcel.writeString(reasonWhyText);
         parcel.writeString(photoURL);
     }
 }
