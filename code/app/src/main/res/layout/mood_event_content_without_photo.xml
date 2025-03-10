@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/border"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/white">
+
+    android:descendantFocusability="blocksDescendants"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000000"
+        android:descendantFocusability="blocksDescendants"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/user"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnFollowFromMood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="14dp"
+                android:text="@string/follow"
+                android:layout_gravity="end"
+                android:textColor="@color/white"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
+                android:backgroundTint="@color/follow" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:orientation="horizontal"
+            android:descendantFocusability="blocksDescendants"
+            android:background="#80000000" >
+
+            <TextView
+                android:id="@+id/emoticon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:contentDescription="@string/emoticon"
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+
+            <TextView
+                android:id="@+id/dateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="end"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/date_and_time"
+                android:textColor="#FFFFFFFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/locationSocialSituationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
+            android:background="#80000000"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                android:textSize="12sp"
+                android:textColor="#FFFFFFFF"
+                android:gravity="start"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+
+            <TextView
+                android:id="@+id/socialSituation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/alone"
+                android:textSize="14sp"
+                android:gravity="end"
+                android:textColor="#FFFFFF"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"  />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:descendantFocusability="blocksDescendants"
+            android:text="@string/reason"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

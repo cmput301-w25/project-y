@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Emotions -->
-    <color name="emotion_anger">#E82828</color>
-    <color name="emotion_confusion">#DC326C</color>
-    <color name="emotion_disgust">#5C904E</color>
-    <color name="emotion_fear">#A147D9</color>
-    <color name="emotion_happiness">#F2E46D</color>
-    <color name="emotion_sadness">#3C66A2</color>
-    <color name="emotion_shame">#4C4C4C</color>
-    <color name="emotion_surprise">#7C0909</color>
-    <color name="emotion_laughter">#F28E3D</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Mood list item -->
+    <color name="follow">#DC826B</color>
+    <color name="following">#B9B9B9</color>
+    <color name="requested">#B9B9B9</color>
+    <color name="red">#F61C0D</color>
+    <color name="green">#00EF23</color>
 
 </resources>
