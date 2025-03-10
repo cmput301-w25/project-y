@@ -14,6 +14,13 @@ public class Follow implements Serializable {
     private Timestamp timestamp;
 
     public Follow() {};
+
+
+    public Follow(String followerUser, String followedUser) {
+        this.followerUsername = followerUser;
+        this.followedUsername = followedUser;
+    }
+
     /**
      * Constructs a new Follow
      *
