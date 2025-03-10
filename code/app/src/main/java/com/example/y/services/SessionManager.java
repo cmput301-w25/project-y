@@ -62,8 +62,4 @@ public class SessionManager {
         editor.apply();
     }
 
-
-    public SharedPreferences getPrefs() {
-        return prefs;
-    }
 }
