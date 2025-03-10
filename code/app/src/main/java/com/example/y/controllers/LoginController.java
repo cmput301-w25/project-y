@@ -13,6 +13,10 @@ public class LoginController {
 
     public LoginController() {}
 
+    /**
+     * Controller for handling user login functionality.
+     * @param context context
+     */
     public LoginController(Context context) {
         this.authManager = new AuthManager(context);
     }

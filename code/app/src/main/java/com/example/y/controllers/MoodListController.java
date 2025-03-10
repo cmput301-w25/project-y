@@ -90,6 +90,11 @@ public abstract class MoodListController
         notifyAdapter();
     }
 
+    /**
+     * Called after a follow request is accepted
+     * @param follow
+     *      Follow record to be added.
+     */
     @Override
     public void onFollowAdded(Follow follow) {
         if (shouldUpdateOnFollowStatusUpdate(follow.getFollowerUsername(), follow.getFollowedUsername())) {
@@ -98,6 +103,13 @@ public abstract class MoodListController
         }
     }
 
+    /**
+     * Called after a person is unfollowed
+     * @param followerUsername
+     *      Username of the follower of the follow record that was deleted.
+     * @param followedUsername
+     *      Username of the followed user of the follow record that was deleted.
+     */
     @Override
     public void onFollowDeleted(String followerUsername, String followedUsername) {
         if (shouldUpdateOnFollowStatusUpdate(followerUsername, followedUsername)) {
