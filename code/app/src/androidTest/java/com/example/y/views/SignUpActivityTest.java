@@ -120,6 +120,7 @@ public class SignUpActivityTest {
 
     }
 
+
     @Test
     public void checkPasswordValidation(){
         Matcher<View> password = withId(R.id.password);
