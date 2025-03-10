@@ -130,7 +130,7 @@ public class MyProfileActivityTest {
 
     @After
     public void tearDown() {
-        String projectId = "CMPUT301-PROJECT-Y";
+        String projectId ="cmput301-project-y";
         URL url = null;
         try {
             url = new URL("http://10.0.2.2:8080/emulator/v1/projects/" + projectId + "/databases/(default)/documents");
