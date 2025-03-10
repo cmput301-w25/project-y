@@ -20,8 +20,9 @@ public class FollowRepository extends GenericRepository<FollowListener> {
 
     private static FollowRepository instance;  // Singleton instance
     public static final String FOLLOW_COLLECTION = "follows";
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private  CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
+
 
     /**
      * Listens for follows being added or deleted.
@@ -82,6 +83,24 @@ public class FollowRepository extends GenericRepository<FollowListener> {
         if (instance == null) instance = new FollowRepository();
         return instance;
     }
+
+
+
+    private FollowRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        followsRef = db.collection(FOLLOW_COLLECTION );
+    }
+
+
+    /**
+     * Updates the singleton instance with a new db
+     * @param firestore
+     *      Testing db instance.
+     */
+    public static void setInstanceForTesting(FirebaseFirestore firestore) {
+        instance = new FollowRepository(firestore);
+    }
+
 
     /**
      * Adds a follow record to the database.
@@ -191,7 +210,7 @@ public class FollowRepository extends GenericRepository<FollowListener> {
      * @return
      *      `followerUsername + "_" + followedUsername` as the unique ID
      */
-    private String getCompoundId(String followerUsername, String followedUsername) {
+    public static String getCompoundId(String followerUsername, String followedUsername) {
         return followerUsername + "_" + followedUsername;
     }
 
@@ -214,5 +233,5 @@ public class FollowRepository extends GenericRepository<FollowListener> {
     private synchronized void onFollowDeleted(String followerUsername, String followedUsername) {
         listeners.forEach(listener -> listener.onFollowDeleted(followerUsername, followedUsername));
     }
-    
+
 }
