@@ -16,12 +16,12 @@ import java.util.HashMap;
 public class MoodHistoryController extends MoodListController {
     private final String poster;
 
+
     /**
      * Constructor
-     * @param context
-     *      Current context
-     * @param poster
-     *      Username of the user to get mood history for
+     *
+     * @param context Current context
+     * @param poster  Username of the user to get mood history for
      */
     public MoodHistoryController(Context context, String poster, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);

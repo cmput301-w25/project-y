@@ -214,7 +214,7 @@ public class MoodListActivity extends BaseActivity {
             Emotion sendEmotion = moodEvent.getEmotion();
             intent.putExtra("emotion",sendEmotion.ordinal());
             SocialSituation sendSocial = moodEvent.getSocialSituation();
-            intent.putExtra("social", sendSocial.ordinal());
+            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
             startActivity(intent);
         }
     }

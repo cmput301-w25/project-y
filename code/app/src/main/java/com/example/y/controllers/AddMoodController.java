@@ -16,6 +16,7 @@ public class AddMoodController {
     private String loggedInUser;
     private Context context;
 
+
     public AddMoodController() {}
 
     public AddMoodController(Context context) {
@@ -51,7 +52,7 @@ public class AddMoodController {
         // Optional:
         //      socialSituation (alone, with one other person, with two to several people, with a crowd))
         //          No need to validate this one I don't think
-        //      text/trigger/reasonWhy (at most 20 characters or 3 words)
+        //      reason why text (at most 20 characters or 3 words)
         if (mood.getTrigger() != null) {
             if (mood.getTrigger().length() > 20) {
                 onFailure.onFailure(new Exception("Trigger length must be at most 20 characters"));
@@ -70,6 +71,13 @@ public class AddMoodController {
         }
         //      location
         //          Not sure if this needs to be validated
+        //      Trigger
+        //          Lets cap this at 300 words?
+        int triggerCap = 300;
+        if (mood.getTrigger() != null && mood.getTrigger().length() > triggerCap) {
+            onFailure.onFailure(new Exception("Trigger length cannot exceed " + triggerCap + " characters"));
+            return;
+        }
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();
