@@ -46,4 +46,5 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    testImplementation("org.robolectric:robolectric:4.12.2")
 }
