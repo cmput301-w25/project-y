@@ -68,8 +68,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(
-                    mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
-                    parent, false
+                mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
+                parent, false
             );
         }
 
@@ -136,7 +136,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
         TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
-        TextView reasonWhyTextTextView = view.findViewById(R.id.reasonWhyText);
+        TextView reasonWhyTextTextView = view.findViewById(R.id.text);
         TextView locationTextView = view.findViewById(R.id.location);
         ImageView photoImgView = view.findViewById(R.id.photo);
 
@@ -173,9 +173,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Optional field: reason why text
-        String text = mood.getText();
-        if (text != null) {
-            reasonWhyTextTextView.setText(text);
+        String reasonWhyText = mood.getText();
+        if (reasonWhyText != null) {
+            reasonWhyTextTextView.setText(reasonWhyText);
             reasonWhyTextTextView.setVisibility(View.VISIBLE);
         } else {
             reasonWhyTextTextView.setVisibility(View.GONE);
@@ -195,7 +195,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
                 if (cachedBitmap != null) {
                     photoImgView.setImageBitmap(cachedBitmap);
                 } else {
-                    MoodEventRepository.getInstance().downloadImage( photoURL, bitmap -> {
+                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
                         // Cache downloaded image
                         imageCache.put(photoURL, bitmap);
 

@@ -10,12 +10,11 @@ import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * Stores data of a mood event posted by a user.
  */
-public class MoodEvent implements Serializable,Parcelable {
+public class MoodEvent implements Serializable, Parcelable {
 
     // Hidden requirements
     @Exclude
@@ -31,7 +30,6 @@ public class MoodEvent implements Serializable,Parcelable {
     private SocialSituation socialSituation;
     private String trigger;
     private String text;
-    private String reasonWhy;
     private String photoURL;
     private GeoPoint location;
 
@@ -64,7 +62,6 @@ public class MoodEvent implements Serializable,Parcelable {
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
         trigger = in.readString();
         text = in.readString();
-        reasonWhy = in.readString();
         photoURL = in.readString();
     }
 
@@ -113,10 +110,6 @@ public class MoodEvent implements Serializable,Parcelable {
 
     public void setText(String text) { this.text = text; }
 
-    public String getReasonWhy() { return reasonWhy; }
-
-    public void setReasonWhy(String reasonWhy) { this.reasonWhy = reasonWhy; }
-
     public String getPhotoURL() { return photoURL; }
 
     public void setPhotoURL(String photoURL) { this.photoURL = photoURL; }
@@ -138,7 +131,6 @@ public class MoodEvent implements Serializable,Parcelable {
         parcel.writeParcelable(dateTime, i);
         parcel.writeString(trigger);
         parcel.writeString(text);
-        parcel.writeString(reasonWhy);
         parcel.writeString(photoURL);
     }
 }
