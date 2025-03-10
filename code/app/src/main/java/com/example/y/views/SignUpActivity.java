@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.y.R;
 import com.example.y.controllers.SignUpController;
 import com.example.y.services.AuthManager;
+import com.example.y.utils.GenericTextWatcher;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -23,6 +24,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText confirmEmailField;
     private EditText usernameField;
     private EditText passwordField;
+
     private EditText confirmPasswordField;
 
     @Override
@@ -39,8 +41,16 @@ public class SignUpActivity extends AppCompatActivity {
         emailField = findViewById(R.id.email);
         confirmEmailField = findViewById(R.id.confirm_email);
         passwordField = findViewById(R.id.password);
-        confirmPasswordField = findViewById(R.id.confirmPassword);
+        EditText confirmPasswordField = findViewById(R.id.confirmPassword);
+        // add text watcher to all fields
+        nameField.addTextChangedListener(new GenericTextWatcher(nameField, "Name cannot be empty!"));
+        usernameField.addTextChangedListener(new GenericTextWatcher(usernameField,"Username cannot be empty!"));
+        emailField.addTextChangedListener(new GenericTextWatcher(emailField, "Email cannot be empty!"));
+        confirmEmailField.addTextChangedListener(new GenericTextWatcher(emailField,confirmEmailField, "Emails do not match!"));
+        passwordField.addTextChangedListener(new GenericTextWatcher(passwordField, "Password cannot be empty!"));
 
+        confirmPasswordField.addTextChangedListener(new GenericTextWatcher(passwordField,confirmPasswordField, "Passwords do not match!"));
+        // find buttons
         Button createAccountButton = findViewById(R.id.create_account);
         Button backToLoginButton = findViewById(R.id.back_to_login);
 
@@ -70,9 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
 
-        }, e -> {
-            Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-        });
+        }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
 }
 

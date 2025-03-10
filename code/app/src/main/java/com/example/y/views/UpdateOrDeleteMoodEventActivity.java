@@ -22,6 +22,7 @@ import com.example.y.controllers.UpdateOrDeleteMoodEventController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
+import com.example.y.utils.GenericTextWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -109,6 +110,8 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         // Grab the text explanation view as well as the date
         editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
+
+        editTextUpdateTextExplanation.addTextChangedListener(new GenericTextWatcher(editTextUpdateTextExplanation,"Reason why cannot be empty!","yes"));
         datePicked = findViewById(R.id.datePickerAddMood);
 
         // Then this just prefills the date in a nice format
@@ -131,6 +134,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         if (!moodEventToUpdateOrDelete.getText().isEmpty()) {
             editTextUpdateTextExplanation.setText(moodEventToUpdateOrDelete.getText());
         }
+
 
         // If we wanted the date to chance, then all we have to do it uncomment:
 
