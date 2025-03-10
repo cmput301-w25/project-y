@@ -1,11 +1,7 @@
 package com.example.y.controllers;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
@@ -17,7 +13,6 @@ import com.example.y.utils.MoodEventArrayAdapter;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
 import com.example.y.utils.MoodEventListFilter;
-import com.example.y.views.UpdateOrDeleteMoodEventActivity;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -38,12 +33,12 @@ public abstract class MoodListController
     protected ArrayList<MoodEvent> originalMoodEventList;
     protected ArrayList<MoodEvent> filteredMoodEventList;
     protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
-    protected SessionManager sessionManager;
+    protected final SessionManager session;
 
     public MoodListController(Context context) {
         filter = new MoodEventListFilter();
         this.context = context;
-        sessionManager = new SessionManager(context);
+        session = new SessionManager(context);
     }
 
     /**
@@ -138,7 +133,7 @@ public abstract class MoodListController
      */
     protected boolean shouldUpdateOnFollowStatusUpdate(String user, String poster) {
         // Assert that the status update was made by logged in user
-        boolean isUserTheFollower = user.equals(sessionManager.getUsername());
+        boolean isUserTheFollower = user.equals(user);
 
         // Assert that the poster will be in the array
         boolean posterAllowed = isPosterAllowed(poster);
@@ -273,6 +268,5 @@ public abstract class MoodListController
     public MoodEvent getFilteredMoodEvent(int position) {
         return filteredMoodEventList.get(position);
     }
-
 
 }

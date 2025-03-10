@@ -2,7 +2,6 @@ package com.example.y.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +24,6 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
-import com.example.y.views.FollowingMoodEventListActivity;
-import com.example.y.views.MoodHistoryActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -83,6 +80,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         SessionManager sessionManager = new SessionManager(context);
         if (mood.getPosterUsername().equals(sessionManager.getUsername())) {
             followBtn.setVisibility(View.GONE);
+        } else {
+            followBtn.setVisibility(View.VISIBLE);
         }
 
         String poster = mood.getPosterUsername();
@@ -143,8 +142,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         // Populate required fields (username, datetime, emotion emoticon)
         usernameTextView.setText(mood.getPosterUsername());
-        String dateTimeFormatted = new SimpleDateFormat("HH:mm MMM dd, yyyy", Locale.getDefault())
-                .format(mood.getDateTime().toDate());
+        String dateTimeFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 

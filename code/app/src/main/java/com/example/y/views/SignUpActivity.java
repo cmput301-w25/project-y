@@ -17,12 +17,15 @@ import com.example.y.services.AuthManager;
 import com.example.y.utils.GenericTextWatcher;
 
 public class SignUpActivity extends AppCompatActivity {
+
     private SignUpController signUpController;
     private EditText nameField;
     private EditText emailField;
     private EditText confirmEmailField;
     private EditText usernameField;
     private EditText passwordField;
+
+    private EditText confirmPasswordField;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
         String email = emailField.getText().toString().trim();
         String confirmEmail = confirmEmailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
-        String confirmPassword = passwordField.getText().toString().trim();
+        String confirmPassword = confirmPasswordField.getText().toString().trim();
 
         signUpController.onSignUpUser(email, confirmEmail, name, username, password, confirmPassword, user -> {
             Toast.makeText(this, "Sign-up successful!", LENGTH_SHORT).show();

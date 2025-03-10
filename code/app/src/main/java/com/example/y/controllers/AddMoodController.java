@@ -10,22 +10,20 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 
 public class AddMoodController {
 
     private String loggedInUser;
     private Context context;
 
-    public AddMoodController() {
-    }
+
+    public AddMoodController() {}
 
     public AddMoodController(Context context) {
         this.context = context;
         SessionManager session = new SessionManager(context);
         loggedInUser = session.getUsername();
     }
-
 
     /**
      * @param mood
@@ -38,36 +36,41 @@ public class AddMoodController {
         //      posterUsername
         if (!mood.getPosterUsername().equals(loggedInUser)) {
             onFailure.onFailure(new Exception("Cannot post a mood that does not belong to the logged in user"));
+            return;
         }
         //      dateTime
-        if (!isValidTimestamp(mood.getDateTime())) {
-            onFailure.onFailure(new Exception("Invalid date time: " + mood.getDateTime().toString()));
+        if (mood.getDateTime() == null) {
+            onFailure.onFailure(new Exception("Date time is required"));
+            return;
         }
         //      emotion
         if (mood.getEmotion() == null) {
             onFailure.onFailure(new Exception("Emotion required"));
+            return;
         }
 
         // Optional:
         //      socialSituation (alone, with one other person, with two to several people, with a crowd))
         //          No need to validate this one I don't think
         //      text/trigger/reasonWhy (at most 20 characters or 3 words)
-        if (mood.getText() != null) {
-            if (mood.getText().length() > 20) {
-                onFailure.onFailure(new Exception("Text length must be at most 20 characters"));
+        if (mood.getTrigger() != null) {
+            if (mood.getTrigger().length() > 20) {
+                onFailure.onFailure(new Exception("Trigger length must be at most 20 characters"));
+                return;
             }
-            int textWordCount = mood.getText().isEmpty() ? 0 : mood.getText().split("\\s+").length;
+            int textWordCount = mood.getTrigger().isEmpty() ? 0 : mood.getTrigger().split("\\s+").length;
             if (textWordCount > 3) {
-                onFailure.onFailure(new Exception("Text length must be at most 3 words"));
+                onFailure.onFailure(new Exception("Trigger length must be at most 3 words"));
+                return;
             }
         }
         //      photoURL (under 65,536 KB)
-//        if (photoUri != null && getImageSize(photoUri) >= 65536) {
-//            onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
-//        }
+        if (photoUri != null && getImageSize(photoUri) >= 65536) {
+            onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
+            return;
+        }
         //      location
         //          Not sure if this needs to be validated
-
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();
@@ -79,22 +82,6 @@ public class AddMoodController {
         } else {
             // Otherwise directly upload it
             moodRepo.addMoodEvent(mood, onSuccess, onFailure);
-        }
-    }
-
-    /**
-     * Makes sure a timestamp is valid.
-     *
-     * @param timestamp Timestamp to validate.
-     * @return True if valid, false otherwise
-     */
-    private boolean isValidTimestamp(Timestamp timestamp) {
-        if (timestamp == null) return false;
-        try {
-            long seconds = timestamp.getSeconds();
-            return seconds > 0 && seconds < 253402300799L; // Year range check (0001-9999)
-        } catch (Exception e) {
-            return false;
         }
     }
 
@@ -121,13 +108,13 @@ public class AddMoodController {
             e.printStackTrace();
         }
 
-
         return imageSizeInBytes;
     }
 
     public void setLoggedInUser(String loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
+
 }
 
 
