@@ -4,6 +4,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,10 +18,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
+import com.example.y.controllers.LocationController;
 import com.example.y.controllers.UpdateOrDeleteMoodEventController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,6 +43,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private ImageButton btnBack;
 
+    private boolean shareLocation;
+
+    private LocationController locationController;
+
     Button updateButton;
     Button deleteButton;
 
@@ -50,6 +57,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
+
+        // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
+        locationController = new LocationController(this);
 
         // Taken from https://stackoverflow.com/a/6954561
         // Taken by Tegen Hilker Readman
@@ -127,6 +137,13 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         //datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
         //VPreviewImage = findViewById(R.id.IVPreviewImage);
 
+        //Listener for the checkShareLocation
+        checkShareLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareLocation = checkShareLocation.isChecked();
+            }
+        });
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish()); // If they click the back button
@@ -148,10 +165,40 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
         moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
         SocialSituation selectedSocialSituation = (SocialSituation) spinnerSocial.getSelectedItem();
-        updateOrDeleteMoodEventController.onUpdateMoodEvent(moodEventToUpdateOrDelete, updatedReasonWhyText, selectedSocialSituation, moodEvent -> {
-            Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
-            finish();
-        }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
+
+
+        if (shareLocation) {
+            // Get the current location asynchronously and then update the mood event.
+            locationController.getCurrentLocation(location -> {
+                if (location != null) {
+                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    moodEventToUpdateOrDelete.setLocation(geoPoint);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unable to retrieve location", LENGTH_SHORT).show();
+                }
+                // Now update the mood event after location retrieval
+                updateOrDeleteMoodEventController.onUpdateMoodEvent(
+                        moodEventToUpdateOrDelete,
+                        updatedReasonWhyText,
+                        selectedSocialSituation,
+                        moodEvent -> {
+                    Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                    finish();
+                }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
+            });
+        } else {
+            // Update the mood event directly without retrieving location.
+            updateOrDeleteMoodEventController.onUpdateMoodEvent(
+                    moodEventToUpdateOrDelete,
+                    updatedReasonWhyText,
+                    selectedSocialSituation,
+                    moodEvent -> {
+                Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                finish();
+            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show()
+            );
+        }
+
     }
 
     /**

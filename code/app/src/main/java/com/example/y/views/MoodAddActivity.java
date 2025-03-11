@@ -51,7 +51,6 @@ public class MoodAddActivity extends AppCompatActivity {
     private EditText datePicked;
     private Uri selectedImageUri;
 
-    // Instantiate the LocationController once in onCreate.
     private LocationController locationController;
 
     @Override
