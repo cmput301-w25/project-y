@@ -1,5 +1,6 @@
 package com.example.y.models;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,6 +26,7 @@ public class MoodEvent implements Serializable, Parcelable {
     // Required
     private Timestamp dateTime;
     private Emotion emotion;
+    private Boolean isPrivate;
 
     // Optional
     private SocialSituation socialSituation;
@@ -53,6 +55,7 @@ public class MoodEvent implements Serializable, Parcelable {
         this.posterUsername = posterUsername;
         this.dateTime = dateTime;
         this.emotion = emotion;
+        this.isPrivate = false;
     }
 
     protected MoodEvent(Parcel in) {
@@ -118,6 +121,10 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setLocation(GeoPoint location) { this.location = location; }
 
+    public Boolean getIsPrivate() { return isPrivate; }
+
+    public void setIsPrivate(Boolean isPrivate) { this.isPrivate = isPrivate; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,5 +139,7 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeString(trigger);
         parcel.writeString(text);
         parcel.writeString(photoURL);
+        parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
     }
+
 }
