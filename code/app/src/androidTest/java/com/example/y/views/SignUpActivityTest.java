@@ -30,20 +30,20 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SignUpActivityTest {
-    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    private static SessionManager session;
     @Rule
     public ActivityScenarioRule<SignUpActivity> activityRule = new ActivityScenarioRule<>(SignUpActivity.class);
-    private static SessionManager session;
+    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
     @Before
     public void setUp() throws Exception {
-    session = new SessionManager(context);
-    session.saveSession("tegen");
+        session = new SessionManager(context);
+        session.saveSession("tegen");
     }
 
     @After
     public void tearDown() throws Exception {
-
+        session.logout();
     }
 
 
@@ -58,23 +58,25 @@ public class SignUpActivityTest {
     }
 
     @Test
-    public void checkUserNameEmptyError(){
+    public void checkUserNameEmptyError() {
         Matcher<View> username = withId(R.id.username);
         onView(username).check(matches(isDisplayed()));
         onView(username).perform(typeText("Tegen"));
         onView(username).perform(clearText());
         onView(username).check(matches(hasErrorText("Username cannot be empty!")));
     }
+
     @Test
-    public void checkEmailEmptyError(){
+    public void checkEmailEmptyError() {
         Matcher<View> email = withId(R.id.email);
         onView(email).check(matches(isDisplayed()));
         onView(email).perform(typeText("Tegen@gmail.com"));
         onView(email).perform(clearText());
         onView(email).check(matches(hasErrorText("Email cannot be empty!")));
     }
+
     @Test
-    public void checkConfirmEmailEmptyError(){
+    public void checkConfirmEmailEmptyError() {
         Matcher<View> email = withId(R.id.confirm_email);
         onView(withId(R.id.email)).perform(typeText("tegen@gmail.com"));
         onView(email).check(matches(isDisplayed()));
@@ -82,8 +84,9 @@ public class SignUpActivityTest {
         onView(email).perform(clearText());
         onView(email).check(matches(hasErrorText("Emails do not match!")));
     }
+
     @Test
-    public void checkEmptyPassword(){
+    public void checkEmptyPassword() {
         Matcher<View> password = withId(R.id.password);
         onView(password).check(matches(isDisplayed()));
         onView(password).perform(typeText("Tegen"));
@@ -91,20 +94,19 @@ public class SignUpActivityTest {
         onView(password).check(matches(hasErrorText("Password cannot be empty!")));
     }
 
-//    @Test
-//    public void checkEmptyConfirmPassword(){
-//        Matcher<View> password = withId(R.id.confirmPassword);
-//        onView(password).check(matches(isDisplayed()));
-//        onView(password).perform(typeText("Tegen"));
-//        onView(withId(R.id.password)).perform(typeText("tegen@gmail.com"));
-//        onView(password).perform(clearText());
-//        onView(password).check(matches(hasErrorText("Passwords do not match!")));
-//    }
-
+    @Test
+    public void checkEmptyConfirmPassword() {
+        Matcher<View> password = withId(R.id.confirmPassword);
+        onView(password).check(matches(isDisplayed()));
+        onView(password).perform(typeText("Tegen"));
+        onView(withId(R.id.password)).perform(typeText("tegen@gmail.com"));
+        onView(password).perform(clearText());
+        onView(password).check(matches(hasErrorText("Passwords do not match!")));
+    }
 
 
     @Test
-    public void checkEmailValidation(){
+    public void checkEmailValidation() {
         Matcher<View> ogEmail = withId(R.id.email);
         Matcher<View> cEmail = withId(R.id.confirm_email);
         onView(ogEmail).check(matches(isDisplayed()));
@@ -122,32 +124,28 @@ public class SignUpActivityTest {
         onView(ogEmail).perform(typeText("tegen@test.com"));
 
 
-
     }
 
 
-//    @Test
-//    public void checkPasswordValidation() throws InterruptedException {
-//        Matcher<View> password = withId(R.id.password);
-//        Matcher<View> cPassword = withId(R.id.confirmPassword);
-//        onView(password).check(matches(isDisplayed()));
-//        onView(cPassword).check(matches(isDisplayed()));
-//        onView(password).perform(typeText("tegen"));
-//        onView(cPassword).perform(typeText("tegn"));
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
+    @Test
+    public void checkPasswordValidation() throws InterruptedException {
+        Matcher<View> password = withId(R.id.password);
+        Matcher<View> cPassword = withId(R.id.confirmPassword);
+        onView(password).check(matches(isDisplayed()));
+        onView(cPassword).check(matches(isDisplayed()));
+        onView(password).perform(typeText("tegen"));
+        onView(cPassword).perform(typeText("tegn"));
+        Thread.sleep(2000);
+        onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
 
 //        onView(password).perform(typeText("tegen@test.com"));
 //        onView(cPassword).perform(typeText("tegen@test.com"));
 //        onView(password).perform(clearText());
 //        onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
-
     }
+
+
+}
 
 
 
