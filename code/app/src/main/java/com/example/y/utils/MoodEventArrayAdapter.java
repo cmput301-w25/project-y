@@ -166,7 +166,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             }
 
             if (location != null) {
-                locationTextView.setText(location.toString());  // TODO: Format location
+                locationTextView.setText(String.format("Location : (%s, %s)", location.getLatitude(), location.getLongitude()));
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
                 locationTextView.setVisibility(View.GONE);

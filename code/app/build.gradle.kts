@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -61,5 +62,5 @@ dependencies {
     androidTestImplementation (libs.rules)
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
-
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 }
