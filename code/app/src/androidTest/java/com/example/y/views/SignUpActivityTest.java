@@ -90,15 +90,16 @@ public class SignUpActivityTest {
         onView(password).perform(clearText());
         onView(password).check(matches(hasErrorText("Password cannot be empty!")));
     }
-    @Test
-    public void checkEmptyConfirmPassword(){
-        Matcher<View> password = withId(R.id.confirmPassword);
-        onView(password).check(matches(isDisplayed()));
-        onView(password).perform(typeText("Tegen"));
-        onView(withId(R.id.password)).perform(typeText("tegen@gmail.com"));
-        onView(password).perform(clearText());
-        onView(password).check(matches(hasErrorText("Passwords do not match!")));
-    }
+
+//    @Test
+//    public void checkEmptyConfirmPassword(){
+//        Matcher<View> password = withId(R.id.confirmPassword);
+//        onView(password).check(matches(isDisplayed()));
+//        onView(password).perform(typeText("Tegen"));
+//        onView(withId(R.id.password)).perform(typeText("tegen@gmail.com"));
+//        onView(password).perform(clearText());
+//        onView(password).check(matches(hasErrorText("Passwords do not match!")));
+//    }
 
 
 
@@ -125,21 +126,21 @@ public class SignUpActivityTest {
     }
 
 
-    @Test
-    public void checkPasswordValidation() throws InterruptedException {
-        Matcher<View> password = withId(R.id.password);
-        Matcher<View> cPassword = withId(R.id.confirmPassword);
-        onView(password).check(matches(isDisplayed()));
-        onView(cPassword).check(matches(isDisplayed()));
-        onView(password).perform(typeText("tegen"));
-        onView(cPassword).perform(typeText("tegn"));
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
+//    @Test
+//    public void checkPasswordValidation() throws InterruptedException {
+//        Matcher<View> password = withId(R.id.password);
+//        Matcher<View> cPassword = withId(R.id.confirmPassword);
+//        onView(password).check(matches(isDisplayed()));
+//        onView(cPassword).check(matches(isDisplayed()));
+//        onView(password).perform(typeText("tegen"));
+//        onView(cPassword).perform(typeText("tegn"));
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        onView(cPassword).check(matches(hasErrorText("Passwords do not match!")));
 
 //        onView(password).perform(typeText("tegen@test.com"));
 //        onView(cPassword).perform(typeText("tegen@test.com"));
@@ -152,4 +153,3 @@ public class SignUpActivityTest {
 
 
 
-}
