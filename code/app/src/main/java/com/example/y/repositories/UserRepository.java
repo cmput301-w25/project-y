@@ -81,7 +81,7 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Updates the singleton instance with a new db
+     * Updates the singleton instance with a new db.
      * @param firestore
      *      Testing db instance.
      */
@@ -92,7 +92,7 @@ public class UserRepository extends GenericRepository<UserListener> {
     /**
      * Listen for snapshots and notify listeners.
      */
-    public void startListening() {
+    private void startListening() {
         // Listen for real-time updates and notify all listeners
         usersRef.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
