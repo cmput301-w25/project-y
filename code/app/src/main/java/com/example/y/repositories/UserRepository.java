@@ -206,7 +206,7 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Gets a list of all mood events from all users a user is following.
+     * Gets a list of all public mood events from all users a user is following.
      * The result is sorted by date descending.
      * Filter is not applied.
      * @param username
@@ -230,7 +230,10 @@ public class UserRepository extends GenericRepository<UserListener> {
             CollectionReference moodEventRef = db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION);
             for (int i = 0; i < followingList.size(); i += 10) {
                 List<String> sublist = followingList.subList(i, Math.min(i + 10, followingList.size()));
-                Task<QuerySnapshot> task = moodEventRef.whereIn("posterUsername", sublist).get();
+                Task<QuerySnapshot> task = moodEventRef
+                        .whereIn("posterUsername", sublist)
+                        .whereEqualTo("private", false)
+                        .get();
                 tasks.add(task);
             }
 
