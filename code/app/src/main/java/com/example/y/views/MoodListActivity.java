@@ -2,7 +2,9 @@ package com.example.y.views;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,23 +15,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.content.Intent;
-import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodListController;
 import com.example.y.models.Emotion;
+import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
+import com.example.y.services.SessionManager;
+import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
 
 public class MoodListActivity extends BaseActivity {
 
@@ -216,6 +216,22 @@ public class MoodListActivity extends BaseActivity {
             SocialSituation sendSocial = moodEvent.getSocialSituation();
             intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
             startActivity(intent);
+        } else  {
+            Intent intent;
+            if (moodEvent.getPhotoURL() == null){
+                intent = new Intent(this, EnhancedMoodActivityWithoutPhoto.class);
+            } else {
+                intent = new Intent(this, EnhancedMoodActivityWithPhoto.class);
+            }
+
+            intent.putExtra("mood_event", (Parcelable) moodEvent);
+            intent.putExtra("emotion", moodEvent.getEmotion().ordinal());
+            SocialSituation sendSocial = moodEvent.getSocialSituation();
+            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+            Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
+            startActivity(intent);
+
+
         }
     }
 
