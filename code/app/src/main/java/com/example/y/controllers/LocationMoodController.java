@@ -77,8 +77,8 @@ public class LocationMoodController {
             }, onFailure);
         }, onFailure);
     }
-
-    /**
+  
+      /**
      * Retrieves all mood events that have a location and are within 5 km of the given user location.
      *
      * @param userLocation The location of the user.
@@ -136,3 +136,4 @@ public class LocationMoodController {
         return R * c;
     }
 }
+
