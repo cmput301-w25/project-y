@@ -49,7 +49,6 @@ public class MyProfileActivity extends BaseActivity {
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
-
         finishAffinity();
     }
 

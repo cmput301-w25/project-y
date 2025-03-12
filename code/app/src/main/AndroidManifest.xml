@@ -59,9 +59,8 @@
         <activity
             android:name=".views.LoginActivity"
             android:exported="true" />
-        <activity android:name=".views.EnhancedMoodActivityWithPhoto"
-            android:exported="true" />
-        <activity android:name=".views.EnhancedMoodActivityWithoutPhoto"
+
+        <activity android:name=".views.EnhancedMoodActivity"
             android:exported="true" />
         <activity
             android:name=".views.MainActivity"

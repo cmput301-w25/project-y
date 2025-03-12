@@ -149,7 +149,8 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
     }
 
@@ -170,10 +171,12 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
         });
     }
 
@@ -195,8 +198,9 @@ public class MoodListActivity extends BaseActivity {
 
     /**
      * Handles when a mood event is clicked
+     *
      * @param moodEvent The mood event that was clicked
-     * @param userName The username of the user clicking
+     * @param userName  The username of the user clicking
      */
     protected void onMoodClick(MoodEvent moodEvent, String userName) {
         // If the user clicked on their own mood even then we'll open the edit/delete activity.
@@ -212,18 +216,17 @@ public class MoodListActivity extends BaseActivity {
             // Taken on 2025-03-05
             intent.putExtra("mood_event", (Parcelable) moodEvent);
             Emotion sendEmotion = moodEvent.getEmotion();
-            intent.putExtra("emotion",sendEmotion.ordinal());
+            intent.putExtra("emotion", sendEmotion.ordinal());
             SocialSituation sendSocial = moodEvent.getSocialSituation();
             intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
-            startActivity(intent);
-        } else  {
-            Intent intent;
-            if (moodEvent.getPhotoURL() == null){
-                intent = new Intent(this, EnhancedMoodActivityWithoutPhoto.class);
-            } else {
-                intent = new Intent(this, EnhancedMoodActivityWithPhoto.class);
+            Boolean privateMood = moodEvent.getIsPrivate();
+            if (privateMood != null) {
+                intent.putExtra("private", privateMood);
             }
-
+            startActivity(intent);
+        } else {
+            Intent intent;
+            intent = new Intent(this, EnhancedMoodActivity.class);
             intent.putExtra("mood_event", (Parcelable) moodEvent);
             intent.putExtra("emotion", moodEvent.getEmotion().ordinal());
             SocialSituation sendSocial = moodEvent.getSocialSituation();
@@ -246,7 +249,9 @@ public class MoodListActivity extends BaseActivity {
     }
 
     @Override
-    protected int getActivityLayout() { return R.layout.mood_list_view; }
+    protected int getActivityLayout() {
+        return R.layout.mood_list_view;
+    }
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

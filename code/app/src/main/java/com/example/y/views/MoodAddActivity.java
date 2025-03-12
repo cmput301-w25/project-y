@@ -50,6 +50,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private EditText etTrigger;
     private EditText datePicked;
     private Uri selectedImageUri;
+    private CheckBox privateCheckBox;
 
     private LocationController locationController;
 
@@ -73,6 +74,8 @@ public class MoodAddActivity extends AppCompatActivity {
         spinnerMood = findViewById(R.id.spinnerMood);
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
+        privateCheckBox = findViewById(R.id.privacyCheckBox);
+
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         etTrigger = findViewById(R.id.etTrigger);
         datePicked = findViewById(R.id.datePickerAddMood);
@@ -92,7 +95,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Image insertion button listener
         btnInsertImage.setOnClickListener(v -> images());
-        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty!","yes"));
+        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty!", "yes"));
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {
@@ -104,6 +107,8 @@ public class MoodAddActivity extends AppCompatActivity {
             String triggerText = etTrigger.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
+            Boolean priv = privateCheckBox.isChecked();
+
 
             // Convert date time
             try {
@@ -124,7 +129,7 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setSocialSituation(socialSituation);
             newMood.setText(reasonWhyText);
             newMood.setTrigger(triggerText);
-
+            newMood.setIsPrivate(priv);
 
             if (shareLocation) {
                 Log.d(TAG, "User opted to share location. Requesting location...");
@@ -200,6 +205,7 @@ public class MoodAddActivity extends AppCompatActivity {
             }
         }
     }
+
     /**
      * Helper method to submit the mood event using the AddMoodController.
      *

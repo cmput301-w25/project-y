@@ -33,7 +33,8 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     int SELECT_PICTURE = 200;
     ImageView IVPreviewImage;
-
+    Button updateButton;
+    Button deleteButton;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
@@ -42,13 +43,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private ImageButton btnBack;
-
     private boolean shareLocation;
-
+    private boolean priv;
+    private CheckBox privButton;
     private LocationController locationController;
-
-    Button updateButton;
-    Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +55,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
+        Boolean moodPrivate = null;
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
@@ -76,7 +75,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             receivedSocial = SocialSituation.values()[tempSocial];
         }
         moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
+        boolean tempPriv = getIntent().getBooleanExtra("private", false);
 
+        moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
         // Debugging stuff
         if (moodEventToUpdateOrDelete == null) {
             Toast.makeText(this, "Error loading mood event", LENGTH_SHORT).show();
@@ -109,11 +110,11 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
         triggerText = findViewById(R.id.etTrigger);
-
+        privButton = findViewById(R.id.privacyCheckBoxUpdate);
         datePicked = findViewById(R.id.datePickerAddMood);
         updateButton = findViewById(R.id.UpdateMoodButton);
         deleteButton = findViewById(R.id.deleteMoodButton);
-
+        privButton.setChecked(tempPriv);
 
         // Then this just prefills the date in a nice format
         if (moodEventToUpdateOrDelete.getDateTime() != null) {
@@ -165,7 +166,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
         moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
         SocialSituation selectedSocialSituation = (SocialSituation) spinnerSocial.getSelectedItem();
-
+        moodEventToUpdateOrDelete.setIsPrivate(privButton.isChecked());
 
         if (shareLocation) {
             // Get the current location asynchronously and then update the mood event.
@@ -182,9 +183,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
                         updatedReasonWhyText,
                         selectedSocialSituation,
                         moodEvent -> {
-                    Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
-                    finish();
-                }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
+                            Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                            finish();
+                        }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
             });
         } else {
             // Update the mood event directly without retrieving location.
@@ -193,9 +194,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
                     updatedReasonWhyText,
                     selectedSocialSituation,
                     moodEvent -> {
-                Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
-                finish();
-            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show()
+                        Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                        finish();
+                    }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show()
             );
         }
 

@@ -33,7 +33,8 @@ public class AddMoodController {
     private Context context;
 
 
-    public AddMoodController() {}
+    public AddMoodController() {
+    }
 
     public AddMoodController(Context context) {
         this.context = context;
