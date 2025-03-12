@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,21 +32,23 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                     return value.getByteCount() / 1024;
                 }
             };
-    ImageButton backButton;
-    Button commentButton;
-    TextView posterUsername;
 
-    TextView emoticon;
-    TextView dateTime;
+    private LinearLayout border;
+    private ImageButton backButton;
+    private Button commentButton;
+    private TextView posterUsername;
 
-    TextView location;
-    TextView socialSituation;
-    TextView moodText;
+    private TextView emoticon;
+    private TextView dateTime;
 
-    ListView commentList;
-    ImageView photoImgView;
+    private TextView location;
+    private TextView socialSituation;
+    private TextView moodText;
 
-    EditText newComment;
+    private ListView commentList;
+    private ImageView photoImgView;
+
+    private EditText newComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             receivedSocial = SocialSituation.values()[tempSocial];
         }
         currentMoodEvent.setSocialSituation(receivedSocial);
-
+        border = findViewById(R.id.border);
+        border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
         // Grab da views:
         photoImgView = findViewById(R.id.photo);
         backButton = findViewById(R.id.backButton);

@@ -217,8 +217,10 @@ public class MoodListActivity extends BaseActivity {
             intent.putExtra("mood_event", (Parcelable) moodEvent);
             Emotion sendEmotion = moodEvent.getEmotion();
             intent.putExtra("emotion", sendEmotion.ordinal());
-            SocialSituation sendSocial = moodEvent.getSocialSituation();
-            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+            if (moodEvent.getSocialSituation() != null) {
+                SocialSituation sendSocial = moodEvent.getSocialSituation();
+                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());}
             Boolean privateMood = moodEvent.getIsPrivate();
             if (privateMood != null) {
                 intent.putExtra("private", privateMood);
@@ -229,9 +231,11 @@ public class MoodListActivity extends BaseActivity {
             intent = new Intent(this, EnhancedMoodActivity.class);
             intent.putExtra("mood_event", (Parcelable) moodEvent);
             intent.putExtra("emotion", moodEvent.getEmotion().ordinal());
-            SocialSituation sendSocial = moodEvent.getSocialSituation();
+            if (moodEvent.getSocialSituation() != null) {
+                SocialSituation sendSocial = moodEvent.getSocialSituation();
             intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
-            Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
+
+            }
             startActivity(intent);
 
 
