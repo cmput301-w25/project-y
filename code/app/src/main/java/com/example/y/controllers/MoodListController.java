@@ -33,7 +33,7 @@ public abstract class MoodListController
     protected final MoodEventListFilter filter;
     protected ArrayList<MoodEvent> originalMoodEventList;
     protected ArrayList<MoodEvent> filteredMoodEventList;
-    protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
+    protected MoodEventArrayAdapter moodAdapter;
     protected final SessionManager session;
 
     public MoodListController(Context context) {
