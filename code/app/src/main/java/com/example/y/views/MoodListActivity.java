@@ -123,7 +123,7 @@ public class MoodListActivity extends BaseActivity {
 
         // Spinner content (null + all emotions)
         ArrayList<String> adapterContent = new ArrayList<>();
-        adapterContent.add("Any");
+        adapterContent.add("Emotion");
         Arrays.asList(Emotion.values()).forEach(emotion -> {
             adapterContent.add(emotion.toString());
         });
