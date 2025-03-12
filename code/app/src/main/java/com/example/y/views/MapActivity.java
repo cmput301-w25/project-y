@@ -1,11 +1,17 @@
 package com.example.y.views;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +21,8 @@ import androidx.core.graphics.Insets;
 
 import com.example.y.R;
 import com.example.y.controllers.LocationController;
+import com.example.y.controllers.LocationMoodController;
+import com.example.y.models.MoodEvent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,8 +37,10 @@ import java.util.List;
 public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Location currentLocation;
-    private LocationController locationController;
+    private Spinner spinnerOptions;
+    private LocationMoodController locationMoodController;
+    private LocationController locationController;  // For getting current location
+    private static final String TAG = "MapActivity";
 
     // Simple data class for marker details.
     private static class MarkerData {
@@ -50,27 +60,47 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         selectMapHeaderButton();
 
-        // Apply window insets to the map view.
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.map), (v, insets) -> {
+        // Initialize controllers.
+        locationMoodController = new LocationMoodController(this);
+        locationController = new LocationController(this);
+
+        // Set up the spinner with three options.
+        spinnerOptions = findViewById(R.id.spinner_options);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                new String[]{
+                        "All Mood Events with Location",
+                        "Followed Mood Events with Location",
+                        "All Mood Events within 5 kms"
+                });
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOptions.setAdapter(adapter);
+        spinnerOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                updateMapMarkers(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent){}
+        });
+
+        // Apply window insets to the map container.
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.map_fragment_container), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize the LocationController.
-        locationController = new LocationController(this);
-        locationController.getCurrentLocation(location -> {
-            currentLocation = location;
-            Toast.makeText(this, "current location " + currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-            // Refresh the map when the location is updated.
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            if (mapFragment != null) {
-                mapFragment.getMapAsync(MapActivity.this);
-            }
-        });
-
-        // Retrieve the map fragment and register for the map callback.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        // Programmatically add the SupportMapFragment if not already added.
+        SupportMapFragment mapFragment;
+        if (savedInstanceState == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.map_fragment_container, mapFragment, "map")
+                    .commit();
+        } else {
+            mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag("map");
+        }
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
@@ -79,32 +109,108 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Enable zoom gestures and controls.
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        updateMapMarkers(spinnerOptions.getSelectedItemPosition());
+    }
 
-        // Prepare marker data.
+    /**
+     * Updates the map markers based on the spinner selection.
+     * Option 0: "All Mood Events with Location"
+     * Option 1: "Followed Mood Events with Location"
+     * Option 2: "All Mood Events within 5 kms"
+     */
+    private void updateMapMarkers(int optionIndex) {
+        if (mMap == null) return;
+        mMap.clear();
+
+        if (optionIndex == 0) {
+            locationMoodController.getMoodEventsWithLocation(moodEvents -> {
+                drawMarkers(moodEvents);
+            }, e -> {
+                Toast.makeText(MapActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        } else if (optionIndex == 1) {
+            locationMoodController.getMoodEventsWithLocationAndFollowed(moodEvents -> {
+                drawMarkers(moodEvents);
+            }, e -> {
+                Toast.makeText(MapActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        } else if (optionIndex == 2) {
+            // Use the locationController to retrieve current location.
+            locationController.getCurrentLocation(location -> {
+                if (location != null) {
+                    // Retrieve mood events within 5 km of the user's location.
+                    locationMoodController.getMoodEventWithin5kmFromUser(location, moodEvents -> {
+                        drawMarkers(moodEvents);
+                    }, e -> {
+                        Toast.makeText(MapActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    // No location was retrieved.
+                    mMap.clear();
+                    Toast.makeText(MapActivity.this, "Choose another option, location access not granted", LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * Converts a list of MoodEvents into markers and plots them on the map.
+     *
+     * @param moodEvents The list of MoodEvent objects returned from the controller.
+     */
+    private void drawMarkers(ArrayList<MoodEvent> moodEvents) {
         List<MarkerData> markerDataList = new ArrayList<>();
-        markerDataList.add(new MarkerData(new LatLng(-34, 151),
-                getString(R.string.emotion_happiness_emoji),
-                "User1"));
-        markerDataList.add(new MarkerData(new LatLng(-35, 150),
-                getString(R.string.emotion_anger_emoji),
-                "User2"));
+        for (MoodEvent mood : moodEvents) {
+            if (mood.getLocation() != null) {
+                // Convert the location (assumed to be a GeoPoint) to LatLng.
+                double lat = mood.getLocation().getLatitude();
+                double lng = mood.getLocation().getLongitude();
+                LatLng coordinate = new LatLng(lat, lng);
 
-        // Use the current location if available; otherwise, use a default.
-        if (currentLocation != null) {
-            markerDataList.add(new MarkerData(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                    getString(R.string.emotion_anger_emoji),
-                    "Anmol"));
-        } else {
-            markerDataList.add(new MarkerData(new LatLng(-33.865143, 151.209900),
-                    getString(R.string.emotion_anger_emoji),
-                    "Anmol - default"));
+                // Retrieve the proper emoji based on the Emotion.
+                String emoticon = "";
+                if (mood.getEmotion() != null) {
+                    switch (mood.getEmotion()) {
+                        case ANGER:
+                            emoticon = getString(R.string.emotion_anger_emoji);
+                            break;
+                        case CONFUSION:
+                            emoticon = getString(R.string.emotion_confusion_emoji);
+                            break;
+                        case DISGUST:
+                            emoticon = getString(R.string.emotion_disgust_emoji);
+                            break;
+                        case FEAR:
+                            emoticon = getString(R.string.emotion_fear_emoji);
+                            break;
+                        case HAPPINESS:
+                            emoticon = getString(R.string.emotion_happiness_emoji);
+                            break;
+                        case SADNESS:
+                            emoticon = getString(R.string.emotion_sadness_emoji);
+                            break;
+                        case SHAME:
+                            emoticon = getString(R.string.emotion_shame_emoji);
+                            break;
+                        case SURPRISE:
+                            emoticon = getString(R.string.emotion_surprise_emoji);
+                            break;
+                        case LAUGHTER:
+                            emoticon = getString(R.string.emotion_laughter_emoji);
+                            break;
+                        default:
+                            emoticon = "";
+                            break;
+                    }
+                }
+
+                String username = mood.getPosterUsername();
+                markerDataList.add(new MarkerData(coordinate, emoticon, username));
+            }
         }
 
-        // Add markers to the map.
         for (MarkerData markerData : markerDataList) {
             View markerView = LayoutInflater.from(this).inflate(R.layout.geolocation_pointer, null);
             TextView moodTextView = markerView.findViewById(R.id.mood);
@@ -120,11 +226,12 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
             mMap.addMarker(markerOptions);
         }
 
-        // Move the camera to the first marker.
+        // Optionally, move the camera to the first marker.
         if (!markerDataList.isEmpty()) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerDataList.get(0).coordinate, 10));
         }
     }
+
 
     /**
      * Helper method to convert a view into a bitmap for a custom marker.
@@ -144,6 +251,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     @Override
     protected int getActivityLayout() {
+        // Return the layout for MapActivity which is inflated into BaseActivity.
         return R.layout.activity_map;
     }
 }
