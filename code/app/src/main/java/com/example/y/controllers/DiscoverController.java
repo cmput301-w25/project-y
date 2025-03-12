@@ -9,12 +9,11 @@ import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-    /**
-    * Controller for the Discover screen, displays all mood events.
-    * This class fetches all mood events and filters them on if user follows them.
-    */
+/**
+* Controller for the Discover screen, displays all mood events.
+* This class fetches all mood events and filters them appropriately.
+*/
 public class DiscoverController extends MoodListController {
-
 
     /**
      * Initializes the DiscoverController.
@@ -25,38 +24,26 @@ public class DiscoverController extends MoodListController {
      */
     public DiscoverController(Context context, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
-        // Get the current logged-in user
-        SessionManager sessionManager = new SessionManager(context);
-        String user = sessionManager.getUsername();
 
         // Get all moods
-        MoodEventRepository.getInstance().getAllMoodEvents(allMoods -> {
+        MoodEventRepository.getInstance().getAllPublicMoodEvents(allPublicMoods -> {
             // Query for hashmap
-            UserRepository.getInstance().getFollowStatusHashMap(user, followStatus -> {
+            UserRepository.getInstance().getFollowStatusHashMap(session.getUsername(), followStatus -> {
                 // Initialize hashmap
-                initializeArrayAdapter(allMoods, followStatus);
+                initializeArrayAdapter(allPublicMoods, followStatus);
                 onSuccess.onSuccess(null);
             }, onFailure);
         }, onFailure);
     }
-        /**
-         * Becuase all moods belong here, this method always returns true.
-         *
-         * @param mood The mood event to check.
-         * @return Always true.
-         */
+
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
-        return true;  // Every mood belongs here
+        return isPosterAllowed(mood.getPosterUsername()) && !mood.getIsPrivate();  // We want all public mood events
     }
-        /**
-         * Because all posters are allowed, this method always returns true.
-         *
-         * @param poster The username of the poster.
-         * @return Always true.
-         */
+
     @Override
     public boolean isPosterAllowed(String poster) {
         return true;  // All posters are allowed
     }
+
 }

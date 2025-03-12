@@ -18,7 +18,7 @@ import java.util.HashMap;
  */
 public class FollowingMoodListController extends MoodListController {
 
-    private ArrayList<String> followingList = null;
+    private ArrayList<String> followingList;
 
     /**
      * Initializes the controller and fetches mood events from users that the logged-in user is following.
@@ -32,13 +32,13 @@ public class FollowingMoodListController extends MoodListController {
 
         UserRepository userRepo = UserRepository.getInstance();
 
-        // Cache all users username is following
+        // Cache all the usernames of all users that the logged in user is following
         userRepo.getFollowing(session.getUsername(), followingList -> {
             this.followingList = new ArrayList<>(followingList);
         }, onFailure);
 
         // Initialize the array adapter
-        userRepo.getFollowingMoodList(session.getUsername(), moodEvents -> {
+        userRepo.getFollowingMoodList(session.getUsername(), publicMoodEvents -> {
 
             // Hashmap consists only of users being followed
             userRepo.getFollowing(session.getUsername(), followingList -> {
@@ -46,13 +46,14 @@ public class FollowingMoodListController extends MoodListController {
                 for (String followee : followingList) {
                     // Create hashmap and initialize array adapter
                     followStatus.put(followee, UserRepository.FollowStatus.FOLLOWING);
-                    initializeArrayAdapter(moodEvents, followStatus);
+                    initializeArrayAdapter(publicMoodEvents, followStatus);
                     onSuccess.onSuccess(null);
                 }
             }, onFailure);
 
         }, onFailure);
     }
+
     /**
      * Checks if a mood event belongs to a user the logged-in user follows.
      *
@@ -61,8 +62,9 @@ public class FollowingMoodListController extends MoodListController {
      */
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
-        return (followingList != null) && (followingList.contains(mood.getPosterUsername()));
+        return (followingList != null) && isPosterAllowed(mood.getPosterUsername()) && !mood.getIsPrivate();
     }
+
     /**
      * Checks if a poster's mood events are allowed to be displayed.
      *
@@ -85,7 +87,7 @@ public class FollowingMoodListController extends MoodListController {
             notifyAdapter();
 
             // Insert moods belonging to newly followed user if they match the filter
-            MoodEventRepository.getInstance().getAllMoodEventsFrom(follow.getFollowedUsername(), allMoods -> {
+            MoodEventRepository.getInstance().getAllPublicMoodEventsFrom(follow.getFollowedUsername(), allMoods -> {
                 allMoods.forEach(mood -> {
                     insertMoodEventSortedDateTime(originalMoodEventList, mood);
                     if (!filter.wouldBeFiltered(mood)) {

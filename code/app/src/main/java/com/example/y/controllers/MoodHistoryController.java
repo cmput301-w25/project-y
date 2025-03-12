@@ -1,6 +1,7 @@
 package com.example.y.controllers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.FollowRepository;
@@ -35,33 +36,30 @@ public class MoodHistoryController extends MoodListController {
         MoodEventRepository moodEventRepo = MoodEventRepository.getInstance();
         FollowRepository followRepo = FollowRepository.getInstance();
         FollowRequestRepository followReqRepo = FollowRequestRepository.getInstance();
-        SessionManager sessionManager = new SessionManager(context);
-        String user = sessionManager.getUsername();
 
-        moodEventRepo.getAllMoodEventsFrom(poster, moodEvents -> {
+        moodEventRepo.getAllPublicMoodEventsFrom(poster, allPublicMoods -> {
             // Get hashmap, only one item
             HashMap<String, UserRepository.FollowStatus> followStatus = new HashMap<>();
             followStatus.put(poster, UserRepository.FollowStatus.NEITHER);
 
             // Query for is following or did request, update hashmap accordingly
-            followRepo.isFollowing(user, poster, isF -> {
-                followReqRepo.didRequest(user, poster, didReq -> {
+            followRepo.isFollowing(session.getUsername(), poster, isF -> {
+                followReqRepo.didRequest(session.getUsername(), poster, didReq -> {
 
                     // Update
                     if (didReq) followStatus.put(poster, UserRepository.FollowStatus.REQUESTED);
                     else if (isF) followStatus.put(poster, UserRepository.FollowStatus.FOLLOWING);
 
                     // Initialize adapter
-                    initializeArrayAdapter(moodEvents, followStatus);
+                    initializeArrayAdapter(allPublicMoods, followStatus);
                     onSuccess.onSuccess(null);
-
                 }, onFailure);
             }, onFailure);
         }, onFailure);
     }
 
     /**
-     * Check if mood event is owned by user
+     * Check if mood event is owned by user and is public
      * @param mood
      *      Mood event to check for.
      * @return
@@ -69,7 +67,7 @@ public class MoodHistoryController extends MoodListController {
      */
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
-        return mood.getPosterUsername().equals(poster);
+        return mood.getPosterUsername().equals(poster) && !mood.getIsPrivate();
     }
 
     /**

@@ -14,7 +14,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/FollowRequests"
@@ -25,9 +25,7 @@
         android:layout_marginTop="10dp"
         app:cornerRadius="0dp"
         android:backgroundTint="#000000"
-        android:textColorHint="#FFFFFF">
-
-    </Button>
+        android:textColorHint="#FFFFFF" />
 
     <Button
         android:id="@+id/btnUserProfileMyMoodHistory"
@@ -39,9 +37,19 @@
         android:text="@string/my_mood_history"
         android:textColor="#000000"
         app:cornerRadius="0dp"
-        tools:ignore="VisualLintButtonSize">
+        tools:ignore="VisualLintButtonSize" />
 
-    </Button>
+    <Button
+        android:id="@+id/btnUserProfileMyPersonalJournal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/my_personal_journal"
+        android:textColor="#000000"
+        app:cornerRadius="0dp"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/btnUserProfileLogout"
@@ -52,11 +60,7 @@
         android:backgroundTint="#000000"
         app:cornerRadius="0dp"
         android:textColorHint="#FFFFFF"
-        android:text="@string/logout">
-
-    </Button>
-
-
+        android:text="@string/logout" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -74,9 +78,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/plus_symbol_button" />
 
-
     </FrameLayout>
-
-
 
 </LinearLayout>
