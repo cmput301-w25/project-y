@@ -117,7 +117,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             }
 
             if (location != null) {
-                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() +")");
+                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() + ")");
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
                 locationTextView.setVisibility(View.GONE);
@@ -177,20 +177,20 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
 
         commentButton.setOnClickListener(v -> {
-            String commentText = newComment.getText().toString();
+                    String commentText = newComment.getText().toString();
 
-            if (commentText.isEmpty()) {
-                newComment.addTextChangedListener(new GenericTextWatcher(newComment, "Comment cannot be empty"));
-            } else {
-                SessionManager sessionManager = new SessionManager(this);
-                String commentPoster = sessionManager.getUsername();
-                controller.addComment(commentText);
-                newComment.clearFocus();
-                newComment.setText("");
-            }
+                    if (commentText.isEmpty()) {
+                        newComment.addTextChangedListener(new GenericTextWatcher(newComment, "Comment cannot be empty"));
+                    } else {
+                        SessionManager sessionManager = new SessionManager(this);
+                        String commentPoster = sessionManager.getUsername();
+                        controller.addComment(commentText);
+                        newComment.clearFocus();
+                        newComment.setText("");
+                    }
 
-            }
-       );
+                }
+        );
     }
 
     /**

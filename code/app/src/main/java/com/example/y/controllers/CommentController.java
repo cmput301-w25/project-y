@@ -19,7 +19,6 @@ public class CommentController implements CommentRepository.CommentListener {
     private Context context;
     private CommentArrayAdapter commentArrayAdapter;
     private ArrayList<Comment> commentsList;
-    private CommentRepository commentRepository;
     private MoodEvent moodEventToComment;
     ;
 
@@ -61,17 +60,29 @@ public class CommentController implements CommentRepository.CommentListener {
         }
     }
 
+    /**
+     * Notify the adapter that the data has changed
+     */
     private void notifyAdapter() {
         if (commentArrayAdapter != null && context instanceof Activity) {
             ((Activity) context).runOnUiThread(() -> commentArrayAdapter.notifyDataSetChanged());
         }
     }
 
+    /**
+     * Get the adapter for the comment list
+     *
+     * @return CommentArrayAdapter that controller's adapter
+     */
     public CommentArrayAdapter getAdapter() {
         Log.d("CommentController", "Get adapter called, list size: " + commentsList.size());
         return commentArrayAdapter;
     }
 
+    /***
+     * Adds a comment to the mood event
+     * @param commentText The text of the comment
+     */
     public void addComment(String commentText) {
         Comment comment = new Comment();
         comment.setMoodEventId(moodEventToComment.getId());

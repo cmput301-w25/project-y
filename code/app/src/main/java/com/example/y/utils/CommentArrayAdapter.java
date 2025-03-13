@@ -20,11 +20,23 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
     private final Context context;
     private final ArrayList<Comment> commentsForMoodEvent;
 
+    /**
+     * Constructor for CommentArrayAdapter
+     * @param context Context of the activity
+     * @param comments ArrayList of comments to be displayed
+     */
     public CommentArrayAdapter(Context context, ArrayList<Comment> comments) {
         super(context, 0, comments);
         commentsForMoodEvent = comments;
         this.context = context;
     }
+    /**
+     * Method to get the view for each comment
+     * @param position Position of the comment in the list
+     * @param convertView Recycled view to be reused
+     * @param parent Parent view group
+     * @return View for the comment
+     */
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
@@ -48,8 +60,5 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
 
         return view;
         }
-
-
-
 
 }
