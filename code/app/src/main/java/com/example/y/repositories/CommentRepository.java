@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Adds and queries comments from the comments collection in the firestore database.
- * Notifies all listeners when an action is taken/
+ * Notifies all listeners when an action is taken
  */
 public class CommentRepository extends GenericRepository<CommentRepository.CommentListener> {
 
@@ -31,7 +31,17 @@ public class CommentRepository extends GenericRepository<CommentRepository.Comme
         commentsRef = db.collection(COMMENT_COLLECTION);
         startListening();
     }
-
+    /**
+     * Listens for comments being added.
+     */
+    public interface CommentListener {
+        /**
+         * Listens for when a comment is added.
+         *
+         * @param comment New added comment
+         */
+        void onCommentAdded(Comment comment);
+    }
     /**
      * @param firestore Firestore db instance
      */
@@ -97,7 +107,6 @@ public class CommentRepository extends GenericRepository<CommentRepository.Comme
                 .addOnSuccessListener(doc -> {
                     comment.setId(doc.getId());
                     onSuccess.onSuccess(comment);
-                    Log.i("Comment", "Comment Posted!! ID: " + comment.getId());
                 })
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Comment document creation failed", e));
@@ -138,17 +147,7 @@ public class CommentRepository extends GenericRepository<CommentRepository.Comme
         listeners.forEach(listener -> listener.onCommentAdded(comment));
     }
 
-    /**
-     * Listens for new comments being added to the database
-     */
-    public interface CommentListener {
 
-        /**
-         * Listens for when a comment is added.
-         *
-         * @param comment New added comment
-         */
-        void onCommentAdded(Comment comment);
-    }
+
 
 }
