@@ -40,7 +40,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
     private final ArrayList<MoodEvent> moodEvents;
     private final Context context;
-    private final String user;
     private final HashMap<String, UserRepository.FollowStatus> followStatus;
     private final LruCache<String, Bitmap> imageCache =
             new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
@@ -53,14 +52,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         super(context, 0, moodEvents);
         this.moodEvents = moodEvents;
         this.context = context;
-        SessionManager sessionManager = new SessionManager(context);
-        user = sessionManager.getUsername();
         this.followStatus = new HashMap<>(followStatus);
     }
 
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Init repos and current mood
+        // Init local variables
         FollowRepository followRepository = FollowRepository.getInstance();
         FollowRequestRepository followReqRepository = FollowRequestRepository.getInstance();
         MoodEvent mood = moodEvents.get(position);
@@ -74,62 +71,9 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             );
         }
 
-        // Set button style (or fix style after update)
-        Button followBtn = view.findViewById(R.id.btnFollowFromMood);
-
-        // Hide button if looking at your own mood
-        SessionManager sessionManager = new SessionManager(context);
-        if (mood.getPosterUsername().equals(sessionManager.getUsername())) {
-            followBtn.setVisibility(View.GONE);
-        } else {
-            followBtn.setVisibility(View.VISIBLE);
-        }
-
-        String poster = mood.getPosterUsername();
-        if (followStatus.get(poster) == UserRepository.FollowStatus.FOLLOWING) {
-            followBtn.setText(context.getString(R.string.following));
-            followBtn.setBackgroundColor(context.getColor(R.color.following));
-        } else if (followStatus.get(poster) == UserRepository.FollowStatus.REQUESTED) {
-            followBtn.setText(context.getString(R.string.requested));
-            followBtn.setBackgroundColor(context.getColor(R.color.requested));
-        } else {
-            followBtn.setText(context.getString(R.string.follow));
-            followBtn.setBackgroundColor(context.getColor(R.color.follow));
-        }
-
-        // Button click handler
-        followBtn.setOnClickListener(v -> {
-            followBtn.setClickable(false);
-            if (followStatus.get(poster) == UserRepository.FollowStatus.FOLLOWING) {
-                // Update button style immediately after click
-                followBtn.setText(context.getString(R.string.follow));
-                followBtn.setBackgroundColor(context.getColor(R.color.follow));
-
-                // Delete the follow record
-                followRepository.deleteFollow(user, poster, unused -> {
-                    followBtn.setClickable(true);
-                }, this::handleException);
-            } else if (followStatus.get(poster) == UserRepository.FollowStatus.REQUESTED) {
-                // Update button style immediately after click
-                followBtn.setText(context.getString(R.string.follow));
-                followBtn.setBackgroundColor(context.getColor(R.color.follow));
-
-                // Delete the follow request
-                followReqRepository.deleteFollowRequest(user, poster, unused -> {
-                    followBtn.setClickable(true);
-                }, this::handleException);
-            } else {
-                // Update button style immediately after click
-                followBtn.setText(context.getString(R.string.requested));
-                followBtn.setBackgroundColor(context.getColor(R.color.requested));
-
-                // Add follow request
-                FollowRequest req = new FollowRequest(user, poster, Timestamp.now());
-                followReqRepository.addFollowRequest(req, r -> {
-                    followBtn.setClickable(true);
-                }, this::handleException);
-            }
-        });
+        // Create follow button
+        FollowButton followBtn = view.findViewById(R.id.btnFollowFromMood);
+        followBtn.initialize(mood.getPosterUsername(), followStatus.get(mood.getPosterUsername()));
 
         // Get views from content
         LinearLayout border = view.findViewById(R.id.border);

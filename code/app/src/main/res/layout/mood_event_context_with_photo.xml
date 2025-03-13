@@ -34,7 +34,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp" />
 
-            <Button
+            <com.example.y.utils.FollowButton
                 android:id="@+id/btnFollowFromMood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

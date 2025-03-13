@@ -11,4 +11,6 @@
     <color name="red">#F61C0D</color>
     <color name="green">#00EF23</color>
 
+    <color name="bg_dark">#1A1A1A</color>
+
 </resources>
