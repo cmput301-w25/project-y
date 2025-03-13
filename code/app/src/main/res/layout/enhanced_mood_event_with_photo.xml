@@ -40,123 +40,124 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/black"
-            android:orientation="vertical"
-            android:padding="4dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
 
-            <!-- Mood & DateTime Row -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="#80000000"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <TextView
-                    android:id="@+id/emoticon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/emoticon"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/dateTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="@string/date_and_time"
-                    android:textColor="#FFFFFFFF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Location & Social Situation -->
-            <LinearLayout
-                android:id="@+id/locationSocialSituationLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="#80000000"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:background="@color/black"
+                android:orientation="vertical"
+                android:padding="4dp">
 
-                <TextView
-                    android:id="@+id/location"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="@string/location"
-                    android:textColor="#FFFFFFFF"
-                    android:textSize="12sp" />
+                    android:layout_margin="4dp"
+                    android:background="#80000000"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
 
-                <TextView
-                    android:id="@+id/socialSituation"
+                    <TextView
+                        android:id="@+id/emoticon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/emoticon"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/dateTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/date_and_time"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/locationSocialSituationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:layout_margin="4dp"
+                    android:background="#80000000"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/location"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/socialSituation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/alone"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mood_photo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_marginTop="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="@string/alone"
+                    android:text="@string/reason"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp" />
+
+                <ListView
+                    android:id="@+id/commentListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerHeight="1dp" />
             </LinearLayout>
-
-            <!-- Image -->
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/mood_photo"
-                android:scaleType="fitCenter"
-                android:src="@drawable/mood" />
-
-            <!-- Mood Text -->
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="8dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:text="@string/reason"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-
-            <ListView
-                android:id="@+id/commentListView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/black"
-
-                android:divider="@android:color/darker_gray"
-                android:dividerHeight="1dp" />
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:background="@color/black"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -167,7 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Add a comment..."
+            android:hint="@string/add_a_comment"
             android:inputType="textCapSentences|textMultiLine"
             android:maxLines="2"
             android:padding="10dp"
@@ -182,7 +183,7 @@
             android:layout_marginStart="8dp"
             android:backgroundTint="@color/black"
             android:padding="10dp"
-            android:text="Send"
+            android:text="@string/send"
             android:textColor="@color/white"
             android:textSize="14sp" />
     </LinearLayout>

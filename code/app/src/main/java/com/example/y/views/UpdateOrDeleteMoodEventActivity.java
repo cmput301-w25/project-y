@@ -109,7 +109,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
-        triggerText = findViewById(R.id.etTrigger);
         privButton = findViewById(R.id.privacyCheckBoxUpdate);
         datePicked = findViewById(R.id.datePickerAddMood);
         updateButton = findViewById(R.id.UpdateMoodButton);
@@ -130,9 +129,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         if (!moodEventToUpdateOrDelete.getText().isEmpty()) {
             editTextUpdateTextExplanation.setText(moodEventToUpdateOrDelete.getText());
         }
-        if (moodEventToUpdateOrDelete.getTrigger() != null) {
-            triggerText.setText(moodEventToUpdateOrDelete.getTrigger());
-        }
+
 
         // If we wanted the date to change, then all we have to do it uncomment:
         //datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));

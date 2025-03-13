@@ -24,11 +24,13 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     private FollowRequestArrayAdapter adapter;
     private ArrayList<FollowRequest> reqs;
 
-    public FollowRequestController() {}
+    public FollowRequestController() {
+    }
 
     /**
      * Starts controller and gets follow requests sent to current user
-     * @param context the context
+     *
+     * @param context   the context
      * @param onSuccess Callback for successful initialization
      * @param onFailure Callback for initialization failure
      */
@@ -55,8 +57,8 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     /**
      * Call when a new follow request is sent to user
-     * @param followRequest
-     *      Follow request record to be added.
+     *
+     * @param followRequest Follow request record to be added.
      */
     @Override
     public void onFollowRequestAdded(FollowRequest followRequest) {
@@ -68,10 +70,9 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     /**
      * call when user declines a follow request
-     * @param requester
-     *      Username of the requester of the follow request that was deleted.
-     * @param requestee
-     *      Username of the requestee of the follow record that was deleted.
+     *
+     * @param requester Username of the requester of the follow request that was deleted.
+     * @param requestee Username of the requestee of the follow record that was deleted.
      */
     @Override
     public void onFollowRequestDeleted(String requester, String requestee) {
@@ -91,8 +92,8 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     /**
      * Inserts a follow request into the adapter list by date time descending.
      * Uses binary search on date time in order to keep the array sorted.
-     * @param req
-     *      Follow request to insert.
+     *
+     * @param req Follow request to insert.
      */
     protected void insertReq(FollowRequest req) {
         Timestamp key = req.getTimestamp();
@@ -118,7 +119,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             }
         }
 
-        // Insert follow request
+        // Insert follow requestn
         reqs.add(low, req);
     }
 
@@ -134,6 +135,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
 
     /**
      * Returns the adapter for the list of follow requests
+     *
      * @return FollowRequestArrayAdapter
      */
     public FollowRequestArrayAdapter getAdapter() {

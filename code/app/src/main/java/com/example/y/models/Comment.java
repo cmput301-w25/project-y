@@ -16,7 +16,7 @@ public class Comment implements Serializable {
     private String text;
 
     public Comment () {}
-
+    @Exclude
     public String getId() {
         return id;
     }

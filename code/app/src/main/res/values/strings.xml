@@ -93,6 +93,8 @@
     <string name="maxDateBtnText">Max Date</string>
     <string name="private_this_mood_event">Private this Mood Event</string>
     <string name="privateString">Private</string>
+    <string name="add_a_comment">Add a comment...</string>
+    <string name="send">Send</string>
 
     <string-array name="mood_array">
         <item>😡</item>

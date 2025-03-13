@@ -77,7 +77,6 @@ public class MoodAddActivity extends AppCompatActivity {
         privateCheckBox = findViewById(R.id.privacyCheckBox);
 
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
-        etTrigger = findViewById(R.id.etTrigger);
         datePicked = findViewById(R.id.datePickerAddMood);
         IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
@@ -104,7 +103,6 @@ public class MoodAddActivity extends AppCompatActivity {
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
-            String triggerText = etTrigger.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
             Boolean priv = privateCheckBox.isChecked();
@@ -128,7 +126,6 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
             newMood.setText(reasonWhyText);
-            newMood.setTrigger(triggerText);
             newMood.setIsPrivate(priv);
 
             if (shareLocation) {

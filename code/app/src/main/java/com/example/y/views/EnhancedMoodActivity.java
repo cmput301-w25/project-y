@@ -16,11 +16,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
+import com.example.y.controllers.CommentController;
 import com.example.y.controllers.LocationController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.repositories.MoodEventRepository;
+import com.example.y.services.SessionManager;
+import com.example.y.utils.GenericTextWatcher;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -40,12 +44,12 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
     private TextView emoticon;
     private TextView dateTime;
+    private CommentController controller;
 
-    private TextView location;
+    private TextView locationTextView;
     private TextView socialSituation;
     private TextView moodText;
 
-    private ListView commentList;
     private ImageView photoImgView;
 
     private EditText newComment;
@@ -76,6 +80,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             receivedSocial = SocialSituation.values()[tempSocial];
         }
         currentMoodEvent.setSocialSituation(receivedSocial);
+
+
         border = findViewById(R.id.border);
         border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
         // Grab da views:
@@ -85,10 +91,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         posterUsername = findViewById(R.id.username);
         emoticon = findViewById(R.id.emoticon);
         dateTime = findViewById(R.id.dateTime);
-        location = findViewById(R.id.location);
+        locationTextView = findViewById(R.id.location);
         socialSituation = findViewById(R.id.socialSituation);
         moodText = findViewById(R.id.text);
-        commentList = findViewById(R.id.commentListView);
+        ListView commentListView;
+
         newComment = findViewById(R.id.commentEditText);
         // Set the values of the views
         posterUsername.setText(currentMoodEvent.getPosterUsername());
@@ -96,16 +103,43 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         String emoji = currentEmotion.getEmoticon(this);
         emoticon.setText(emoji);
         //dateTime.setText(currentMoodEvent.getDateTime().toString());
-        socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
+        GeoPoint location = currentMoodEvent.getLocation();
+        if (currentMoodEvent.getSocialSituation() == null && currentMoodEvent.getLocation() == null) {
+            // Hide layout if they're both null
+            findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
+        } else {
+            // Otherwise ony fill in the non-null fields
+            if (socialSituation != null) {
+                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
+                socialSituation.setVisibility(View.VISIBLE);
+            } else {
+                socialSituation.setVisibility(View.GONE);
+            }
+
+            if (location != null) {
+                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() +")");
+                locationTextView.setVisibility(View.VISIBLE);
+            } else {
+                locationTextView.setVisibility(View.GONE);
+            }
+        }
+        //socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
+
+
         moodText.setText(currentMoodEvent.getText());
+
+
+        commentListView = findViewById(R.id.commentListView);
+        controller = new CommentController(currentMoodEvent, this, unused -> {
+            commentListView.setAdapter(controller.getAdapter());
+        }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+
 
         if (currentMoodEvent.getDateTime() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             dateTime.setText("Mood Event on " + sdf.format(currentMoodEvent.getDateTime().toDate()));
         }
 
-        // Set the comment list
-        // commentList.setAdapter(new CommentAdapter(this, currentMoodEvent.getComments()));
 
         String photoURL = currentMoodEvent.getPhotoURL();
         if (photoImgView != null) {
@@ -141,6 +175,22 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
+
+        commentButton.setOnClickListener(v -> {
+            String commentText = newComment.getText().toString();
+
+            if (commentText.isEmpty()) {
+                newComment.addTextChangedListener(new GenericTextWatcher(newComment, "Comment cannot be empty"));
+            } else {
+                SessionManager sessionManager = new SessionManager(this);
+                String commentPoster = sessionManager.getUsername();
+                controller.addComment(commentText);
+                newComment.clearFocus();
+                newComment.setText("");
+            }
+
+            }
+       );
     }
 
     /**

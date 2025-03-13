@@ -47,19 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
-    <EditText
-        android:id="@+id/etTrigger"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/hint_trigger"
-        android:maxLength="300"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etReasonWhyText" />
+
 
     <!-- Social Situation Section -->
     <Spinner
@@ -72,7 +60,7 @@
         android:entries="@array/social_situation_array"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etTrigger" />
+        app:layout_constraintTop_toBottomOf="@id/etReasonWhyText" />
 
 
     <!-- Image Insert and Location Sharing -->

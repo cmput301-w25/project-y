@@ -103,11 +103,8 @@ public class AddMoodController {
         //          Not sure if this needs to be validated
         //      Trigger
         //          Lets cap this at 300 words?
-        int triggerCap = 300;
-        if (mood.getTrigger() != null && mood.getTrigger().length() > triggerCap) {
-            onFailure.onFailure(new Exception("Trigger length cannot exceed " + triggerCap + " characters"));
-            return;
-        }
+
+
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();
