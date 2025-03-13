@@ -1,6 +1,7 @@
 package com.example.y.controllers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
@@ -74,11 +75,26 @@ public class AddMoodControllerTest {
     }
 
     @Test
-    public void textSubmittedMoodEventMustHaveReasonWhyTextLengthAtMost20() {
+    public void textSubmittedMoodEventMustHaveReasonWhyTextLengthAtMost200() {
         MoodEvent mockMoodEvent = new MoodEvent();
         mockMoodEvent.setPosterUsername(testUser);
         mockMoodEvent.setDateTime(Timestamp.now());
         mockMoodEvent.setEmotion(Emotion.SADNESS);
+
+        // Test reason why text length <= 200
+        mockMoodEvent.setText("a".repeat(201)); // 201 characters (should fail)
+        try {
+            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
+                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 200 characters", e.getMessage());
+            });
+        } catch (Exception e) {
+            fail("Mood submitted when reason is of length > 200");
+        }
+
+    }
+
+
+        /*
 
         // Test reason why text length <= 20
         mockMoodEvent.setText("123456789012345678901");
@@ -91,22 +107,6 @@ public class AddMoodControllerTest {
         }
     }
 
-    @Test
-    public void textSubmittedMoodEventMustHaveReasonWhyTextWordLengthAtMost3() {
-        MoodEvent mockMoodEvent = new MoodEvent();
-        mockMoodEvent.setPosterUsername(testUser);
-        mockMoodEvent.setDateTime(Timestamp.now());
-        mockMoodEvent.setEmotion(Emotion.SADNESS);
 
-        // Test reason why text word length <= 3
-        mockMoodEvent.setText("1 2 3 4");
-        try {
-            addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
-                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 3 words", e.getMessage());
-            });
-        } catch (Exception e) {
-                fail("Mood submitted when reason is of word length > 4");
-        }
-    }
-
+*/
 }
