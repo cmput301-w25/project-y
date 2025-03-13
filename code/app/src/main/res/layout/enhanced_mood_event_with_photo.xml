@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Header: Back Button & Username -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +40,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Main Content Container -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -143,7 +141,6 @@
                 android:textColor="#FFFFFF"
                 android:textSize="14sp" />
 
-            <!-- Comments List -->
             <ListView
                 android:id="@+id/commentListView"
                 android:layout_width="match_parent"
@@ -156,7 +153,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Comment Input Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
