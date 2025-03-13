@@ -83,15 +83,11 @@ public class AddMoodController {
         //          No need to validate this one I don't think
         //      reason why text (at most 20 characters or 3 words)
         if (mood.getText() != null) {
-            if (mood.getText().length() > 20) {
-                onFailure.onFailure(new Exception("Reason why text length must be at most 20 characters"));
+            if (mood.getText().length() >=199) {
+                onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters"));
                 return;
             }
-            int textWordCount = mood.getText().isEmpty() ? 0 : mood.getText().split("\\s+").length;
-            if (textWordCount > 3) {
-                onFailure.onFailure(new Exception("Reason why text length must be at most 3 words"));
-                return;
-            }
+
         }
         //      photoURL (under 65,536 KB)
         if (photoUri != null && getImageSize(photoUri) >= 65536) {
@@ -100,13 +96,7 @@ public class AddMoodController {
         }
         //      location
         //          Not sure if this needs to be validated
-        //      Trigger
-        //          Lets cap this at 300 words?
-        int triggerCap = 300;
-        if (mood.getTrigger() != null && mood.getTrigger().length() > triggerCap) {
-            onFailure.onFailure(new Exception("Trigger length cannot exceed " + triggerCap + " characters"));
-            return;
-        }
+
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();
