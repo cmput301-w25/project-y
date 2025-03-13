@@ -43,15 +43,16 @@ public class SearchResultArrayAdapter extends ArrayAdapter<User> {
             view = LayoutInflater.from(context).inflate(R.layout.search_result_content, parent, false);
         }
 
-        // Get button and session
-        Button followBtn = view.findViewById(R.id.searchFollowBtn);
-        SessionManager session = new SessionManager(context);
-
         // Set username
         User user = users.get(position);
         TextView usernameTextView = view.findViewById(R.id.username);
         usernameTextView.setText(user.getUsername());
 
+        // Initialize button
+        FollowButton followBtn = view.findViewById(R.id.searchFollowBtn);
+        followBtn.initialize(user.getUsername(), followStatus.get(user.getUsername()));
+
         return view;
     }
+
 }

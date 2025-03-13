@@ -42,8 +42,14 @@ public class FollowButton extends AppCompatButton {
 
     private void initializeStyles() {
         // Hide button if looking at your own profile
-        if (profileUser.equals(loggedInUser)) setVisibility(View.GONE);
-        else setVisibility(View.VISIBLE);
+        if (profileUser.equals(loggedInUser)) {
+            setVisibility(View.INVISIBLE);
+            setClickable(false);
+        }
+        else {
+            setVisibility(View.VISIBLE);
+            setClickable(true);
+        }
 
         // Don't default to all caps
         setAllCaps(false);

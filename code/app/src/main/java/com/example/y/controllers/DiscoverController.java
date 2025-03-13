@@ -17,7 +17,6 @@ public class DiscoverController extends MoodListController {
 
     /**
      * Initializes the DiscoverController.
-     *
      * @param context   The application context.
      * @param onSuccess Callback for successful initialization.
      * @param onFailure Callback for initialization failure.
@@ -27,12 +26,16 @@ public class DiscoverController extends MoodListController {
 
         // Get all moods
         MoodEventRepository.getInstance().getAllPublicMoodEvents(allPublicMoods -> {
+
             // Query for hashmap
             UserRepository.getInstance().getFollowStatusHashMap(session.getUsername(), followStatus -> {
-                // Initialize hashmap
+
+                // Initialize adapter
                 initializeArrayAdapter(allPublicMoods, followStatus);
                 onSuccess.onSuccess(null);
+
             }, onFailure);
+
         }, onFailure);
     }
 

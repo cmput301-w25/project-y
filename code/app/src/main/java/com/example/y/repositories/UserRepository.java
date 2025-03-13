@@ -334,6 +334,29 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
+     * Gets all users ever.
+     * @param onSuccess
+     *      Success callback function to which an array of all users is passed to.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void getAllUsers(OnSuccessListener<ArrayList<User>> onSuccess, OnFailureListener onFailure) {
+        usersRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<User> allUsers = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            User user = doc.toObject(User.class);
+                            allUsers.add(user);
+                        }
+                        onSuccess.onSuccess(allUsers);
+                    } else {
+                        onFailure.onFailure(new Exception("Failure fetching all users", task.getException()));
+                    }
+                });
+    }
+
+    /**
      * Notifies all listeners that a user was added to the database successfully.
      * @param user
      *      User that was added.
