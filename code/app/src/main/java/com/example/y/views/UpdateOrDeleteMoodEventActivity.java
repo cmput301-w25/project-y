@@ -158,10 +158,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
      */
     private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String updatedReasonWhyText) {
         Emotion selectedEmotion = (Emotion) spinnerMood.getSelectedItem();
-        if (triggerText.getText() != null) {
-            moodEventToUpdateOrDelete.setTrigger(triggerText.getText().toString().trim());
-        }
-        moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
+             moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
         SocialSituation selectedSocialSituation = (SocialSituation) spinnerSocial.getSelectedItem();
         moodEventToUpdateOrDelete.setIsPrivate(privButton.isChecked());
 
