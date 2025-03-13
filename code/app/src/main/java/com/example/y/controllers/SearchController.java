@@ -28,6 +28,7 @@ public class SearchController
             FollowRequestRepository.FollowRequestListener {
 
     private final Context context;
+    private final SessionManager session;
     private ArrayList<User> allUsers;
     private ArrayList<User> searchResult;
     private SearchResultArrayAdapter adapter;
@@ -39,6 +40,8 @@ public class SearchController
      */
     public SearchController(Context context) {
         this.context = context;
+        this.session = new SessionManager(context);
+
 
         // Fetch all users
         UserRepository.getInstance().getAllUsers(allUsers -> {
@@ -56,8 +59,6 @@ public class SearchController
      * @param onFailure Callback for initialization failure.
      */
     public void initializeAdapter(OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        SessionManager session = new SessionManager(context);
-
         // Fetch follow status hash map
         UserRepository.getInstance().getFollowStatusHashMap(session.getUsername(), followStatus -> {
 
@@ -99,27 +100,39 @@ public class SearchController
 
     @Override
     public void onUserAdded(User newUser) {
-
+        allUsers.add(newUser);
+        adapter.followStatusPut(newUser.getUsername(), UserRepository.FollowStatus.NEITHER);
     }
 
     @Override
     public void onFollowAdded(Follow follow) {
-
+        if (follow.getFollowerUsername().equals(session.getUsername())) {
+            adapter.followStatusPut(follow.getFollowedUsername(), UserRepository.FollowStatus.FOLLOWING);
+            notifyAdapter();
+        }
     }
 
     @Override
     public void onFollowDeleted(String followerUsername, String followedUsername) {
-
+        if (followerUsername.equals(session.getUsername())) {
+            adapter.followStatusPut(followerUsername, UserRepository.FollowStatus.NEITHER);
+        }
     }
 
     @Override
     public void onFollowRequestAdded(FollowRequest followRequest) {
-
+        if (followRequest.getRequester().equals(session.getUsername())) {
+            adapter.followStatusPut(followRequest.getRequestee(), UserRepository.FollowStatus.REQUESTED);
+            notifyAdapter();
+        }
     }
 
     @Override
     public void onFollowRequestDeleted(String requester, String requestee) {
-
+        if (requester.equals(session.getUsername())) {
+            adapter.followStatusPut(requestee, UserRepository.FollowStatus.NEITHER);
+            notifyAdapter();
+        }
     }
 
     public SearchResultArrayAdapter getAdapter() {

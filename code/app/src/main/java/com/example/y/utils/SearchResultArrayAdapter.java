@@ -84,4 +84,15 @@ public class SearchResultArrayAdapter extends ArrayAdapter<User> {
         return view;
     }
 
+    /**
+     * Updates the follow status of the logged in user in relation to another user.
+     * @param otherUser
+     *      The user to which the follow status is being updated.
+     * @param status
+     *      The follow status of the logged in user to `otherUser`
+     */
+    public void followStatusPut(String otherUser, UserRepository.FollowStatus status) {
+        followStatus.put(otherUser, status);
+    }
+
 }

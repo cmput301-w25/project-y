@@ -198,7 +198,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
      * @param otherUser
      *      The user to which the follow status is being updated.
      * @param status
-     *      The follow status of the logged in user to `otherUse`
+     *      The follow status of the logged in user to `otherUser`
      */
     public void followStatusPut(String otherUser, UserRepository.FollowStatus status) {
         followStatus.put(otherUser, status);
