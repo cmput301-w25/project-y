@@ -4,20 +4,30 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="5dp"
     android:background="@color/bg_dark"
     android:layout_marginBottom="8dp">
+
+    <View
+        android:id="@+id/userEmotionColor"
+        android:layout_width="10dp"
+        android:layout_height="0dp"
+        android:background="#0fff"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/username" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="8dp"
         android:layout_height="wrap_content"
         android:text="username"
         android:textColor="@color/white"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/userEmotionColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.example.y.utils.FollowButton
         android:id="@+id/searchFollowBtn"

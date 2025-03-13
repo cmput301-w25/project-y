@@ -58,8 +58,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         // Init local variables
-        FollowRepository followRepository = FollowRepository.getInstance();
-        FollowRequestRepository followReqRepository = FollowRequestRepository.getInstance();
         MoodEvent mood = moodEvents.get(position);
 
         // Select either with or without photo context
@@ -75,26 +73,25 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         FollowButton followBtn = view.findViewById(R.id.btnFollowFromMood);
         followBtn.initialize(mood.getPosterUsername(), followStatus.get(mood.getPosterUsername()));
 
-        // Get views from content
-        LinearLayout border = view.findViewById(R.id.border);
+        // Set username
         TextView usernameTextView = view.findViewById(R.id.username);
-        TextView dateTimeTextView = view.findViewById(R.id.dateTime);
-        TextView emoticonTextView = view.findViewById(R.id.emoticon);
-        TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
-        TextView reasonWhyTextTextView = view.findViewById(R.id.text);
-        TextView locationTextView = view.findViewById(R.id.location);
-        ImageView photoImgView = view.findViewById(R.id.photo);
-
-        // Populate required fields (username, datetime, emotion emoticon)
         usernameTextView.setText(mood.getPosterUsername());
+
+        // Set date time
+        TextView dateTimeTextView = view.findViewById(R.id.dateTime);
         String dateTimeFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(mood.getDateTime().toDate());
         dateTimeTextView.setText(dateTimeFormatted);
+
+        // Set emoticon
+        TextView emoticonTextView = view.findViewById(R.id.emoticon);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
 
         // Set border colour based on emotion
-        border.setBackgroundColor(mood.getEmotion().getColor(context));
+        view.findViewById(R.id.border).setBackgroundColor(mood.getEmotion().getColor(context));
 
         // Optional fields: (location and social situation)
+        TextView locationTextView = view.findViewById(R.id.location);
+        TextView socialSituationTextView = view.findViewById(R.id.socialSituation);
         SocialSituation socialSituation = mood.getSocialSituation();
         GeoPoint location = mood.getLocation();
         if (socialSituation == null && location == null) {
@@ -118,6 +115,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Optional field: reason why text
+        TextView reasonWhyTextTextView = view.findViewById(R.id.text);
         String reasonWhyText = mood.getText();
         if (reasonWhyText != null) {
             reasonWhyTextTextView.setText(reasonWhyText);
@@ -127,6 +125,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Optional field: Photo
+        ImageView photoImgView = view.findViewById(R.id.photo);
         String photoURL = mood.getPhotoURL();
         if (photoImgView != null) {
             if (photoURL != null && !photoURL.isEmpty()) {
@@ -203,15 +202,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
      */
     public void followStatusPut(String otherUser, UserRepository.FollowStatus status) {
         followStatus.put(otherUser, status);
-    }
-
-    /**
-     * Removes a user following status entry.
-     * @param otherUser
-     *      User to remove from the following status hashmap.
-     */
-    public void followStatusRemove(String otherUser) {
-        followStatus.remove(otherUser);
     }
 
 }
