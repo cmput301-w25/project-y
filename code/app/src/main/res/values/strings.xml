@@ -66,6 +66,7 @@
     <string name="logout">Logout</string>
     <string name="addMoodEvent">Add</string>
     <string name="my_mood_history">My Mood History</string>
+    <string name="my_personal_journal">My Personal Journal</string>
     <string name="follow_requests">Follow Requests</string>
     <string name="home">Home</string>
 

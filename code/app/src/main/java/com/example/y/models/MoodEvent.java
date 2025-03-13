@@ -141,4 +141,22 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
     }
 
+    @Override
+    @NonNull
+    public String toString() {
+        return "MoodEvent{" +
+                "id='" + id + '\'' +
+                ", creationDateTime=" + creationDateTime +
+                ", posterUsername='" + posterUsername + '\'' +
+                ", dateTime=" + dateTime +
+                ", emotion=" + emotion +
+                ", isPrivate=" + isPrivate +
+                ", socialSituation=" + socialSituation +
+                ", trigger='" + trigger + '\'' +
+                ", text='" + text + '\'' +
+                ", photoURL='" + photoURL + '\'' +
+                ", location=" + location +
+                '}';
+    }
+
 }
