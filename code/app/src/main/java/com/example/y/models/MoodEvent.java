@@ -100,10 +100,6 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setEmotion(Emotion emotion) { this.emotion = emotion; }
 
-    public String getTrigger() { return trigger; }
-
-    public void setTrigger(String trigger) { this.trigger = trigger; }
-
     public SocialSituation getSocialSituation() { return socialSituation; }
 
     public void setSocialSituation(SocialSituation socialSituation) { this.socialSituation = socialSituation; }
@@ -124,6 +120,9 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setIsPrivate(Boolean isPrivate) { this.isPrivate = isPrivate; }
 
+    @Exclude
+    public int getStability() { return 0; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -139,24 +138,6 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeString(text);
         parcel.writeString(photoURL);
         parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
-    }
-
-    @Override
-    @NonNull
-    public String toString() {
-        return "MoodEvent{" +
-                "id='" + id + '\'' +
-                ", creationDateTime=" + creationDateTime +
-                ", posterUsername='" + posterUsername + '\'' +
-                ", dateTime=" + dateTime +
-                ", emotion=" + emotion +
-                ", isPrivate=" + isPrivate +
-                ", socialSituation=" + socialSituation +
-                ", trigger='" + trigger + '\'' +
-                ", text='" + text + '\'' +
-                ", photoURL='" + photoURL + '\'' +
-                ", location=" + location +
-                '}';
     }
 
 }
