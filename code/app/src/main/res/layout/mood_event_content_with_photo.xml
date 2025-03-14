@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:src="@drawable/hi"
+                android:src="@drawable/mood"
                 android:contentDescription="@string/mood_photo" />
 
             <LinearLayout

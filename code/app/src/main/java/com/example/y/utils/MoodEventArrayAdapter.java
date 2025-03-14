@@ -64,7 +64,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(
-                mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_context_with_photo,
+                mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_content_with_photo,
                 parent, false
             );
         }

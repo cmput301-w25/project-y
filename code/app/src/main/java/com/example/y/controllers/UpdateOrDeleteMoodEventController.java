@@ -32,8 +32,8 @@ public class UpdateOrDeleteMoodEventController {
         if (session.getUsername() == null || session.getUsername().isEmpty()) {
             onFailure.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
         }
-        if (reasonWhyText.length() > 20) {
-            onFailure.onFailure(new IllegalArgumentException("Reason should not exceed 20 characters"));
+        if (reasonWhyText.length() >= 199) {
+            onFailure.onFailure(new IllegalArgumentException("Reason should not exceed 200 characters"));
             return;
         }
 
@@ -46,20 +46,13 @@ public class UpdateOrDeleteMoodEventController {
         }
 
         if (moodEvent.getText() != null) {
-            if (moodEvent.getText().length() > 20) {
-                onFailure.onFailure(new Exception("Reason why text length must be at most 20 characters"));
+            if (moodEvent.getText().length() >= 199) {
+                onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters"));
                 return;
             }
-            int reasonWhyTextWordCount = moodEvent.getText().isEmpty() ? 0 : moodEvent.getText().split("\\s+").length;
-            if (reasonWhyTextWordCount > 3) {
-                onFailure.onFailure(new Exception("Reason why text length must be at most 3 words"));
-                return;
-            }
+
         }
-        if (moodEvent.getTrigger() != null && moodEvent.getTrigger().length() > 300) {
-            onFailure.onFailure(new Exception("Trigger length cannot exceed 300"));
-            return;
-        }
+
 
         MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
     }
