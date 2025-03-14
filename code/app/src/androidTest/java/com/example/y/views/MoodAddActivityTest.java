@@ -43,10 +43,9 @@ public class MoodAddActivityTest {
     public MoodHistoryController moodHistoryController;
     static Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     @Rule
-    public ActivityScenarioRule<MoodAddActivity> scenario = new // We have this to make sure that we're only testing
-            ActivityScenarioRule<MoodAddActivity>(MoodAddActivity.class);
+    public ActivityScenarioRule<MoodAddActivity> scenario = new ActivityScenarioRule<MoodAddActivity>(MoodAddActivity.class);
 
-    static SessionManager mockSessionManager = new SessionManager(context);
+    private static SessionManager mockSessionManager = new SessionManager(context);
 
     @BeforeClass
     public static void setUp() {
@@ -59,7 +58,7 @@ public class MoodAddActivityTest {
     }
     @Before
     public void setUpSession() {
-        mockSessionManager.saveSession(userId);
+//        mockSessionManager.saveSession(userId);
         addMoodController = new AddMoodController(context);
     }
 
@@ -67,11 +66,14 @@ public class MoodAddActivityTest {
 
     @Test
     public void actuallyOpens(){
+        assert mockSessionManager.isLoggedIn();
         onView(ViewMatchers.withId(R.id.btnBack)).check(matches(isDisplayed()));
     }
 
+
     @Test
     public void testReasonWhyInputValidation(){
+        assert mockSessionManager.isLoggedIn();
         Matcher<View> reasonWhy = withId(R.id.etReasonWhyText);
 
         onView(reasonWhy).check(matches(isDisplayed()));
@@ -82,6 +84,7 @@ public class MoodAddActivityTest {
 
     @Test
     public void testReasonWhy3Words(){
+        assert mockSessionManager.isLoggedIn();
         Matcher<View> reasonWhy = withId(R.id.etReasonWhyText);
         onView(reasonWhy).check(matches(isDisplayed()));
         onView(reasonWhy).perform(ViewActions.typeText("Test three word lol"));

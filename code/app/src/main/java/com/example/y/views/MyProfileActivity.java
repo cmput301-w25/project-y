@@ -31,6 +31,7 @@ public class MyProfileActivity extends BaseActivity {
             startActivity(intent);
         });
 
+
         // Open my personal journal
         findViewById(R.id.btnUserProfileMyPersonalJournal).setOnClickListener(v -> {
             Intent intent = new Intent(this, PersonalJournalActivity.class);
@@ -44,6 +45,7 @@ public class MyProfileActivity extends BaseActivity {
             startActivity(intent);
             finishAffinity();
         });
+
 
         // Add mood event button click
         findViewById(R.id.btn_addMoodEventFromProfile).setOnClickListener(view -> {
