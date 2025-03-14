@@ -37,9 +37,9 @@ public abstract class MoodListController
     protected final SessionManager session;
 
     public MoodListController(Context context) {
-        filter = new MoodEventListFilter();
+        this.filter = new MoodEventListFilter();
         this.context = context;
-        session = new SessionManager(context);
+        this.session = new SessionManager(context);
     }
 
     /**

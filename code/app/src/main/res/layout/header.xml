@@ -30,9 +30,22 @@
         android:scaleType="fitCenter"
         android:background="@null"
         app:layout_constraintLeft_toRightOf="@id/btnMoodFollowing"
-        app:layout_constraintRight_toLeftOf="@id/btnMoodMap"
+        app:layout_constraintRight_toLeftOf="@id/btnSearch"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="Discover" />
+
+    <ImageButton
+        android:id="@+id/btnSearch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:src="@drawable/search_white"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        app:layout_constraintLeft_toRightOf="@id/btnDiscover"
+        app:layout_constraintRight_toLeftOf="@id/btnMoodMap"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/search" />
 
     <ImageButton
         android:id="@+id/btnMoodMap"
@@ -42,7 +55,7 @@
         android:src="@drawable/map_white"
         android:scaleType="fitCenter"
         android:background="@null"
-        app:layout_constraintLeft_toRightOf="@id/btnDiscover"
+        app:layout_constraintLeft_toRightOf="@id/btnSearch"
         app:layout_constraintRight_toLeftOf="@id/btnUserProfile"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/mood_map" />

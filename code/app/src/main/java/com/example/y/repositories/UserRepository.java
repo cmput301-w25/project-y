@@ -4,6 +4,7 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 import android.util.Log;
 
+import com.example.y.models.Emotion;
 import com.example.y.repositories.UserRepository.UserListener;
 import com.example.y.models.FollowRequest;
 import com.example.y.models.Follow;
@@ -331,6 +332,46 @@ public class UserRepository extends GenericRepository<UserListener> {
                         }
                     } else onFailure.onFailure(new Exception("Failed to count number of followers", task.getException()));
                 });
+    }
+
+    /**
+     * Gets all users ever.
+     * @param onSuccess
+     *      Success callback function to which an array of all users is passed to.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void getAllUsers(OnSuccessListener<ArrayList<User>> onSuccess, OnFailureListener onFailure) {
+        usersRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<User> allUsers = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            User user = doc.toObject(User.class);
+                            allUsers.add(user);
+                        }
+                        onSuccess.onSuccess(allUsers);
+                    } else {
+                        onFailure.onFailure(new Exception("Failure fetching all users", task.getException()));
+                    }
+                });
+    }
+
+    /**
+     * Gets the most recent emotion of a user.
+     * @param username
+     *      Username of the user to get emotion from.
+     * @param onSuccess
+     *      Success callback function to which the emotion is passed to, null is passed if there are no public mood events posted by this user.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getMostRecentEmotionFrom(String username, OnSuccessListener<Emotion> onSuccess, OnFailureListener onFailure) {
+        MoodEventRepository.getInstance().getAllPublicMoodEventsFrom(username, moodEvents -> {
+            if (!moodEvents.isEmpty()) {
+                onSuccess.onSuccess(moodEvents.get(0).getEmotion());
+            } else onSuccess.onSuccess(null);
+        }, onFailure);
     }
 
     /**
