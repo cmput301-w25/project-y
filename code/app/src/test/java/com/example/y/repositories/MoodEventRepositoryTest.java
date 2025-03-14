@@ -350,7 +350,6 @@ public class MoodEventRepositoryTest {
                 Emotion.HAPPINESS
         );
         moodEvent.setSocialSituation(SocialSituation.ALONE);
-        moodEvent.setTrigger("Good test results");
         moodEvent.setText("Test passed successfully");
         return moodEvent;
     }
