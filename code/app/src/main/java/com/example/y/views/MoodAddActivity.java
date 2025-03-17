@@ -41,17 +41,16 @@ public class MoodAddActivity extends AppCompatActivity {
 
     private static final String TAG = "MoodAddActivity";
     int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
-    private EditText etTrigger;
     private EditText datePicked;
     private Uri selectedImageUri;
     private CheckBox privateCheckBox;
-
+    private Button btnSubmit;
+    private ImageButton btnInsertImage;
     private LocationController locationController;
 
     @Override
@@ -64,8 +63,9 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Initialize (image) buttons
         ImageButton btnBack = findViewById(R.id.btnBack);
-        ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
-        Button btnSubmit = findViewById(R.id.btnSubmit);
+        btnInsertImage = findViewById(R.id.btnInsertImage);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        btnSubmit.setClickable(true);
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
@@ -78,12 +78,9 @@ public class MoodAddActivity extends AppCompatActivity {
 
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
-        IVPreviewImage = findViewById(R.id.IVPreviewImage);
-
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-
         ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -94,10 +91,11 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Image insertion button listener
         btnInsertImage.setOnClickListener(v -> images());
-        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason why cannot be empty!", "yes"));
 
         // Single submit button listener handling all form data
         btnSubmit.setOnClickListener(v -> {
+            btnSubmit.setClickable(false);
+
             // Collect all form data
             Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
             SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
@@ -107,7 +105,6 @@ public class MoodAddActivity extends AppCompatActivity {
             Timestamp moodDateTime = null;
             Boolean priv = privateCheckBox.isChecked();
 
-
             // Convert date time
             try {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -115,6 +112,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 assert date != null;
                 moodDateTime = new Timestamp(date);
             } catch (ParseException e) {
+                btnSubmit.setClickable(true);
                 e.printStackTrace();
                 Toast.makeText(this, "Invalid date format", LENGTH_SHORT).show();
             }
@@ -135,15 +133,18 @@ public class MoodAddActivity extends AppCompatActivity {
                     if (location != null) {
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "Location retrieved: (" + location.getLatitude() + ", " + location.getLongitude() + ")");
-                        Toast.makeText(getApplicationContext(), "User located at ("
-                                + location.getLatitude() + ", " + location.getLongitude() + ")", LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "User located at ("
+//                                + location.getLatitude() + ", " + location.getLongitude() + ")", LENGTH_SHORT).show();
                         newMood.setLocation(geoPoint);
+
+                        // Submit the mood event if location was successfully retrieved.
+                        submitMood(newMood);
+
                     } else {
+                        btnSubmit.setClickable(true);
                         Log.e(TAG, "Location retrieval returned null.");
                         Toast.makeText(getApplicationContext(), "Unable to retrieve location", LENGTH_SHORT).show();
                     }
-                    // Submit the mood event after processing location.
-                    submitMood(newMood);
                 });
             } else {
                 // Submit mood event directly.
@@ -197,8 +198,8 @@ public class MoodAddActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == SELECT_PICTURE) {
             selectedImageUri = data.getData();
             if (selectedImageUri != null) {
-                IVPreviewImage.setImageURI(selectedImageUri);
-                IVPreviewImage.setVisibility(View.VISIBLE);
+                btnInsertImage.setImageURI(selectedImageUri);
+                btnInsertImage.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -217,6 +218,7 @@ public class MoodAddActivity extends AppCompatActivity {
                 finish();
             }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         } catch (Exception ex) {
+            btnSubmit.setClickable(true);
             Log.e(TAG, "Error submitting mood: " + ex.getMessage());
             Toast.makeText(this, "Error submitting mood: " + ex.getMessage(), LENGTH_SHORT).show();
         }

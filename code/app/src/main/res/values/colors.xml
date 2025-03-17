@@ -12,5 +12,6 @@
     <color name="green">#00EF23</color>
 
     <color name="bg_dark">#1A1A1A</color>
+    <color name="button">#5366D3</color>
 
 </resources>

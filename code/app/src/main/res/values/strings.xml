@@ -82,7 +82,7 @@
     <string name="hint_reason_why_text">Why do you feel this way?</string>
     <string name="hint_trigger">What was the trigger?</string>
     <string name="hint_explanation">Explain your mood...</string>
-    <string name="share_location">Share location with others</string>
+    <string name="share_location">Share location</string>
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
