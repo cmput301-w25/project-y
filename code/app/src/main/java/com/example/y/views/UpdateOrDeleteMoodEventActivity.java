@@ -38,13 +38,11 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
-    private EditText triggerText;
     private EditText editTextUpdateTextExplanation;
     private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private ImageButton btnBack;
     private boolean shareLocation;
-    private boolean priv;
     private CheckBox privButton;
     private LocationController locationController;
 
@@ -55,7 +53,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
-        Boolean moodPrivate = null;
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
@@ -207,26 +204,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             finish();
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
-
-    /**
-     * Basically a str -> datetime
-     *
-     * @param datePicked Edit text of our date picker.
-     */
-    private void showDatePickerDialog(EditText datePicked) {
-
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            String formattedDate = String.format(Locale.getDefault(), "%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear);
-            datePicked.setText(formattedDate);
-        }, year, month, day);
-        datePickerDialog.show();
-    }
-    // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
 
 }
 

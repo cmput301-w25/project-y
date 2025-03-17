@@ -3,21 +3,25 @@ package com.example.y.views;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
@@ -82,9 +86,10 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Configure mood spinner adapter
         ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
+
+        initializeBorderColors();
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish());
@@ -152,6 +157,27 @@ public class MoodAddActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeBorderColors() {
+        // Set border to match the selected emotion in the spinner
+        Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
+        ScrollView border = findViewById(R.id.scrollView);
+        border.setBackgroundColor(emotion.getColor(this));
+
+        // Dynamically update the border color as the user selects different emotions
+        Context context = this;
+        spinnerMood.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Emotion emotion = Emotion.values()[i];
+                border.setBackgroundColor(emotion.getColor(context));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+
+        });
     }
 
     /**
