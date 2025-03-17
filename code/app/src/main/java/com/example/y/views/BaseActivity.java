@@ -59,6 +59,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         mapBtn = findViewById(R.id.btnMoodMap);
         profileBtn = findViewById(R.id.btnUserProfile);
 
+        // Now point to MyProfileActivity (generic profile)
+        profileBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, MyProfileActivity.class);
+            // Optionally setFlags if you like
+            startActivity(intent);
+        });
         // Header navigation
         moodFollowingListBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, FollowingMoodEventListActivity.class);

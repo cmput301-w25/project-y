@@ -62,7 +62,10 @@ public class FollowingMoodListController extends MoodListController {
      */
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
-        return (followingList != null) && isPosterAllowed(mood.getPosterUsername()) && !mood.getIsPrivate();
+       //return (followingList != null) && isPosterAllowed(mood.getPosterUsername()) && !mood.getIsPrivate();
+        return (followingList != null)
+               && isPosterAllowed(mood.getPosterUsername())
+                && !Boolean.TRUE.equals(mood.getIsPrivate());
     }
 
     /**

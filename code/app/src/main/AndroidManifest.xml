@@ -53,6 +53,8 @@
         <activity
             android:name=".views.MyProfileActivity"
             android:exported="true" />
+        <activity android:name=".views.UserProfileActivity"
+            android:exported="true"/>
         <activity
             android:name=".views.SignUpActivity"
             android:exported="true" />
