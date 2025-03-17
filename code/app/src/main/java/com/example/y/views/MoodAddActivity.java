@@ -84,7 +84,6 @@ public class MoodAddActivity extends AppCompatActivity {
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
-        IVPreviewImage = findViewById(R.id.IVPreviewImage);
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
