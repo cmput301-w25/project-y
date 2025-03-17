@@ -48,10 +48,12 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         String emoticon;
         String username;
 
+
         MarkerData(LatLng coordinate, String emoticon, String username) {
             this.coordinate = coordinate;
             this.emoticon = emoticon;
             this.username = username;
+
         }
     }
 
@@ -214,9 +216,9 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         for (MarkerData markerData : markerDataList) {
             View markerView = LayoutInflater.from(this).inflate(R.layout.geolocation_pointer, null);
             TextView moodTextView = markerView.findViewById(R.id.mood);
-            TextView usernameTextView = markerView.findViewById(R.id.username);
+            //TextView usernameTextView = markerView.findViewById(R.id.username);
             moodTextView.setText(markerData.emoticon);
-            usernameTextView.setText(markerData.username);
+            //usernameTextView.setText(markerData.username);
 
             Bitmap markerBitmap = getBitmapFromView(markerView);
             MarkerOptions markerOptions = new MarkerOptions()
