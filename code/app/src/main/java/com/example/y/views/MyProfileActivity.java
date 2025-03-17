@@ -2,65 +2,61 @@ package com.example.y.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
+/**
+ * My profile activity.
+ * Handles button events.
+ */
 public class MyProfileActivity extends BaseActivity {
-
-    Button logout;
-    Button followRequests;
-    ImageButton followingMoodListButton;
-    ImageButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectProfileHeaderButton();
+        SessionManager session = new SessionManager(this);
 
-        logout = findViewById(R.id.btnUserProfileLogout);
-        addButton = findViewById(R.id.btn_addMoodEventFromProfile);
-        followingMoodListButton = findViewById(R.id.btnMoodFollowing);
-        followRequests = findViewById(R.id.FollowRequests);
-
-        addButton.setOnClickListener(view -> onAddButtonClick());
-        logout.setOnClickListener(view -> onLogoutButtonClick());
-        followRequests.setOnClickListener(view -> onFollowRequests());
+        // Open follow requests page
+        findViewById(R.id.FollowRequests).setOnClickListener(view -> {
+            Intent intent = new Intent(this, FollowRequestsActivity.class);
+            startActivity(intent);
+        });
 
         // Open my mood history
-        SessionManager session = new SessionManager(this);
         findViewById(R.id.btnUserProfileMyMoodHistory).setOnClickListener(v -> {
             Intent intent = new Intent(this, MoodHistoryActivity.class);
             intent.putExtra("user", session.getUsername());
             startActivity(intent);
         });
-    }
 
-    private void onAddButtonClick() {
-        Intent intent = new Intent(this, MoodAddActivity.class);
-        startActivity(intent);
-    }
 
-    private void onLogoutButtonClick() {
-        SessionManager sessionManager = new SessionManager(this);
-        sessionManager.logout();
+        // Open my personal journal
+        findViewById(R.id.btnUserProfileMyPersonalJournal).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PersonalJournalActivity.class);
+            startActivity(intent);
+        });
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        // Log out button click
+        findViewById(R.id.btnUserProfileLogout).setOnClickListener(view -> {
+            session.logout();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finishAffinity();
+        });
 
-        finishAffinity();
-    }
 
-    private void onFollowRequests() {
-        Intent intent = new Intent(this, FollowRequestsActivity.class);
-        startActivity(intent);
+        // Add mood event button click
+        findViewById(R.id.btn_addMoodEventFromProfile).setOnClickListener(view -> {
+            Intent intent = new Intent(this, MoodAddActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
     protected int getActivityLayout() {
-        return R.layout.activity_profile;
+        return R.layout.activity_my_profile;
     }
 
 }

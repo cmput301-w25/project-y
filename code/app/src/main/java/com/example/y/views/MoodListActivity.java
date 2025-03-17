@@ -2,7 +2,9 @@ package com.example.y.views;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,23 +15,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.content.Intent;
-import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodListController;
 import com.example.y.models.Emotion;
+import com.example.y.models.MoodEvent;
+import com.example.y.models.SocialSituation;
+import com.example.y.services.SessionManager;
+import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
 
 public class MoodListActivity extends BaseActivity {
 
@@ -123,7 +123,7 @@ public class MoodListActivity extends BaseActivity {
 
         // Spinner content (null + all emotions)
         ArrayList<String> adapterContent = new ArrayList<>();
-        adapterContent.add("Any");
+        adapterContent.add("Emotion");
         Arrays.asList(Emotion.values()).forEach(emotion -> {
             adapterContent.add(emotion.toString());
         });
@@ -149,7 +149,8 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
     }
 
@@ -170,10 +171,12 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
         });
     }
 
@@ -195,8 +198,9 @@ public class MoodListActivity extends BaseActivity {
 
     /**
      * Handles when a mood event is clicked
+     *
      * @param moodEvent The mood event that was clicked
-     * @param userName The username of the user clicking
+     * @param userName  The username of the user clicking
      */
     protected void onMoodClick(MoodEvent moodEvent, String userName) {
         // If the user clicked on their own mood even then we'll open the edit/delete activity.
@@ -212,10 +216,29 @@ public class MoodListActivity extends BaseActivity {
             // Taken on 2025-03-05
             intent.putExtra("mood_event", (Parcelable) moodEvent);
             Emotion sendEmotion = moodEvent.getEmotion();
-            intent.putExtra("emotion",sendEmotion.ordinal());
-            SocialSituation sendSocial = moodEvent.getSocialSituation();
-            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+            intent.putExtra("emotion", sendEmotion.ordinal());
+            if (moodEvent.getSocialSituation() != null) {
+                SocialSituation sendSocial = moodEvent.getSocialSituation();
+                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());}
+            Boolean privateMood = moodEvent.getIsPrivate();
+            if (privateMood != null) {
+                intent.putExtra("private", privateMood);
+            }
             startActivity(intent);
+        } else {
+            Intent intent;
+            intent = new Intent(this, EnhancedMoodActivity.class);
+            intent.putExtra("mood_event", (Parcelable) moodEvent);
+            intent.putExtra("emotion", moodEvent.getEmotion().ordinal());
+            if (moodEvent.getSocialSituation() != null) {
+                SocialSituation sendSocial = moodEvent.getSocialSituation();
+            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+
+            }
+            startActivity(intent);
+
+
         }
     }
 
@@ -230,7 +253,9 @@ public class MoodListActivity extends BaseActivity {
     }
 
     @Override
-    protected int getActivityLayout() { return R.layout.mood_list_view; }
+    protected int getActivityLayout() {
+        return R.layout.mood_list_view;
+    }
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -4,6 +4,7 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 import android.util.Log;
 
+import com.example.y.models.Emotion;
 import com.example.y.repositories.UserRepository.UserListener;
 import com.example.y.models.FollowRequest;
 import com.example.y.models.Follow;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -81,7 +83,7 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Updates the singleton instance with a new db
+     * Updates the singleton instance with a new db.
      * @param firestore
      *      Testing db instance.
      */
@@ -92,7 +94,7 @@ public class UserRepository extends GenericRepository<UserListener> {
     /**
      * Listen for snapshots and notify listeners.
      */
-    public void startListening() {
+    private void startListening() {
         // Listen for real-time updates and notify all listeners
         usersRef.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
@@ -187,13 +189,13 @@ public class UserRepository extends GenericRepository<UserListener> {
      * @param onFailure
      *      Failure callback function.
      */
-    public void getFollowing(String username, OnSuccessListener<List<String>> onSuccess, OnFailureListener onFailure) {
+    public void getFollowing(String username, OnSuccessListener<ArrayList<String>> onSuccess, OnFailureListener onFailure) {
         db.collection(FollowRepository.FOLLOW_COLLECTION)
                 .whereEqualTo("followerUsername", username)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<String> following = new ArrayList<String>();
+                        ArrayList<String> following = new ArrayList<String>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
                             Follow follow = doc.toObject(Follow.class);
                             following.add(follow.getFollowedUsername());
@@ -206,56 +208,57 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
-     * Gets a list of all mood events from all users a user is following.
+     * Gets a list of the 3 most recent public mood events from all users a user is following.
      * The result is sorted by date descending.
      * Filter is not applied.
-     * @param username
-     *      The username of the user to fetch the mood following list for.
+     * @param followingList
+     *      The list of users the user is following.
      * @param onSuccess
      *      Success callback function to which the list of mood events is passed to.
      * @param onFailure
      *      Failure callback function.
      */
-    public void getFollowingMoodList(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
-        getFollowing(username, followingList -> {
-            // Case when the following list is empty
-            if (followingList.isEmpty()) {
-                onSuccess.onSuccess(new ArrayList<>());
-                return;
-            }
+    public void getFollowingMoodList(ArrayList<String> followingList, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        // Case when the following list is empty
+        if (followingList.isEmpty()) {
+            onSuccess.onSuccess(new ArrayList<>());
+            return;
+        }
 
-            // Split each task into batches of 10.
-            // This is done because of Firestore's `whereIn` limit of 10
-            List<Task<QuerySnapshot>> tasks = new ArrayList<>();
-            CollectionReference moodEventRef = db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION);
-            for (int i = 0; i < followingList.size(); i += 10) {
-                List<String> sublist = followingList.subList(i, Math.min(i + 10, followingList.size()));
-                Task<QuerySnapshot> task = moodEventRef.whereIn("posterUsername", sublist).get();
-                tasks.add(task);
-            }
+        // Get the 3 most recent mood events from each user in the following list
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        CollectionReference moodEventRef = db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION);
+        for (String user : followingList) {
+            Task<QuerySnapshot> task = moodEventRef
+                    .whereEqualTo("posterUsername", user)
+                    .whereEqualTo("isPrivate", false)
+                    .orderBy("dateTime", Query.Direction.DESCENDING)
+                    .limit(3)
+                    .get();
+            tasks.add(task);
+        }
 
-            // Go through all snapshots and convert them to a mood list
-            Tasks.whenAllSuccess(tasks)
-                    .addOnSuccessListener(results -> {
-                        // Create list of mood events
-                        ArrayList<MoodEvent> moodFollowingList = new ArrayList<MoodEvent>();
-                        for (Object result : results) {
-                            QuerySnapshot snapshot = (QuerySnapshot) result;
-                            for (DocumentSnapshot doc : snapshot) {
-                                MoodEvent mood = doc.toObject(MoodEvent.class);
-                                mood.setId(doc.getId());
-                                moodFollowingList.add(mood);
-                            }
+        // Go through all snapshots and convert them to a mood list
+        Tasks.whenAllSuccess(tasks)
+                .addOnSuccessListener(results -> {
+                    // Create list of mood events
+                    ArrayList<MoodEvent> moodFollowingList = new ArrayList<MoodEvent>();
+                    for (Object result : results) {
+                        QuerySnapshot snapshot = (QuerySnapshot) result;
+                        for (DocumentSnapshot doc : snapshot) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            moodFollowingList.add(mood);
                         }
+                    }
 
-                        // Sort by date descending then pass to success callback function
-                        moodFollowingList.sort(Comparator.comparing(MoodEvent::getDateTime).reversed());
-                        onSuccess.onSuccess(moodFollowingList);
-                    })
-                    .addOnFailureListener(e -> {
-                        onFailure.onFailure(new Exception("Error getting mood following list", e));
-                    });
-        }, onFailure);
+                    // Sort by date descending then pass to success callback function
+                    moodFollowingList.sort(Comparator.comparing(MoodEvent::getDateTime).reversed());
+                    onSuccess.onSuccess(moodFollowingList);
+                })
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Error getting mood following list", e));
+                });
     }
 
     /**
@@ -328,6 +331,46 @@ public class UserRepository extends GenericRepository<UserListener> {
                         }
                     } else onFailure.onFailure(new Exception("Failed to count number of followers", task.getException()));
                 });
+    }
+
+    /**
+     * Gets all users ever.
+     * @param onSuccess
+     *      Success callback function to which an array of all users is passed to.
+     * @param onFailure
+     *      Failure callback function
+     */
+    public void getAllUsers(OnSuccessListener<ArrayList<User>> onSuccess, OnFailureListener onFailure) {
+        usersRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<User> allUsers = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            User user = doc.toObject(User.class);
+                            allUsers.add(user);
+                        }
+                        onSuccess.onSuccess(allUsers);
+                    } else {
+                        onFailure.onFailure(new Exception("Failure fetching all users", task.getException()));
+                    }
+                });
+    }
+
+    /**
+     * Gets the most recent emotion of a user.
+     * @param username
+     *      Username of the user to get emotion from.
+     * @param onSuccess
+     *      Success callback function to which the emotion is passed to, null is passed if there are no public mood events posted by this user.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getMostRecentEmotionFrom(String username, OnSuccessListener<Emotion> onSuccess, OnFailureListener onFailure) {
+        MoodEventRepository.getInstance().getAllPublicMoodEventsFrom(username, moodEvents -> {
+            if (!moodEvents.isEmpty()) {
+                onSuccess.onSuccess(moodEvents.get(0).getEmotion());
+            } else onSuccess.onSuccess(null);
+        }, onFailure);
     }
 
     /**

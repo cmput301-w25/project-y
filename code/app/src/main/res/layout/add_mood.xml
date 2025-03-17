@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -41,45 +40,25 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
-        android:maxLength="20"
+        android:maxLength="200"
         android:hint="@string/hint_reason_why_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
-    <EditText
-        android:id="@+id/etTrigger"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="16dp"
-        android:maxLength="300"
-        android:hint="@string/hint_trigger"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etReasonWhyText" />
-
-    <!-- Social Situation Section -->
     <Spinner
         android:id="@+id/spinnerSocialSituation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         android:entries="@array/social_situation_array"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etTrigger" />
+        app:layout_constraintTop_toBottomOf="@id/etReasonWhyText" />
 
-
-    <!-- Image Insert and Location Sharing -->
-
-
-    <!-- Submit Button -->
 
     <ImageButton
         android:id="@+id/btnInsertImage"
@@ -119,6 +98,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnInsertImage" />
 
+    <CheckBox
+        android:id="@+id/privacyCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/privateString"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkboxShareLocation" />
+
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="0dp"
@@ -128,9 +117,9 @@
         android:layout_marginBottom="32dp"
         android:text="@string/submit"
         android:textColor="@color/black"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:backgroundTint="@color/white"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -144,7 +133,6 @@
         app:layout_constraintBottom_toTopOf="@+id/checkboxShareLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnInsertImage"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerSocialSituation"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSocialSituation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

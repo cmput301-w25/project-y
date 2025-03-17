@@ -4,12 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Stores data of a mood event posted by a user.
@@ -25,6 +27,7 @@ public class MoodEvent implements Serializable, Parcelable {
     // Required
     private Timestamp dateTime;
     private Emotion emotion;
+    private Boolean isPrivate;
 
     // Optional
     private SocialSituation socialSituation;
@@ -53,6 +56,7 @@ public class MoodEvent implements Serializable, Parcelable {
         this.posterUsername = posterUsername;
         this.dateTime = dateTime;
         this.emotion = emotion;
+        this.isPrivate = false;
     }
 
     protected MoodEvent(Parcel in) {
@@ -98,10 +102,6 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setEmotion(Emotion emotion) { this.emotion = emotion; }
 
-    public String getTrigger() { return trigger; }
-
-    public void setTrigger(String trigger) { this.trigger = trigger; }
-
     public SocialSituation getSocialSituation() { return socialSituation; }
 
     public void setSocialSituation(SocialSituation socialSituation) { this.socialSituation = socialSituation; }
@@ -118,6 +118,13 @@ public class MoodEvent implements Serializable, Parcelable {
 
     public void setLocation(GeoPoint location) { this.location = location; }
 
+    public Boolean getIsPrivate() { return isPrivate; }
+
+    public void setIsPrivate(Boolean isPrivate) { this.isPrivate = isPrivate; }
+
+    @Exclude
+    public int getStability() { return 0; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,5 +139,25 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeString(trigger);
         parcel.writeString(text);
         parcel.writeString(photoURL);
+        parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MoodEvent mood = (MoodEvent) obj;
+        return Objects.equals(id, mood.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return posterUsername + ": " + id;
     }
 }

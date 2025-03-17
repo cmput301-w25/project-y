@@ -31,6 +31,12 @@
         android:theme="@style/Theme.Y"
         tools:targetApi="31">
         <activity
+            android:name=".views.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.PersonalJournalActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.FollowRequestsActivity"
             android:exported="false" />
         <activity
@@ -75,6 +81,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAo3z504InN2IfH6j1S3KhCLEMsQcJTI3s" />
 
+
+        <activity android:name=".views.EnhancedMoodActivity"
+            android:exported="true" />
         <activity
             android:name=".views.MainActivity"
             android:exported="true">
