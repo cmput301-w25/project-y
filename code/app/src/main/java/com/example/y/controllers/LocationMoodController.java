@@ -39,9 +39,12 @@ public class LocationMoodController {
      */
     public void getMoodEventsWithLocation(OnSuccessListener<ArrayList<MoodEvent>> onSuccess,
                                           OnFailureListener onFailure) {
+
+        ArrayList<MoodEvent> eventsWithLocation = new ArrayList<>();
+
         // Assuming getAllMoodEvents returns all mood events in the system.
-        moodEventRepo.getAllMoodEvents(moodEvents -> {
-            ArrayList<MoodEvent> eventsWithLocation = new ArrayList<>();
+        moodEventRepo.getAllPublicMoodEvents(moodEvents -> {
+            ArrayList<MoodEvent> eventsWithLocationPrivate = new ArrayList<>();
             for (MoodEvent mood : moodEvents) {
                 if (mood.getLocation() != null) {
                     eventsWithLocation.add(mood);
@@ -49,6 +52,8 @@ public class LocationMoodController {
             }
             onSuccess.onSuccess(eventsWithLocation);
         }, onFailure);
+
+
     }
 
     /**
@@ -88,7 +93,7 @@ public class LocationMoodController {
     public void getMoodEventWithin5kmFromUser(Location userLocation,
                                               OnSuccessListener<ArrayList<MoodEvent>> onSuccess,
                                               OnFailureListener onFailure) {
-        moodEventRepo.getAllMoodEvents(moodEvents -> {
+        moodEventRepo.getAllPublicMoodEvents(moodEvents -> {
             ArrayList<MoodEvent> eventsWithin5km = new ArrayList<>();
             for (MoodEvent mood : moodEvents) {
                 if (mood.getLocation() != null && isWithin5km(mood, userLocation)) {

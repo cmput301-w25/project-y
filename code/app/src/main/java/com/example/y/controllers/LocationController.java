@@ -1,6 +1,7 @@
 package com.example.y.controllers;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresPermission;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -71,6 +73,8 @@ public class LocationController {
     /**
      * Internal method that actually fetches the location.
      */
+
+    @SuppressLint("MissingPermission")
     private void fetchLocationInternal() {
         fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
