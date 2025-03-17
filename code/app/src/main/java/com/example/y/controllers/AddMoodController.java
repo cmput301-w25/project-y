@@ -33,7 +33,8 @@ public class AddMoodController {
     private Context context;
 
 
-    public AddMoodController() {}
+    public AddMoodController() {
+    }
 
     public AddMoodController(Context context) {
         this.context = context;
@@ -96,7 +97,6 @@ public class AddMoodController {
         }
         //      location
         //          Not sure if this needs to be validated
-
 
         // Finally upload the mood
         MoodEventRepository moodRepo = MoodEventRepository.getInstance();

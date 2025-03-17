@@ -52,10 +52,7 @@ public class UpdateOrDeleteMoodEventController {
             }
 
         }
-        if (moodEvent.getTrigger() != null && moodEvent.getTrigger().length() > 300) {
-            onFailure.onFailure(new Exception("Trigger length cannot exceed 300"));
-            return;
-        }
+
 
         MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
     }

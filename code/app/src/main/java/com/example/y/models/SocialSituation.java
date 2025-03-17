@@ -2,6 +2,8 @@ package com.example.y.models;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.example.y.R;
 
 public enum SocialSituation {

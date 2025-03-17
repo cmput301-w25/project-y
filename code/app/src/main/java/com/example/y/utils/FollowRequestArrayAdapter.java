@@ -26,6 +26,7 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
 
     private final Context context;
     private final ArrayList<FollowRequest> requests;
+
     /**
      * Initializes the adapter
      * @param context  The application context

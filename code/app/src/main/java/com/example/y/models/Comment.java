@@ -17,6 +17,7 @@ public class Comment implements Serializable {
 
     public Comment () {}
 
+    @Exclude
     public String getId() {
         return id;
     }

@@ -18,7 +18,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.y.R;
-import com.example.y.services.SessionManager;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -30,20 +29,22 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SignUpActivityTest {
-    private static SessionManager session;
+//    private static SessionManager session;
     @Rule
     public ActivityScenarioRule<SignUpActivity> activityRule = new ActivityScenarioRule<>(SignUpActivity.class);
     Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
     @Before
     public void setUp() throws Exception {
-        session = new SessionManager(context);
-        session.saveSession("tegen");
+//        session = new SessionManager(context);
+//        session.saveSession("tegen");
+//
+//        Log.d("SETUP", "setUp: User logged in "+session.getUsername());
     }
 
     @After
     public void tearDown() throws Exception {
-        session.logout();
+//        session.logout();
     }
 
 
