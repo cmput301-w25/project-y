@@ -29,9 +29,9 @@ public class LocationController {
         void onLocationRetrieved(Location location);
     }
 
-    private Activity activity;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private ActivityResultLauncher<String> permissionLauncher;
+    private final Activity activity;
+    private final FusedLocationProviderClient fusedLocationProviderClient;
+    private final ActivityResultLauncher<String> permissionLauncher;
     private LocationCallback locationCallback; // Stores callback while waiting for permission
 
     public LocationController(Activity activity) {

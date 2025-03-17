@@ -19,13 +19,11 @@ import java.util.ArrayList;
  */
 public class LocationMoodController {
 
-    private final Context context;
     private final SessionManager session;
     private final UserRepository userRepo;
     private final MoodEventRepository moodEventRepo;
 
     public LocationMoodController(Context context) {
-        this.context = context;
         this.session = new SessionManager(context);
         this.userRepo = UserRepository.getInstance();
         this.moodEventRepo = MoodEventRepository.getInstance();
@@ -40,11 +38,10 @@ public class LocationMoodController {
     public void getMoodEventsWithLocation(OnSuccessListener<ArrayList<MoodEvent>> onSuccess,
                                           OnFailureListener onFailure) {
 
-        ArrayList<MoodEvent> eventsWithLocation = new ArrayList<>();
 
         // Assuming getAllMoodEvents returns all mood events in the system.
         moodEventRepo.getAllPublicMoodEvents(moodEvents -> {
-            ArrayList<MoodEvent> eventsWithLocationPrivate = new ArrayList<>();
+            ArrayList<MoodEvent> eventsWithLocation = new ArrayList<>();
             for (MoodEvent mood : moodEvents) {
                 if (mood.getLocation() != null) {
                     eventsWithLocation.add(mood);
