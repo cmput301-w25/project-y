@@ -2,6 +2,7 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -55,14 +57,16 @@ public class MoodAddActivity extends AppCompatActivity {
     private CheckBox privateCheckBox;
     private Button btnSubmit;
     private ImageButton btnInsertImage;
+    private SessionManager session;
+    private SocialSituation socialSituation;
     private LocationController locationController;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
-        SessionManager session = new SessionManager(this);
-
+        session = new SessionManager(this);
         addMoodController = new AddMoodController(this);
 
         // Initialize (image) buttons
@@ -76,12 +80,11 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Initialize text views
         spinnerMood = findViewById(R.id.spinnerMood);
-        spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-        checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        privateCheckBox = findViewById(R.id.privacyCheckBox);
 
+        checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
+        IVPreviewImage = findViewById(R.id.IVPreviewImage);
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
@@ -103,7 +106,6 @@ public class MoodAddActivity extends AppCompatActivity {
 
             // Collect all form data
             Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
-            SocialSituation socialSituation = SocialSituation.values()[spinnerSocial.getSelectedItemPosition()];
             boolean shareLocation = checkShareLocation.isChecked();
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
@@ -129,7 +131,8 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
             newMood.setText(reasonWhyText);
-            newMood.setIsPrivate(priv);
+
+
 
             if (shareLocation) {
                 Log.d(TAG, "User opted to share location. Requesting location...");
@@ -156,6 +159,11 @@ public class MoodAddActivity extends AppCompatActivity {
                 submitMood(newMood);
             }
         });
+
+        makesocialspinner();
+
+        //set social sitation to null incase user does not click on spinner
+        socialSituation = null;
 
     }
 
@@ -229,7 +237,6 @@ public class MoodAddActivity extends AppCompatActivity {
             }
         }
     }
-
     /**
      * Helper method to submit the mood event using the AddMoodController.
      *
@@ -249,6 +256,48 @@ public class MoodAddActivity extends AppCompatActivity {
             Toast.makeText(this, "Error submitting mood: " + ex.getMessage(), LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * Makes spinner for social situation
+     */
+    private void makesocialspinner() {
+        spinnerSocial = findViewById(R.id.spinnerSocialSituation);
+
+
+        ArrayList<String> socialSituationOptions = new ArrayList<>();
+        socialSituationOptions.add("Empty");
+
+        for (SocialSituation situation : SocialSituation.values()) {
+            socialSituationOptions.add(situation.toString());
+        }
+
+
+        ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, socialSituationOptions);
+        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSocial.setAdapter(socialAdapter);
+
+
+        spinnerSocial.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+
+                    socialSituation = null;
+                } else {
+
+                    socialSituation = SocialSituation.values()[position - 1];
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+                socialSituation = null;
+            }
+        });
+    }
+
 }
 
 

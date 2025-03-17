@@ -119,6 +119,7 @@ public class FollowingMoodListController extends MoodListController {
         return false;
     }
 
+
     /**
      * Removes a mood event from both mood lists.
      * Adds the next most recent mood event from the poster (if it exists) to fill in the gap.
