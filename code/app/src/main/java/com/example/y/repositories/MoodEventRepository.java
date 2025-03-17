@@ -273,6 +273,36 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     /**
+     * Gets the 3 most recent public mood event from a user. Ordered by dateTime descending.
+     *
+     * @param username  Username of the user to get moods from.
+     * @param onSuccess Success callback function to which the array of mood events is passed to.
+     * @param onFailure Failure callback function.
+     */
+    public void getRecentPublicMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        moodEventRef
+                .whereEqualTo("posterUsername", username)
+                .whereEqualTo("isPrivate", false)
+                .orderBy("dateTime", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> allPublicMoods = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            allPublicMoods.add(mood);
+                        }
+                        onSuccess.onSuccess(allPublicMoods);
+                    } else {
+                        onFailure.onFailure(new Exception("Failed to fetch all public mood events from user " + username, task.getException()));
+                        Log.e("Repository Error", task.getException().toString());
+                    }
+                });
+    }
+
+    /**
      * Gets every private mood event from a user. Ordered by dateTime descending.
      *
      * @param username  Username of the user to get moods from.
