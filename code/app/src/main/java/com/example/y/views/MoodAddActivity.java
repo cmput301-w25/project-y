@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,16 +40,15 @@ public class MoodAddActivity extends AppCompatActivity {
 
     private static final String TAG = "MoodAddActivity";
     int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
-    private EditText etTrigger;
     private EditText datePicked;
     private Uri selectedImageUri;
     private CheckBox privateCheckBox;
+    private ImageButton btnInsertImage;
 
     private LocationController locationController;
 
@@ -64,7 +62,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Initialize (image) buttons
         ImageButton btnBack = findViewById(R.id.btnBack);
-        ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
+         btnInsertImage = findViewById(R.id.btnInsertImage);
         Button btnSubmit = findViewById(R.id.btnSubmit);
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
@@ -78,7 +76,6 @@ public class MoodAddActivity extends AppCompatActivity {
 
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
-        IVPreviewImage = findViewById(R.id.IVPreviewImage);
 
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
@@ -197,8 +194,8 @@ public class MoodAddActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == SELECT_PICTURE) {
             selectedImageUri = data.getData();
             if (selectedImageUri != null) {
-                IVPreviewImage.setImageURI(selectedImageUri);
-                IVPreviewImage.setVisibility(View.VISIBLE);
+                btnInsertImage.setImageURI(selectedImageUri);
+                btnInsertImage.setVisibility(View.VISIBLE);
             }
         }
     }
