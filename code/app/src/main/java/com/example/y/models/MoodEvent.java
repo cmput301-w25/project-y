@@ -4,12 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Stores data of a mood event posted by a user.
@@ -140,4 +142,22 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MoodEvent mood = (MoodEvent) obj;
+        return Objects.equals(id, mood.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return posterUsername + ": " + id;
+    }
 }
