@@ -31,17 +31,13 @@ import java.util.Locale;
 
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
-    int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
     Button updateButton;
     Button deleteButton;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText editTextUpdateTextExplanation;
-    private TextView datePicked;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
-    private ImageButton btnBack;
     private boolean shareLocation;
     private CheckBox privButton;
     private LocationController locationController;
@@ -75,12 +71,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         boolean tempPriv = getIntent().getBooleanExtra("private", false);
 
         moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
-        // Debugging stuff
-        if (moodEventToUpdateOrDelete == null) {
-            Toast.makeText(this, "Error loading mood event", LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
         // Set our controller
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
@@ -107,7 +97,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
         privButton = findViewById(R.id.privacyCheckBoxUpdate);
-        datePicked = findViewById(R.id.datePickerAddMood);
+        TextView datePicked = findViewById(R.id.datePickerAddMood);
         updateButton = findViewById(R.id.UpdateMoodButton);
         deleteButton = findViewById(R.id.deleteMoodButton);
         privButton.setChecked(tempPriv);
@@ -117,7 +107,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             datePicked.setText(sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
         }
-        btnBack = findViewById(R.id.btnBack);
+        ImageButton btnBack = findViewById(R.id.btnBack);
         //https://developer.android.com/training/permissions/requesting
         //ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
         // Update & delete buttons
@@ -133,12 +123,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         //VPreviewImage = findViewById(R.id.IVPreviewImage);
 
         //Listener for the checkShareLocation
-        checkShareLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareLocation = checkShareLocation.isChecked();
-            }
-        });
+        checkShareLocation.setOnClickListener(v -> shareLocation = checkShareLocation.isChecked());
 
         // Back button listener
         btnBack.setOnClickListener(v -> finish()); // If they click the back button

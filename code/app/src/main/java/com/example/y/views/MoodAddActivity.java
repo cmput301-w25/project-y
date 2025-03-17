@@ -16,13 +16,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.y.R;
 import com.example.y.controllers.AddMoodController;
@@ -31,7 +29,6 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.services.SessionManager;
-import com.example.y.utils.GenericTextWatcher;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -49,7 +46,6 @@ public class MoodAddActivity extends AppCompatActivity {
     int SELECT_PICTURE = 200;
     private AddMoodController addMoodController;
     private Spinner spinnerMood;
-    private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
     private EditText datePicked;
@@ -70,7 +66,6 @@ public class MoodAddActivity extends AppCompatActivity {
         addMoodController = new AddMoodController(this);
 
         // Initialize (image) buttons
-        ImageButton btnBack = findViewById(R.id.btnBack);
         btnInsertImage = findViewById(R.id.btnInsertImage);
         btnSubmit = findViewById(R.id.btnSubmit);
         btnSubmit.setClickable(true);
@@ -78,25 +73,24 @@ public class MoodAddActivity extends AppCompatActivity {
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
 
-        // Initialize text views
+        // Initialize views
         spinnerMood = findViewById(R.id.spinnerMood);
-
+        checkShareLocation = findViewById(R.id.checkboxShareLocation);
+        privateCheckBox = findViewById(R.id.privacyCheckBox);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
         etReasonWhyText = findViewById(R.id.etReasonWhyText);
         datePicked = findViewById(R.id.datePickerAddMood);
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<Emotion>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
+        ArrayAdapter<Emotion> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
         initializeBorderColors();
+        makeSocialSpinner();
 
-        // Back button listener
-        btnBack.setOnClickListener(v -> finish());
-
-        // Image insertion button listener
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         btnInsertImage.setOnClickListener(v -> images());
 
         // Single submit button listener handling all form data
@@ -105,11 +99,9 @@ public class MoodAddActivity extends AppCompatActivity {
 
             // Collect all form data
             Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
-            boolean shareLocation = checkShareLocation.isChecked();
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
-            Boolean priv = privateCheckBox.isChecked();
 
             // Convert date time
             try {
@@ -130,18 +122,15 @@ public class MoodAddActivity extends AppCompatActivity {
             newMood.setEmotion(emotion);
             newMood.setSocialSituation(socialSituation);
             newMood.setText(reasonWhyText);
+            newMood.setIsPrivate(privateCheckBox.isChecked());
 
-
-
-            if (shareLocation) {
+            if (checkShareLocation.isChecked()) {
                 Log.d(TAG, "User opted to share location. Requesting location...");
                 // Use the pre-instantiated locationController.
                 locationController.getCurrentLocation(location -> {
                     if (location != null) {
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "Location retrieved: (" + location.getLatitude() + ", " + location.getLongitude() + ")");
-//                        Toast.makeText(getApplicationContext(), "User located at ("
-//                                + location.getLatitude() + ", " + location.getLongitude() + ")", LENGTH_SHORT).show();
                         newMood.setLocation(geoPoint);
 
                         // Submit the mood event if location was successfully retrieved.
@@ -158,11 +147,6 @@ public class MoodAddActivity extends AppCompatActivity {
                 submitMood(newMood);
             }
         });
-
-        makesocialspinner();
-
-        //set social sitation to null incase user does not click on spinner
-        socialSituation = null;
 
     }
 
@@ -259,32 +243,27 @@ public class MoodAddActivity extends AppCompatActivity {
     /**
      * Makes spinner for social situation
      */
-    private void makesocialspinner() {
-        spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-
+    private void makeSocialSpinner() {
+        Spinner spinnerSocial = findViewById(R.id.spinnerSocialSituation);
 
         ArrayList<String> socialSituationOptions = new ArrayList<>();
-        socialSituationOptions.add("Empty");
+        socialSituationOptions.add("None");
 
         for (SocialSituation situation : SocialSituation.values()) {
-            socialSituationOptions.add(situation.toString());
+            socialSituationOptions.add(situation.getText(this));
         }
-
 
         ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, socialSituationOptions);
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
 
-
         spinnerSocial.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-
                     socialSituation = null;
                 } else {
-
                     socialSituation = SocialSituation.values()[position - 1];
                 }
             }
