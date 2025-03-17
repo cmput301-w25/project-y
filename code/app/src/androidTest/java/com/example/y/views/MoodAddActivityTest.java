@@ -83,14 +83,14 @@ public class MoodAddActivityTest {
     }
 
     @Test
-    public void testReasonWhy3Words(){
+    public void test200Char(){
         assert mockSessionManager.isLoggedIn();
         Matcher<View> reasonWhy = withId(R.id.etReasonWhyText);
-        onView(reasonWhy).check(matches(isDisplayed()));
-        onView(reasonWhy).perform(ViewActions.typeText("Test three word lol"));
-        onView(reasonWhy).check(matches(hasErrorText("Reason why cannot be more than 3 words")));
-    }
 
+        onView(reasonWhy).check(matches(isDisplayed()));
+        onView(reasonWhy).perform(ViewActions.typeText("x".repeat(200)));
+        onView(reasonWhy).check(matches(hasErrorText("Reason why cannot be more than 200 characters!")));
+    }
 
 
     @After
