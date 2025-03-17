@@ -83,7 +83,11 @@ public class MoodAddActivity extends AppCompatActivity {
         datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
         // Configure mood spinner adapter
-        ArrayAdapter<Emotion> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
+        ArrayList<String> spinnerContent = new ArrayList<>();
+        for (Emotion emotion : Emotion.values()) {
+            spinnerContent.add(emotion.getText(this));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerContent);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
@@ -98,7 +102,7 @@ public class MoodAddActivity extends AppCompatActivity {
             btnSubmit.setClickable(false);
 
             // Collect all form data
-            Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
+            Emotion emotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
             String reasonWhyText = etReasonWhyText.getText().toString().trim();
             String dateOfMoodEventSTR = datePicked.getText().toString();
             Timestamp moodDateTime = null;
@@ -152,7 +156,7 @@ public class MoodAddActivity extends AppCompatActivity {
 
     private void initializeBorderColors() {
         // Set border to match the selected emotion in the spinner
-        Emotion emotion = (Emotion) spinnerMood.getSelectedItem();
+        Emotion emotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
         ScrollView border = findViewById(R.id.scrollView);
         border.setBackgroundColor(emotion.getColor(this));
 
