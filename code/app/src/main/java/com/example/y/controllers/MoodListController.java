@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
