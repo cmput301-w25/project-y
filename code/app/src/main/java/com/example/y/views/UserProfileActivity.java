@@ -1,6 +1,8 @@
 package com.example.y.views;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +20,12 @@ public class UserProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectProfileHeaderButton();
-
+        ImageButton backButton = findViewById(R.id.btnBack);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> {
+                finish();
+            });
+        }
         // 1) Get the target user's username from the intent
         targetUser = getIntent().getStringExtra("user");
         if (targetUser == null) {
@@ -51,8 +58,6 @@ public class UserProfileActivity extends BaseActivity {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         });
 
-        // 5) [Optional] If you want a Follow/Unfollow button, you can add it here
-        //    using FollowRepository or FollowRequestRepository logic.
     }
 
     @Override
