@@ -49,13 +49,6 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
         TextView usernameTextView = view.findViewById(R.id.username);
         usernameTextView.setText(req.getRequester());
 
-        // Get the requester and requestee TextViews
-       // TextView requesterNameTextView = convertView.findViewById(R.id.requesterName);
-        //TextView requesteeNameTextView = convertView.findViewById(R.id.requesteeName);
-
-        // Populate them
-        //requesterNameTextView.setText(req.getRequester());
-        //requesteeNameTextView.setText(req.getRequestee());
 
         // Accept and reject button logic
         view.findViewById(R.id.acceptBtn).setOnClickListener(v -> {
@@ -73,7 +66,7 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
     }
 
     /**
-     * Handle exception by shwoing a message
+     * Handle exception by showing a message
      * @param e exception
      */
     private void handleException(Exception e) {

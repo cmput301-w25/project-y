@@ -13,13 +13,14 @@ import com.example.y.repositories.UserRepository;
 import com.example.y.models.User;
 
 public class UserProfileActivity extends BaseActivity {
-    private String targetUser;
+
     private MoodHistoryController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        selectProfileHeaderButton();
+        deselectAllHeaderButtons();
+
         ImageButton backButton = findViewById(R.id.btnBack);
         if (backButton != null) {
             backButton.setOnClickListener(v -> {
@@ -27,7 +28,7 @@ public class UserProfileActivity extends BaseActivity {
             });
         }
         // 1) Get the target user's username from the intent
-        targetUser = getIntent().getStringExtra("user");
+        String targetUser = getIntent().getStringExtra("user");
         if (targetUser == null) {
             Toast.makeText(this, "No user specified", Toast.LENGTH_SHORT).show();
             finish();
