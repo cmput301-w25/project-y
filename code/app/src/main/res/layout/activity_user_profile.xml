@@ -20,15 +20,46 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/black" />
 
-    <!-- Display user's full name -->
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="141dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="4dp"
-        android:text="Full Name"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <!-- Display user's full name -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/profileFollowButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.example.y.utils.FollowButton
+            android:id="@+id/profileFollowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingVertical="15dp"
+            android:paddingHorizontal="20dp"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:text="@string/follow"
+            android:layout_gravity="end"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/follow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tvName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Display user's username -->
     <TextView

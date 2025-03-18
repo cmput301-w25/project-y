@@ -109,4 +109,12 @@ public class FollowButton extends AppCompatButton {
         Log.e("Y ERROR", e.getMessage(), e);
     }
 
+    public void setFollowStatus(UserRepository.FollowStatus followStatus) {
+        this.followStatus = followStatus;
+    }
+
+    public UserRepository.FollowStatus getFollowStatus() {
+        return followStatus;
+    }
+
 }

@@ -62,17 +62,6 @@ public abstract class MoodListController
     }
 
     /**
-     * Removes the follow buttons from showing up in the mood list.
-     * This is useful for when we want to show the logged in user's
-     * mood list or another user's mood history activity.
-     */
-    protected void turnOffFollowButtons() {
-        if (moodAdapter == null) return;
-        moodAdapter.deactivateUsernames();
-        notifyAdapter();
-    }
-
-    /**
      * Checks if the mood belongs in the original array.
      * @param mood
      *      Mood event to check for.
