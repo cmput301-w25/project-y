@@ -1,6 +1,7 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
+import com.example.y.views.MyProfileActivity;
+import com.example.y.views.UserProfileActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -85,6 +88,14 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Set emoticon
         TextView emoticonTextView = view.findViewById(R.id.emoticon);
         emoticonTextView.setText(mood.getEmotion().getEmoticon(context));
+
+        // Make the username clickable
+        usernameTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("user", mood.getPosterUsername());
+            // If context is not already an Activity, you may need to do:
+            // context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            context.startActivity(intent);});
 
         // Set border colour based on emotion
         view.findViewById(R.id.border).setBackgroundColor(mood.getEmotion().getColor(context));

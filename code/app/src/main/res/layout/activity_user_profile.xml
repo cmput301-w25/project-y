@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:layout_marginStart="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/back"
+        android:scaleType="fitCenter"
+        android:src="@drawable/left_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
+    <!-- Display user's full name -->
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="141dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="4dp"
+        android:text="Full Name"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Display user's username -->
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="102dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="16dp"
+        android:text="username"
+        android:textSize="18sp" />
+
+    <!-- Mood list for the user -->
+    <ListView
+        android:id="@+id/listviewMoodEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
