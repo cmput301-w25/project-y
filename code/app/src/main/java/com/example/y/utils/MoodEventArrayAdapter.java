@@ -8,9 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,17 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.y.R;
-import com.example.y.models.FollowRequest;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
-import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.MoodEventRepository;
-import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
-import com.example.y.views.MyProfileActivity;
 import com.example.y.views.UserProfileActivity;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
@@ -41,6 +33,7 @@ import java.util.Locale;
  */
 public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
+    private boolean isUsernameActive;
     private final ArrayList<MoodEvent> moodEvents;
     private final Context context;
     private final HashMap<String, UserRepository.FollowStatus> followStatus;
@@ -56,6 +49,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         this.moodEvents = moodEvents;
         this.context = context;
         this.followStatus = new HashMap<>(followStatus);
+        this.isUsernameActive = true;
     }
 
     @NonNull
@@ -75,6 +69,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Create follow button
         FollowButton followBtn = view.findViewById(R.id.btnFollowFromMood);
         followBtn.initialize(mood.getPosterUsername(), followStatus.get(mood.getPosterUsername()));
+        if (!isUsernameActive) followBtn.hide();
 
         // Set username
         TextView usernameTextView = view.findViewById(R.id.username);
@@ -91,11 +86,11 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         // Make the username clickable
         usernameTextView.setOnClickListener(v -> {
+            if (!isUsernameActive) return;
             Intent intent = new Intent(context, UserProfileActivity.class);
             intent.putExtra("user", mood.getPosterUsername());
-            // If context is not already an Activity, you may need to do:
-            // context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            context.startActivity(intent);});
+            context.startActivity(intent);
+        });
 
         // Set border colour based on emotion
         view.findViewById(R.id.border).setBackgroundColor(mood.getEmotion().getColor(context));
@@ -214,6 +209,13 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
      */
     public void followStatusPut(String otherUser, UserRepository.FollowStatus status) {
         followStatus.put(otherUser, status);
+    }
+
+    /**
+     * Removes the follow buttons on each mood and removes the ability to click on the username.
+     */
+    public void deactivateUsernames() {
+        isUsernameActive = false;
     }
 
 }

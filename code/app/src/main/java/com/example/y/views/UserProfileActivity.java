@@ -1,8 +1,7 @@
 package com.example.y.views;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +10,7 @@ import com.example.y.R;
 import com.example.y.controllers.MoodHistoryController;
 import com.example.y.repositories.UserRepository;
 import com.example.y.models.User;
+import com.example.y.services.SessionManager;
 
 public class UserProfileActivity extends BaseActivity {
 
@@ -18,22 +18,20 @@ public class UserProfileActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize activity
         super.onCreate(savedInstanceState);
         deselectAllHeaderButtons();
 
-        ImageButton backButton = findViewById(R.id.btnBack);
-        if (backButton != null) {
-            backButton.setOnClickListener(v -> {
-                finish();
-            });
-        }
-        // 1) Get the target user's username from the intent
+        // Get the target user's username from the intent
         String targetUser = getIntent().getStringExtra("user");
         if (targetUser == null) {
             Toast.makeText(this, "No user specified", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
+        // Back button
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         // 2) Find TextViews in your layout
         TextView tvName = findViewById(R.id.tvName);
@@ -63,7 +61,7 @@ public class UserProfileActivity extends BaseActivity {
 
     @Override
     protected int getActivityLayout() {
-        // Ties to your layout file: activity_user_profile.xml
         return R.layout.activity_user_profile;
     }
+
 }

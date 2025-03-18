@@ -24,10 +24,10 @@ public class MoodHistoryController extends MoodListController {
     /**
      * Initializes the MoodHistoryController.
      *
-     * @param context   The application context.
-     * @param poster    The username of the user whose mood history is being displayed.
-     * @param onSuccess Callback for successful initialization.
-     * @param onFailure Callback for initialization failure.
+     * @param context       The application context.
+     * @param poster        The username of the user whose mood history is being displayed.
+     * @param onSuccess     Callback for successful initialization.
+     * @param onFailure     Callback for initialization failure.
      */
     public MoodHistoryController(Context context, String poster, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         super(context);
@@ -38,6 +38,7 @@ public class MoodHistoryController extends MoodListController {
         FollowRequestRepository followReqRepo = FollowRequestRepository.getInstance();
 
         moodEventRepo.getAllPublicMoodEventsFrom(poster, allPublicMoods -> {
+
             // Get hashmap, only one item
             HashMap<String, UserRepository.FollowStatus> followStatus = new HashMap<>();
             followStatus.put(poster, UserRepository.FollowStatus.NEITHER);
@@ -52,9 +53,12 @@ public class MoodHistoryController extends MoodListController {
 
                     // Initialize adapter
                     initializeArrayAdapter(allPublicMoods, followStatus);
+                    moodAdapter.deactivateUsernames();
                     onSuccess.onSuccess(null);
+
                 }, onFailure);
             }, onFailure);
+
         }, onFailure);
     }
 

@@ -1,6 +1,5 @@
 package com.example.y.views;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -30,9 +29,6 @@ public class MoodHistoryActivity extends MoodListActivity {
             moodListView.setAdapter(controller.getMoodAdapter());
             initializeMoodClick();
         }, this::handleException);
-
-
-
     }
 
     public String getUser() { return user; }

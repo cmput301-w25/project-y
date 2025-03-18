@@ -28,6 +28,7 @@ public class PersonalJournalController extends MoodListController {
 
             // Initialize array adapter
             initializeArrayAdapter(allPrivateMoodEvents, followStatus);
+            moodAdapter.deactivateUsernames();
             onSuccess.onSuccess(null);
         }, onFailure);
     }

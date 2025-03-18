@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
@@ -60,6 +59,17 @@ public abstract class MoodListController
 
         // Initialize the array adapter
         moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList, followStatus);
+    }
+
+    /**
+     * Removes the follow buttons from showing up in the mood list.
+     * This is useful for when we want to show the logged in user's
+     * mood list or another user's mood history activity.
+     */
+    protected void turnOffFollowButtons() {
+        if (moodAdapter == null) return;
+        moodAdapter.deactivateUsernames();
+        notifyAdapter();
     }
 
     /**

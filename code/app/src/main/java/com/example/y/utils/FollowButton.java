@@ -46,10 +46,6 @@ public class FollowButton extends AppCompatButton {
             setVisibility(View.INVISIBLE);
             setClickable(false);
         }
-        else {
-            setVisibility(View.VISIBLE);
-            setClickable(true);
-        }
 
         // Don't default to all caps
         setAllCaps(false);
@@ -98,6 +94,14 @@ public class FollowButton extends AppCompatButton {
                 setClickable(true);
             }, this::handleException);
         }
+    }
+
+    /**
+     * Hides the follow button on every mood in the list view
+     */
+    public void hide() {
+        setVisibility(INVISIBLE);
+        setClickable(false);
     }
 
     private void handleException(Exception e) {
