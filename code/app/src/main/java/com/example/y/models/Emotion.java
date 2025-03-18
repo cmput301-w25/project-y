@@ -29,6 +29,11 @@ public enum Emotion {
         this.index = index;
     }
 
+    public String getText(Context context) {
+        String[] emotionTexts = context.getResources().getStringArray(R.array.emotionTextArray);
+        return emotionTexts[index];
+    }
+
     /**
      * Returns the color connected with the emotion
      * @param context The  context
