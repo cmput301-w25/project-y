@@ -2,17 +2,13 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,40 +21,31 @@ import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.google.firebase.firestore.GeoPoint;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.ArrayList;
 
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
-    int SELECT_PICTURE = 200;
-    ImageView IVPreviewImage;
     Button updateButton;
     Button deleteButton;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
-    private EditText triggerText;
-    private EditText editTextUpdateTextExplanation;
-    private TextView datePicked;
+    private CheckBox privateCheckbox;
+    private EditText moodTextEditText;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
-    private ImageButton btnBack;
-    private boolean shareLocation;
-    private boolean priv;
-    private CheckBox privButton;
     private LocationController locationController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
+        locationController = new LocationController(this);
+        updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
+
+        // Get mood event to update
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
-        Boolean moodPrivate = null;
-
-        // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
-        locationController = new LocationController(this);
 
         // Taken from https://stackoverflow.com/a/6954561
         // Taken by Tegen Hilker Readman
@@ -76,122 +63,94 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
         moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
         boolean tempPriv = getIntent().getBooleanExtra("private", false);
-
         moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
-        // Debugging stuff
-        if (moodEventToUpdateOrDelete == null) {
-            Toast.makeText(this, "Error loading mood event", LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
-        // Set our controller
-        updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
-
-        // Find the Emotion spinner view, then set it's adapter
+        // Set the Emotion spinner
         spinnerMood = findViewById(R.id.spinnerMood);
-        ArrayAdapter<Emotion> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Emotion.values());
+        ArrayList<String> moodAdapterContent = new ArrayList<>();
+        for (Emotion emotion : Emotion.values()) {
+            moodAdapterContent.add(emotion.getText(this));
+        }
+        ArrayAdapter<String> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, moodAdapterContent);
         moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(moodAdapter);
-        spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().getIndex());
 
+        // Set social situation spinner
         spinnerSocial = findViewById(R.id.spinnerSocialSituation);
-        ArrayAdapter<SocialSituation> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, SocialSituation.values());
+        ArrayList<String> socialSituationAdapterContent = new ArrayList<>();
+        socialSituationAdapterContent.add("None");
+        for (SocialSituation ss : SocialSituation.values()) {
+            socialSituationAdapterContent.add(ss.getText(this));
+        }
+        ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, socialSituationAdapterContent);
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
-
-        SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
-        if (socialSituation != null) {
-            spinnerSocial.setSelection(socialSituation.getIndex());
-        }
 
         // Grab the text explanation view as well as the date
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        editTextUpdateTextExplanation = findViewById(R.id.EditTextUpdateTextExplanation);
-        privButton = findViewById(R.id.privacyCheckBoxUpdate);
-        datePicked = findViewById(R.id.datePickerAddMood);
+        moodTextEditText = findViewById(R.id.updateText);
+        privateCheckbox = findViewById(R.id.privacyCheckBoxUpdate);
         updateButton = findViewById(R.id.UpdateMoodButton);
         deleteButton = findViewById(R.id.deleteMoodButton);
-        privButton.setChecked(tempPriv);
 
-        // Then this just prefills the date in a nice format
-        if (moodEventToUpdateOrDelete.getDateTime() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            datePicked.setText(sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
-        }
-        btnBack = findViewById(R.id.btnBack);
-        //https://developer.android.com/training/permissions/requesting
-        //ImageButton btnInsertImage = findViewById(R.id.btnInsertImage);
-        // Update & delete buttons
-
-        // Check if it's null
-        if (!moodEventToUpdateOrDelete.getText().isEmpty()) {
-            editTextUpdateTextExplanation.setText(moodEventToUpdateOrDelete.getText());
-        }
-
-
-        // If we wanted the date to change, then all we have to do it uncomment:
-        //datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
-        //VPreviewImage = findViewById(R.id.IVPreviewImage);
-
-        //Listener for the checkShareLocation
-        checkShareLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareLocation = checkShareLocation.isChecked();
-            }
-        });
+        // Populate form with the mood event's data
+        privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
+        checkShareLocation.setChecked(moodEventToUpdateOrDelete.getLocation() != null);
+        moodTextEditText.setText(moodEventToUpdateOrDelete.getText());
+        SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
+        spinnerSocial.setSelection(socialSituation == null ? 0 : socialSituation.getIndex() + 1);
+        spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().getIndex());
 
         // Back button listener
-        btnBack.setOnClickListener(v -> finish()); // If they click the back button
-        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete, editTextUpdateTextExplanation.getText().toString().trim())); // If they click update
-        deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete));// If they click delete
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish()); // If they click the back button
+        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete)); // If they click update
+        deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete)); // If they click delete
     }
 
 
     /**
      * Handles updating moods
      *
-     * @param moodEventToUpdateOrDelete The mood event to update
-     * @param updatedReasonWhyText      The reason why text of the given mood to update
+     * @param moodToUpdate The mood event to update
      */
-    private void onUpdateMoodEvent(MoodEvent moodEventToUpdateOrDelete, String updatedReasonWhyText) {
-        Emotion selectedEmotion = (Emotion) spinnerMood.getSelectedItem();
-             moodEventToUpdateOrDelete.setEmotion(selectedEmotion);
-        SocialSituation selectedSocialSituation = (SocialSituation) spinnerSocial.getSelectedItem();
-        moodEventToUpdateOrDelete.setIsPrivate(privButton.isChecked());
+    private void onUpdateMoodEvent(MoodEvent moodToUpdate) {
+        // Set emotion
+        Emotion selectedEmotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
+        moodToUpdate.setEmotion(selectedEmotion);
 
-        if (shareLocation) {
+        // Set social situation
+        SocialSituation selectedSocialSituation = spinnerSocial.getSelectedItemPosition() == 0
+                ? null
+                : SocialSituation.values()[spinnerSocial.getSelectedItemPosition() - 1];
+        moodToUpdate.setSocialSituation(selectedSocialSituation);
+
+        // Set everything else
+        moodToUpdate.setIsPrivate(privateCheckbox.isChecked());
+        moodToUpdate.setText(moodTextEditText.getText().toString().trim());
+
+        if (checkShareLocation.isChecked()) {
             // Get the current location asynchronously and then update the mood event.
             locationController.getCurrentLocation(location -> {
                 if (location != null) {
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    moodEventToUpdateOrDelete.setLocation(geoPoint);
+                    moodToUpdate.setLocation(geoPoint);
+
+                    // Now update the mood event after location retrieval
+                    updateOrDeleteMoodEventController.onUpdateMoodEvent(moodToUpdate, moodEvent -> {
+                        Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                        finish();
+                    }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
                 } else {
                     Toast.makeText(getApplicationContext(), "Unable to retrieve location", LENGTH_SHORT).show();
                 }
-                // Now update the mood event after location retrieval
-                updateOrDeleteMoodEventController.onUpdateMoodEvent(
-                        moodEventToUpdateOrDelete,
-                        updatedReasonWhyText,
-                        selectedSocialSituation,
-                        moodEvent -> {
-                            Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
-                            finish();
-                        }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
             });
         } else {
             // Update the mood event directly without retrieving location.
-            updateOrDeleteMoodEventController.onUpdateMoodEvent(
-                    moodEventToUpdateOrDelete,
-                    updatedReasonWhyText,
-                    selectedSocialSituation,
-                    moodEvent -> {
-                        Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
-                        finish();
-                    }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show()
-            );
+            updateOrDeleteMoodEventController.onUpdateMoodEvent(moodToUpdate, moodEvent -> {
+                Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
+                finish();
+            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
         }
 
     }
@@ -203,30 +162,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
      */
     private void onDeleteMoodEvent(MoodEvent moodEventToUpdateOrDelete) {
         updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
-            Toast.makeText(this, "Mood Deleted!" + deletedId, LENGTH_SHORT).show();
+            Toast.makeText(this, "Mood Deleted!", LENGTH_SHORT).show();
             finish();
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
-
-    /**
-     * Basically a str -> datetime
-     *
-     * @param datePicked Edit text of our date picker.
-     */
-    private void showDatePickerDialog(EditText datePicked) {
-
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            String formattedDate = String.format(Locale.getDefault(), "%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear);
-            datePicked.setText(formattedDate);
-        }, year, month, day);
-        datePickerDialog.show();
-    }
-    // code from https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
 
 }
 

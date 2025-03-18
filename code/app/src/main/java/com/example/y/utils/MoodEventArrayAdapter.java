@@ -99,6 +99,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             view.findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
         } else {
             // Otherwise ony fill in the non-null fields
+            view.findViewById(R.id.locationSocialSituationLayout).setVisibility(View.VISIBLE);
             if (socialSituation != null) {
                 socialSituationTextView.setText(socialSituation.getText(context));
                 socialSituationTextView.setVisibility(View.VISIBLE);
