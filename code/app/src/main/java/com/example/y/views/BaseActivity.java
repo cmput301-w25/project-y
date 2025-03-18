@@ -91,11 +91,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
-        profileBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MyProfileActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
-        });
+        //profileBtn.setOnClickListener(view -> {
+            //Intent intent = new Intent(this, MyProfileActivity.class);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //startActivity(intent);
+       // });
     }
 
     protected abstract int getActivityLayout();
