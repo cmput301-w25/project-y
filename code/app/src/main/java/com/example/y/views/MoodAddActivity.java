@@ -230,18 +230,16 @@ public class MoodAddActivity extends AppCompatActivity {
      * @param mood The mood event to submit.
      */
     private void submitMood(MoodEvent mood) {
-        try {
-            addMoodController.onSubmitMood(mood, selectedImageUri, moodEvent -> {
-                Toast.makeText(this, "Mood Posted!", LENGTH_SHORT).show();
-                Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
-                startActivity(intent);
-                finish();
-            }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
-        } catch (Exception ex) {
+        addMoodController.onSubmitMood(mood, selectedImageUri, moodEvent -> {
+            Toast.makeText(this, "Mood Posted!", LENGTH_SHORT).show();
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
+            startActivity(intent);
+            finish();
+        }, e -> {
             btnSubmit.setClickable(true);
-            Log.e(TAG, "Error submitting mood: " + ex.getMessage());
-            Toast.makeText(this, "Error submitting mood: " + ex.getMessage(), LENGTH_SHORT).show();
-        }
+            Log.e(TAG, "Error submitting mood: " + e.getMessage());
+            Toast.makeText(this, "Error submitting mood: " + e.getMessage(), LENGTH_SHORT).show();
+        });
     }
 
     /**
@@ -274,7 +272,6 @@ public class MoodAddActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
                 socialSituation = null;
             }
         });

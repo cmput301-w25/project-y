@@ -72,6 +72,10 @@ public class FollowingMoodListController extends MoodListController {
      */
     private boolean insertInMoodLists(MoodEvent mood) {
         if (!isFollowing(mood.getPosterUsername())) return false;
+        if (mood.getIsPrivate() == null) {
+            Log.e("Y ERROR", mood + " has isPrivate = null");
+            return false;
+        }
         if (mood.getIsPrivate()) return false;
         if (originalMoodEventList.contains(mood)) return false;
 
