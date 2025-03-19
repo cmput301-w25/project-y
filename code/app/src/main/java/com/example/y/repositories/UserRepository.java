@@ -273,27 +273,37 @@ public class UserRepository extends GenericRepository<UserListener> {
     public void getFollowedPublicMoodEventsWithLocation(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
         getFollowing(username, followingList -> {
 
-            ArrayList<MoodEvent> moods = new ArrayList<>();
-
-            // Get all public mood events with location from each followed user
+            // Create a task for each user in the following list, querying for all their public mood events with location
+            List<Task<QuerySnapshot>> tasks = new ArrayList<>();
             for (String followee : followingList) {
-                db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION)
+                Task<QuerySnapshot> task = db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION)
                         .whereEqualTo("posterUsername", followee)
                         .whereEqualTo("isPrivate", false)
                         .whereNotEqualTo("location", null)
-                        .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    MoodEvent mood = doc.toObject(MoodEvent.class);
-                                    moods.add(mood);
-                                }
-                            } else {
-                                onFailure.onFailure(new Exception("Failed to get all public mood events from " + followee + " with location", task.getException()));
-                            }
-                        });
+                        .get();
+                tasks.add(task);
             }
-            onSuccess.onSuccess(moods);
+
+            // Get all moods when all tasks are complete
+            Tasks.whenAllSuccess(tasks)
+                    .addOnSuccessListener(results -> {
+                        // Create list of mood events
+                        ArrayList<MoodEvent> moods = new ArrayList<MoodEvent>();
+
+                        // Get every mood from all queries
+                        for (Object result : results) {
+                            QuerySnapshot snapshot = (QuerySnapshot) result;
+                            for (DocumentSnapshot doc : snapshot) {
+                                MoodEvent mood = doc.toObject(MoodEvent.class);
+                                mood.setId(doc.getId());
+                                moods.add(mood);
+                            }
+                        }
+                        onSuccess.onSuccess(moods);
+                    })
+                    .addOnFailureListener(e -> {
+                        onFailure.onFailure(new Exception("Error getting mood following list with locations", e));
+                    });
         }, onFailure);
     }
 
