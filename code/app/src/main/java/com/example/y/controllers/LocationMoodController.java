@@ -64,6 +64,9 @@ public class LocationMoodController {
                                                      OnFailureListener onFailure) {
         final String username = session.getUsername();
 
+        userRepo.getFollowedPublicMoodEventsWithLocation(username, onSuccess, onFailure);
+
+        /*
         // First, get the list of usernames that the logged-in user is following.
         userRepo.getFollowing(username, followingList -> {
             // Then, retrieve all mood events with a location.
@@ -78,6 +81,8 @@ public class LocationMoodController {
                 onSuccess.onSuccess(filteredEvents);
             }, onFailure);
         }, onFailure);
+
+         */
     }
   
       /**
