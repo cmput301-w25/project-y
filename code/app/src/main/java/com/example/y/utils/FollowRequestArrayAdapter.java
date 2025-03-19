@@ -57,7 +57,7 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
         view.findViewById(R.id.rejectBtn).setOnClickListener(v -> {
             FollowRequestRepository.getInstance().deleteFollowRequest(req.getRequester(), req.getRequestee(), unused -> {}, this::handleException);
         });
-        usernameTextView.setOnClickListener(v -> {
+        view.findViewById(R.id.followReqView).setOnClickListener(v -> {
             Intent intent = new Intent(context, UserProfileActivity.class);
             intent.putExtra("user", req.getRequester());
             context.startActivity(intent);
