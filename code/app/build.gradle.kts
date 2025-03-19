@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.ext.junit)
     implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
     testImplementation("junit:junit:4.13.2")
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     testImplementation(libs.monitor)
