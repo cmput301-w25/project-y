@@ -126,11 +126,16 @@ public class SearchControllerTest {
     public void testsearchUsers() {
 
         searchController.searchUsers("User");
+        allUsers.add(new User("User2", "password1", "User One", "user1@gmail.com"));
 
         boolean containsUser1 = false;
-        for (User user : allUsers) {
-            if ("User1".equals(user.getUsername())) {
+        for (User user : searchResult) {
+            if ("User1".equals(user.getUsername()) || "User2".equals(user.getUsername())) {
                 containsUser1 = true;
+
+            }
+            else {
+                containsUser1 = false;
                 break;
             }
         }
