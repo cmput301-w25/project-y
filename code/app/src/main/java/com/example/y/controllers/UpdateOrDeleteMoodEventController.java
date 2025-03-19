@@ -23,26 +23,17 @@ public class UpdateOrDeleteMoodEventController {
     /**
      * Update a mood event with new text and social situation.
      * @param moodEvent         The mood event to update.
-     * @param reasonWhyText     The new text explanation for the mood event.
-     * @param socialSituation   The new social situation for the mood event.
      * @param onSuccess         Callback for successful update.
      * @param onFailure         Callback for update failure.
      */
-    public void onUpdateMoodEvent(MoodEvent moodEvent, String reasonWhyText, SocialSituation socialSituation, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure){
+    public void onUpdateMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure){
         if (session.getUsername() == null || session.getUsername().isEmpty()) {
             onFailure.onFailure(new IllegalArgumentException("Error: Poster Username is missing"));
         }
-        if (reasonWhyText.length() >= 199) {
+
+        if (moodEvent.getText().length() >= 199) {
             onFailure.onFailure(new IllegalArgumentException("Reason should not exceed 200 characters"));
             return;
-        }
-
-        if (!reasonWhyText.isEmpty()) {
-            moodEvent.setText(reasonWhyText);
-        }
-
-        if (socialSituation != null) {
-            moodEvent.setSocialSituation(socialSituation);
         }
 
         if (moodEvent.getText() != null) {
@@ -50,9 +41,7 @@ public class UpdateOrDeleteMoodEventController {
                 onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters"));
                 return;
             }
-
         }
-
 
         MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
     }

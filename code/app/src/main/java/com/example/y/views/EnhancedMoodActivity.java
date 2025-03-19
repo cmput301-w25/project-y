@@ -1,5 +1,6 @@
 package com.example.y.views;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.LruCache;
@@ -95,6 +96,13 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         socialSituation = findViewById(R.id.socialSituation);
         moodText = findViewById(R.id.text);
         ListView commentListView;
+
+        // Make username clickable
+        posterUsername.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra("user", currentMoodEvent.getPosterUsername());
+            startActivity(intent);
+        });
 
         newComment = findViewById(R.id.commentEditText);
         // Set the values of the views

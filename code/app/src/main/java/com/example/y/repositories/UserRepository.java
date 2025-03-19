@@ -262,6 +262,42 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
+     * Gets all mood events from all users a user is following that are public and have a location.
+     * @param username
+     *      User to get list for.
+     * @param onSuccess
+     *      Success callback function to which the array of moods is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getFollowedPublicMoodEventsWithLocation(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        getFollowing(username, followingList -> {
+
+            ArrayList<MoodEvent> moods = new ArrayList<>();
+
+            // Get all public mood events with location from each followed user
+            for (String followee : followingList) {
+                db.collection(MoodEventRepository.MOOD_EVENT_COLLECTION)
+                        .whereEqualTo("posterUsername", followee)
+                        .whereEqualTo("isPrivate", false)
+                        .whereNotEqualTo("location", null)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                    MoodEvent mood = doc.toObject(MoodEvent.class);
+                                    moods.add(mood);
+                                }
+                            } else {
+                                onFailure.onFailure(new Exception("Failed to get all public mood events from " + followee + " with location", task.getException()));
+                            }
+                        });
+            }
+            onSuccess.onSuccess(moods);
+        }, onFailure);
+    }
+
+    /**
      * Gets a hashmap of a user's follow status in relation to all users.
      * @param user
      *      User to get hashmap for.

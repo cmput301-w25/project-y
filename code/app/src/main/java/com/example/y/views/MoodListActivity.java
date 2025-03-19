@@ -149,8 +149,7 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
 
@@ -171,12 +170,10 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         });
     }
 

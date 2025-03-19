@@ -64,6 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         profileBtn = findViewById(R.id.btnUserProfile);
         searchBtn = findViewById(R.id.btnSearch);
 
+
         // Header navigation
         moodFollowingListBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, FollowingMoodEventListActivity.class);

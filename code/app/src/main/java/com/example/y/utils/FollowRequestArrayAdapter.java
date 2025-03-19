@@ -1,6 +1,7 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.example.y.R;
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;
+import com.example.y.views.UserProfileActivity;
 
 import java.util.ArrayList;
 
@@ -47,6 +49,7 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
         TextView usernameTextView = view.findViewById(R.id.username);
         usernameTextView.setText(req.getRequester());
 
+
         // Accept and reject button logic
         view.findViewById(R.id.acceptBtn).setOnClickListener(v -> {
             FollowRequestRepository.getInstance().acceptRequest(req, unused -> {}, this::handleException);
@@ -54,12 +57,16 @@ public class FollowRequestArrayAdapter extends ArrayAdapter<FollowRequest> {
         view.findViewById(R.id.rejectBtn).setOnClickListener(v -> {
             FollowRequestRepository.getInstance().deleteFollowRequest(req.getRequester(), req.getRequestee(), unused -> {}, this::handleException);
         });
-
+        usernameTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("user", req.getRequester());
+            context.startActivity(intent);
+        });
         return view;
     }
 
     /**
-     * Handle exception by shwoing a message
+     * Handle exception by showing a message
      * @param e exception
      */
     private void handleException(Exception e) {

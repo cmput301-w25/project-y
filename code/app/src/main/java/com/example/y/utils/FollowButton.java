@@ -46,10 +46,6 @@ public class FollowButton extends AppCompatButton {
             setVisibility(View.INVISIBLE);
             setClickable(false);
         }
-        else {
-            setVisibility(View.VISIBLE);
-            setClickable(true);
-        }
 
         // Don't default to all caps
         setAllCaps(false);
@@ -100,9 +96,25 @@ public class FollowButton extends AppCompatButton {
         }
     }
 
+    /**
+     * Hides the follow button on every mood in the list view
+     */
+    public void hide() {
+        setVisibility(INVISIBLE);
+        setClickable(false);
+    }
+
     private void handleException(Exception e) {
         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         Log.e("Y ERROR", e.getMessage(), e);
+    }
+
+    public void setFollowStatus(UserRepository.FollowStatus followStatus) {
+        this.followStatus = followStatus;
+    }
+
+    public UserRepository.FollowStatus getFollowStatus() {
+        return followStatus;
     }
 
 }

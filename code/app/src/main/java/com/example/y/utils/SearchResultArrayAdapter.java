@@ -1,6 +1,7 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import com.example.y.models.Emotion;
 import com.example.y.models.User;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
+import com.example.y.views.MyProfileActivity;
+import com.example.y.views.UserProfileActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,6 +79,13 @@ public class SearchResultArrayAdapter extends ArrayAdapter<User> {
         // Set username
         TextView usernameTextView = view.findViewById(R.id.username);
         usernameTextView.setText(user.getUsername());
+
+        usernameTextView.setOnClickListener(v -> {
+            // Create an intent to open MyProfileActivity with the clicked username
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("user", user.getUsername());
+            context.startActivity(intent);
+        });
 
         // Initialize button
         FollowButton followBtn = view.findViewById(R.id.searchFollowBtn);
