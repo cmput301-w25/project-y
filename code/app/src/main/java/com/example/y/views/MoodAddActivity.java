@@ -91,6 +91,7 @@ public class MoodAddActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
 
+
         initializeBorderColors();
         makeSocialSpinner();
 
