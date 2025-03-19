@@ -207,6 +207,7 @@ public class MoodListActivity extends BaseActivity {
             Intent intent = new Intent(this, UpdateOrDeleteMoodEventActivity.class);
             Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
             Log.i("OnMoodClick", "MoodEvent social: " + moodEvent.getSocialSituation());
+            Log.i("OnMoodClick", "MoodEvent location: " + moodEvent.getLocation());
             // Taken from https://stackoverflow.com/a/6954561
             // Taken by Tegen Hilker Readman
             // Authored By Turtle
@@ -222,8 +223,15 @@ public class MoodListActivity extends BaseActivity {
             if (privateMood != null) {
                 intent.putExtra("private", privateMood);
             }
+            if (moodEvent.getLocation() != null) {
+                intent.putExtra("location", 1);
+            }else{intent.putExtra("location", 0);
+            }
+
+
+
             startActivity(intent);
-        } else {
+        } else { // if it's not their own mood event
             Intent intent;
             intent = new Intent(this, EnhancedMoodActivity.class);
             intent.putExtra("mood_event", (Parcelable) moodEvent);

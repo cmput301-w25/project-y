@@ -111,6 +111,7 @@
     <string name="privateString">Private</string>
     <string name="add_a_comment">Add a comment...</string>
     <string name="send">Send</string>
+    <string name="mood_event_image">Mood Event Image</string>
 
     <string-array name="mood_array">
         <item>😡</item>
