@@ -9,7 +9,6 @@
     android:background="@color/white"
     tools:context=".views.MoodAddActivity">
 
-    <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scrollView"
         android:background="@color/white"
@@ -31,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Everything inside here is scrollable -->
+
                 <LinearLayout
                     android:id="@+id/backBtnLayout"
                     android:layout_width="match_parent"
@@ -141,7 +140,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Footer with White Background -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
         android:layout_width="match_parent"
@@ -162,6 +160,7 @@
             android:focusable="true"
             android:text="@string/update_this_mood"
             android:textColor="@color/white"
+            android:layout_margin="8dp"
             app:backgroundTint="@color/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/deleteMoodButton"/>
@@ -169,6 +168,7 @@
             android:id="@+id/deleteMoodButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/delete_this_mood"
