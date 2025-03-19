@@ -32,7 +32,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
@@ -163,13 +165,20 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
      * @param moodEvents The list of MoodEvent objects returned from the controller.
      */
     private void drawMarkers(ArrayList<MoodEvent> moodEvents) {
+
         List<MarkerData> markerDataList = new ArrayList<>();
+
+        // Create a dictionary (Map) to count markers by coordinate.
+        Map<LatLng, Integer> markerCounts = new HashMap<>();
         for (MoodEvent mood : moodEvents) {
             if (mood.getLocation() != null) {
                 // Convert the location (assumed to be a GeoPoint) to LatLng.
                 double lat = mood.getLocation().getLatitude();
                 double lng = mood.getLocation().getLongitude();
                 LatLng coordinate = new LatLng(lat, lng);
+
+                int count = markerCounts.containsKey(coordinate) ? markerCounts.get(coordinate) : 0;
+                markerCounts.put(coordinate, count + 1);
 
                 // Retrieve the proper emoji based on the Emotion.
                 String emoticon = "";
@@ -227,6 +236,28 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                     .title(markerData.username);
             mMap.addMarker(markerOptions);
         }
+
+    // For each coordinate with more than one marker, add the final cluster pointer.
+        for (Map.Entry<LatLng, Integer> entry : markerCounts.entrySet()) {
+            int count = entry.getValue();
+            if (count > 1) {
+
+                View markerView = LayoutInflater.from(this).inflate(R.layout.geolocation_pointer, null);
+                TextView moodTextView = markerView.findViewById(R.id.mood);
+                //TextView usernameTextView = markerView.findViewById(R.id.username);
+                moodTextView.setText(getString(R.string.more_than_one_mood));
+
+                Bitmap markerBitmap = getBitmapFromView(markerView);
+
+                MarkerOptions clusterMarkerOptions = new MarkerOptions()
+                        .position(entry.getKey())
+                        .icon(BitmapDescriptorFactory.fromBitmap(markerBitmap))
+                        .title("Click to look at all the " + entry.getValue() + " events!")
+                        .zIndex(100.0f); // High z-index to ensure this marker is on top.
+                mMap.addMarker(clusterMarkerOptions);
+            }
+        }
+
 
         // Optionally, move the camera to the first marker.
         if (!markerDataList.isEmpty()) {
