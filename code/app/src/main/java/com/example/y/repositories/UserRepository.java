@@ -66,7 +66,7 @@ public class UserRepository extends GenericRepository<UserListener> {
      * @param firestore
      *      Firestore db instance.
      */
-    private UserRepository(FirebaseFirestore firestore) {
+    public UserRepository(FirebaseFirestore firestore) {
         db = firestore;
         usersRef = db.collection(USER_COLLECTION);
         startListening();
