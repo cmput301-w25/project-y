@@ -82,30 +82,16 @@ public class SearchControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        // Initialize allUsers and searchResult
         allUsers = new ArrayList<>();
-
-
-        // Add test users to allUsers
         allUsers.add(new User("User1", "password1", "User One", "user1@gmail.com"));
         searchResult = new ArrayList<>(allUsers);
-        // Mock context and shared preferences
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         when(sharedPreferences.edit()).thenReturn(editor);
-
-        // Mock FirebaseApp and FirebaseFirestore
         firebaseAppMock = mockStatic(FirebaseApp.class);
         firebaseAppMock.when(FirebaseApp::getInstance).thenReturn(mock(FirebaseApp.class));
-
         firestoreMock = mockStatic(FirebaseFirestore.class);
         firestoreMock.when(FirebaseFirestore::getInstance).thenReturn(mockFirestore);
-
-        // Mock Firestore collection reference
         CollectionReference mockCollectionRef = mock(CollectionReference.class);
-
-
-        // Mock SessionManager
         mocksessionmanager = new SessionManager(context);
         mocksessionmanager.saveSession(testUser);
 
