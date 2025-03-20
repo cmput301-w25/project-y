@@ -59,6 +59,6 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
         }
 
         return view;
-        }
+    }
 
 }

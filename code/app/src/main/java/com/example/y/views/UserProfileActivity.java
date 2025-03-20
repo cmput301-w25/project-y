@@ -1,5 +1,6 @@
 package com.example.y.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * Activity for viewing the profile of a user.
@@ -138,15 +140,17 @@ public class UserProfileActivity extends BaseActivity
      */
     private void initMyMood() {
         selectProfileHeaderButton();
-        backBtn.setVisibility(View.GONE);
-
-        // Show button view
-        LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
-        moodListPickerLayout.setVisibility(ListView.VISIBLE);
 
         // Get buttons
         Button myMoodHistoryBtn = findViewById(R.id.myHistoryBtn);
         Button myPersonalJournalBtn = findViewById(R.id.myPersonalJournalBtn);
+        FloatingActionButton addMoodBtn = findViewById(R.id.addMoodBtn);
+
+        // Show mood buttons and add button, hide back button
+        LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
+        moodListPickerLayout.setVisibility(ListView.VISIBLE);
+        addMoodBtn.setVisibility(View.VISIBLE);
+        backBtn.setVisibility(View.GONE);
 
         // Initial button colours
         myMoodHistoryBtn.setBackgroundColor(getResources().getColor(R.color.button));
@@ -177,6 +181,13 @@ public class UserProfileActivity extends BaseActivity
                 Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             });
         });
+
+        // Add mood button click
+        addMoodBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MoodAddActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     @Override

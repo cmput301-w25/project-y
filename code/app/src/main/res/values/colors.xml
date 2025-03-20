@@ -14,5 +14,6 @@
     <color name="bg_dark">#1A1A1A</color>
     <color name="button">#5366D3</color>
     <color name="unselectedButton">#7B5366D3</color>
+    <color name="addMood">#7182E2</color>
 
 </resources>

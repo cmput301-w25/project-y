@@ -77,6 +77,7 @@
             android:contentDescription="@string/addMoodEvent"
             android:scaleType="fitXY"
             android:src="@drawable/plus_symbol_button" />
+
     </FrameLayout>
 
 </LinearLayout>
