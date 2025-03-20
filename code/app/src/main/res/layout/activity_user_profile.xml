@@ -72,6 +72,35 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <LinearLayout
+            android:id="@+id/moodListPicker"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/myHistoryBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mood History"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="@color/unselectedButton"
+                app:cornerRadius="0dp" />
+
+            <Button
+                android:id="@+id/myPersonalJournalBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Personal Journal"
+                android:layout_marginRight="4dp"
+                android:backgroundTint="@color/unselectedButton"
+                app:cornerRadius="0dp"  />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <!-- Mood list for the user -->

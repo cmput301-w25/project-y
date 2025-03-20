@@ -1,12 +1,18 @@
 package com.example.y.views;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodHistoryController;
+import com.example.y.controllers.MoodListController;
+import com.example.y.controllers.PersonalJournalController;
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRepository;
@@ -15,17 +21,22 @@ import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
 
+/**
+ * Activity for viewing the profile of a user.
+ */
 public class UserProfileActivity extends BaseActivity
         implements
             FollowRepository.FollowListener,
             FollowRequestRepository.FollowRequestListener {
 
-    private MoodHistoryController controller;
+    private MoodListController controller;
     private FollowButton followButton;
     private SessionManager session;
     private String targetUser;
     private TextView followerCountTv;
-
+    private ListView moodListView;
+    private ImageButton backBtn;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
@@ -68,20 +79,25 @@ public class UserProfileActivity extends BaseActivity
         }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
         // Back button
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        backBtn = findViewById(R.id.btnBack);
+        backBtn.setOnClickListener(v -> finish());
 
-        // 2) Find TextViews in your layout
+        // Find TextViews in your layout
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(targetUser);
 
-        // 4) Initialize MoodHistoryController to display this user’s public mood list
+        // Initialize MoodHistoryController to display this user’s public mood list
+        moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new MoodHistoryController(this, targetUser, unused -> {
-            ListView moodListView = findViewById(R.id.listviewMoodEvents);
             moodListView.setAdapter(controller.getMoodAdapter());
         }, error -> {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         });
 
+        // Initialize all things for my user profile
+        if (session.getUsername().equals(targetUser)) {
+            initMyMood();
+        }
     }
 
     @Override
@@ -115,6 +131,52 @@ public class UserProfileActivity extends BaseActivity
             int followers = Integer.parseInt(text.split(" ")[0]);
             followerCountTv.setText(followers - 1 + " followers");
         }
+    }
+
+    /**
+     * Initializes all the extra stuff that has to do with the logged in user's profile
+     */
+    private void initMyMood() {
+        selectProfileHeaderButton();
+        backBtn.setVisibility(View.GONE);
+
+        // Show button view
+        LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
+        moodListPickerLayout.setVisibility(ListView.VISIBLE);
+
+        // Get buttons
+        Button myMoodHistoryBtn = findViewById(R.id.myHistoryBtn);
+        Button myPersonalJournalBtn = findViewById(R.id.myPersonalJournalBtn);
+
+        // Initial button colours
+        myMoodHistoryBtn.setBackgroundColor(getResources().getColor(R.color.button));
+        myPersonalJournalBtn.setBackgroundColor(getResources().getColor(R.color.unselectedButton));
+
+        // Mood list button click
+        myMoodHistoryBtn.setOnClickListener(v -> {
+            myMoodHistoryBtn.setBackgroundColor(getResources().getColor(R.color.button));
+            myPersonalJournalBtn.setBackgroundColor(getResources().getColor(R.color.unselectedButton));
+
+            // Use mood history controller journal controller
+            controller = new MoodHistoryController(this, targetUser, unused -> {
+                moodListView.setAdapter(controller.getMoodAdapter());
+            }, error -> {
+                Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        });
+
+        // Personal journal button click
+        myPersonalJournalBtn.setOnClickListener(v -> {
+            myPersonalJournalBtn.setBackgroundColor(getResources().getColor(R.color.button));
+            myMoodHistoryBtn.setBackgroundColor(getResources().getColor(R.color.unselectedButton));
+
+            // Use personal journal controller
+            controller = new PersonalJournalController(this, unused -> {
+                moodListView.setAdapter(controller.getMoodAdapter());
+            }, error -> {
+                Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        });
     }
 
     @Override
