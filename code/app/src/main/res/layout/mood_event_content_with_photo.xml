@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
-    android:background="@color/emotion_sadness">
+    android:descendantFocusability="blocksDescendants"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp" />
 
-            <Button
+            <com.example.y.utils.FollowButton
                 android:id="@+id/btnFollowFromMood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,6 +42,9 @@
                 android:minHeight="0dp"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="14dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
                 android:text="@string/follow"
                 android:layout_gravity="end"
                 android:textColor="@color/white"
@@ -59,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:src="@drawable/hi"
+                android:src="@drawable/mood"
                 android:contentDescription="@string/mood_photo" />
 
             <LinearLayout
@@ -73,7 +77,6 @@
                     android:id="@+id/emoticon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/emotion_happiness"
                     android:textSize="24sp"
                     android:textColor="#FFFFFF"
                     android:contentDescription="@string/emoticon"
@@ -133,7 +136,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/reasonWhyText"
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"

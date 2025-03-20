@@ -11,18 +11,10 @@
     android:padding="16dp"
     tools:context=".views.MyProfileActivity">
 
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"/>
-
-    <Space
+    <View
         android:layout_width="match_parent"
-        android:layout_height="255dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/FollowRequests"
@@ -33,9 +25,7 @@
         android:layout_marginTop="10dp"
         app:cornerRadius="0dp"
         android:backgroundTint="#000000"
-        android:textColorHint="#FFFFFF">
-
-    </Button>
+        android:textColorHint="#FFFFFF" />
 
     <Button
         android:id="@+id/btnUserProfileMyMoodHistory"
@@ -44,12 +34,22 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:backgroundTint="#FFFFFF"
-        android:text="@string/mood_history"
+        android:text="@string/my_mood_history"
         android:textColor="#000000"
         app:cornerRadius="0dp"
-        tools:ignore="VisualLintButtonSize">
+        tools:ignore="VisualLintButtonSize" />
 
-    </Button>
+    <Button
+        android:id="@+id/btnUserProfileMyPersonalJournal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/my_personal_journal"
+        android:textColor="#000000"
+        app:cornerRadius="0dp"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/btnUserProfileLogout"
@@ -60,11 +60,7 @@
         android:backgroundTint="#000000"
         app:cornerRadius="0dp"
         android:textColorHint="#FFFFFF"
-        android:text="@string/logout">
-
-    </Button>
-
-
+        android:text="@string/logout" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -73,19 +69,14 @@
 
         <ImageButton
             android:id="@+id/btn_addMoodEventFromProfile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="24dp"
+            android:layout_margin="20dp"
             android:background="@null"
             android:contentDescription="@string/addMoodEvent"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/plus_symbol_button" />
-
-
     </FrameLayout>
-
-
-
 
 </LinearLayout>

@@ -9,8 +9,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class LoginController {
 
-    private final AuthManager authManager;
+    private AuthManager authManager;
 
+    public LoginController() {}
+
+    /**
+     * Controller for handling user login functionality.
+     * @param context context
+     */
     public LoginController(Context context) {
         this.authManager = new AuthManager(context);
     }
@@ -34,4 +40,7 @@ public class LoginController {
         // Call login from AuthManager with inputted email and password
         authManager.login(username, password, onSuccess, onFailure);
     }
+
+    public void setAuthManager(AuthManager authManager) { this.authManager = authManager; }
+
 }

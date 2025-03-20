@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
@@ -33,13 +32,13 @@ public abstract class MoodListController
     protected final MoodEventListFilter filter;
     protected ArrayList<MoodEvent> originalMoodEventList;
     protected ArrayList<MoodEvent> filteredMoodEventList;
-    protected com.example.y.utils.MoodEventArrayAdapter moodAdapter;
-    protected SessionManager sessionManager;
+    protected MoodEventArrayAdapter moodAdapter;
+    protected final SessionManager session;
 
     public MoodListController(Context context) {
-        filter = new MoodEventListFilter();
+        this.filter = new MoodEventListFilter();
         this.context = context;
-        sessionManager = new SessionManager(context);
+        this.session = new SessionManager(context);
     }
 
     /**
@@ -91,6 +90,11 @@ public abstract class MoodListController
         notifyAdapter();
     }
 
+    /**
+     * Called after a follow request is accepted
+     * @param follow
+     *      Follow record to be added.
+     */
     @Override
     public void onFollowAdded(Follow follow) {
         if (shouldUpdateOnFollowStatusUpdate(follow.getFollowerUsername(), follow.getFollowedUsername())) {
@@ -99,6 +103,13 @@ public abstract class MoodListController
         }
     }
 
+    /**
+     * Called after a person is unfollowed
+     * @param followerUsername
+     *      Username of the follower of the follow record that was deleted.
+     * @param followedUsername
+     *      Username of the followed user of the follow record that was deleted.
+     */
     @Override
     public void onFollowDeleted(String followerUsername, String followedUsername) {
         if (shouldUpdateOnFollowStatusUpdate(followerUsername, followedUsername)) {
@@ -134,7 +145,7 @@ public abstract class MoodListController
      */
     protected boolean shouldUpdateOnFollowStatusUpdate(String user, String poster) {
         // Assert that the status update was made by logged in user
-        boolean isUserTheFollower = user.equals(sessionManager.getUsername());
+        boolean isUserTheFollower = user.equals(session.getUsername());
 
         // Assert that the poster will be in the array
         boolean posterAllowed = isPosterAllowed(poster);
@@ -186,11 +197,18 @@ public abstract class MoodListController
      */
     @Override
     public void onMoodEventUpdated(MoodEvent updatedMoodEvent) {
-        if (!doesBelongInOriginal(updatedMoodEvent) || originalMoodEventList == null || filteredMoodEventList == null) return;
+        if (originalMoodEventList == null || filteredMoodEventList == null) return;
 
-        String id = updatedMoodEvent.getId();
+        // Remove mood if it no longer belongs
+        if (!doesBelongInOriginal(updatedMoodEvent)) {
+            filteredMoodEventList.removeIf(mood -> mood.getId().equals(updatedMoodEvent.getId()));
+            originalMoodEventList.removeIf(mood -> mood.getId().equals(updatedMoodEvent.getId()));
+            notifyAdapter();
+            return;
+        }
 
         // Update mood in the original list
+        String id = updatedMoodEvent.getId();
         for (int i = 0; i < originalMoodEventList.size(); i++) {
             if (originalMoodEventList.get(i).getId().equals(id)) {
                 originalMoodEventList.set(i, updatedMoodEvent);
@@ -263,8 +281,16 @@ public abstract class MoodListController
         }
     }
 
-    public MoodEventListFilter getFilter() { return filter; }
+    public MoodEventListFilter getFilter() {
+        return filter;
+    }
 
-    public MoodEventArrayAdapter getMoodAdapter() { return moodAdapter; }
+    public MoodEventArrayAdapter getMoodAdapter() {
+        return moodAdapter;
+    }
+
+    public MoodEvent getFilteredMoodEvent(int position) {
+        return filteredMoodEventList.get(position);
+    }
 
 }

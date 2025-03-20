@@ -1,0 +1,641 @@
+@startuml
+' left to right direction
+skinparam classAttributeIconSize 0
+
+
+
+' Controllers '
+
+class MoodListController {
+    # context : Context
+    # filter : MoodEventListFilter
+    # originalMoodEventList : ArrayList<MoodEvent>
+    # filteredMoodEventList : ArrayList<MoodEvent>
+    # moodAdapter : MoodEventArrayAdapter
+    # sessionManager : SessionManager
+    + MoodListController(Context)
+    # initializeArrayAdapter(ArrayList<MoodEvent>,HashMap<String,FollowStatus>)
+    + {abstract} doesBelongInOriginal(MoodEventboolean
+    + {abstract} isPosterAllowed(Stringboolean
+    + saveFilter()
+    + onFollowAdded(Follow)
+    + onFollowDeleted(String, String)
+    + onFollowRequestAdded(FollowRequest)
+    + onFollowRequestDeleted(String, String)
+    # shouldUpdateOnFollowStatusUpdate(String, String) : boolean
+    + onMoodEventAdded(MoodEvent)
+    + onMoodEventDeleted(String)
+    + onMoodEventUpdated(MoodEvent)
+    # insertMoodEventSortedDateTime(ArrayList<MoodEvent>,MoodEvent)
+    # notifyAdapter()
+    + getFilter() : MoodEventListFilter
+    + getMoodAdapter() : MoodEventArrayAdapter
+    + getFilteredMoodEvent(int) : MoodEvent
+}
+MoodListController ..|> MoodEventListener
+MoodListController ..|> FollowListener
+MoodListController ..|> FollowRequestListener
+
+class FollowRequestController {
+    - session : SessionManager
+    - context : Context
+    - adapter : FollowRequestArrayAdapter
+    - reqs : ArrayList<FollowRequest>
+    + FollowRequestController()
+    + FollowRequestController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + onFollowRequestAdded(FollowRequest)
+    + onFollowRequestDeleted(String, String)
+    + onActivityStop()
+    # insertReq(FollowRequest)
+    - notifyAdapter()
+    + getAdapter() : FollowRequestArrayAdapter
+    + getReqs() : ArrayList<FollowRequest>
+    + setReqs(ArrayList<FollowRequest>)
+}
+FollowRequestController ..|> FollowRequestListener
+
+class DiscoverController {
+    + DiscoverController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+}
+DiscoverController --|> MoodListController
+
+class LoginController {
+    - authManager : AuthManager
+    + LoginController()
+    + LoginController(Context)
+    + onLoginUser(String, String, OnSuccessListener<User>, OnFailureListener)
+    + setAuthManager(AuthManager)
+}
+
+class AddMoodController {
+    - loggedInUser : String
+    - context : Context
+    + AddMoodController()
+    + AddMoodController(Context)
+    + onSubmitMood(MoodEvent, Uri, OnSuccessListener<MoodEvent>, OnFailureListener)
+    - getImageSize(Uri) : long
+    + setLoggedInUser(String)
+}
+
+class SignUpController {
+    - authManager : AuthManager
+    + SignUpController()
+    + SignUpController(Context)
+    + onSignUpUser(String, String, String, String, String, String, OnSuccessListener<User>, OnFailureListener)
+}
+
+class MoodHistoryController {
+    - poster : String
+    + MoodHistoryController(Context, String, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+}
+MoodHistoryController --|> MoodListController
+
+class FollowingMoodListController {
+    - followingList : ArrayList<String>
+    + FollowingMoodListController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+    + onFollowAdded(Follow)
+    + onFollowDeleted(String, String)
+}
+FollowingMoodListController --|> MoodListController
+
+class UpdateOrDeleteMoodEventController {
+    - session : SessionManager
+    + UpdateOrDeleteMoodEventController(Context)
+    + getPosterUsername() : String
+    + onUpdateMoodEvent(MoodEvent, String, SocialSituation, OnSuccessListener<MoodEvent>, OnFailureListener)
+    + onDeleteMoodEvent(MoodEvent, OnSuccessListener<String>, OnFailureListener)
+}
+
+
+
+' Models '
+
+class Follow {
+    - followerUsername : String
+    - followedUsername : String
+    - timestamp : Timestamp
+    + Follow()
+    + Follow(String, String, Timestamp)
+    + getFollowerUsernameString
+    + setFollowerUsername(String)
+    + getFollowedUsernameString
+    + setFollowedUsername(String)
+    + getTimestampTimestamp
+    + setTimestamp(Timestamp)
+}
+
+class MoodEvent {
+    - id : String
+    - creationDateTime : Timestamp
+    - posterUsername : String
+    - dateTime : Timestamp
+    - emotion : Emotion
+    - socialSituation : SocialSituation
+    - trigger : String
+    - text : String
+    - reasonWhy : String
+    - photoURL : String
+    - location : GeoPoint
+    + {static} CREATOR : Creator<MoodEvent>
+    + MoodEvent()
+    + MoodEvent(String, Timestamp, String, Timestamp, Emotion)
+    # MoodEvent(Parcel)
+    + getId() : String
+    + setId(String)
+    + getCreationDateTime() : Timestamp
+    + setCreationDateTime(Timestamp)
+    + getDateTime() : Timestamp
+    + setDateTime(Timestamp)
+    + getPosterUsername() : String
+    + setPosterUsername(String)
+    + getEmotion() : Emotion
+    + setEmotion(Emotion)
+    + getTrigger() : String
+    + setTrigger(String)
+    + getSocialSituation() : SocialSituation
+    + setSocialSituation(SocialSituation)
+    + getText() : String
+    + setText(String)
+    + getReasonWhy() : String
+    + setReasonWhy(String)
+    + getPhotoURL() : String
+    + setPhotoURL(String)
+    + getLocation() : GeoPoint
+    + setLocation(GeoPoint)
+    + describeContents() : int
+ + writeToParcel(Parcel, int)
+}
+
+class FollowRequest {
+    - requester : String
+    - requestee : String
+    - timestamp : Timestamp
+    + FollowRequest()
+    + FollowRequest(String, String, Timestamp)
+    + getRequester() : String
+    + setRequester(String)
+    + getRequestee() : String
+    + setRequestee(String)
+    + getTimestamp() : Timestamp
+    + setTimestamp(Timestamp)
+}
+
+class User {
+    - username : String
+    - hashedPassword : String
+    - name : String
+    - email : String
+    - joinDateTime : Timestamp
+    + User()
+    + User(String, String, String, String)
+    + User(String, String, String, String, Timestamp)
+    + getUsername() : String
+    + setUsername(String)
+    + getHashedPassword() : String
+    + setHashedPassword(String)
+    + getName() : String
+    + setName(String)
+    + getEmail() : String
+    + setEmail(String)
+    + getJoinDateTime() : Timestamp
+    + setJoinDateTime(Timestamp)
+}
+
+enum SocialSituation {
+    ALONE
+    ONE_OTHER
+    TWO_OR_MORE_OTHERS
+    CROWD
+}
+
+enum Emotion {
+    ANGER
+    CONFUSION
+    DISGUST
+    FEAR
+    HAPPINESS
+    SADNESS
+    SHAME
+    SURPRISE
+    LAUGHTER
+}
+
+
+
+' Repositories '
+
+class GenericRepository {
+    # listeners : Set<Listener>
+    + addListener(Listener) : boolean
+    + removeListener(Listener)
+}
+
+class MoodEventRepository {
+    - {static} instance : MoodEventRepository
+    + {static} MOOD_EVENT_COLLECTION : String
+    + {static} MOOD_PHOTO_STORAGE_NAME : String
+    - db : FirebaseFirestore
+    - moodEventRef : CollectionReference
+    - MoodEventRepository()
+    + {static} getInstance() : MoodEventRepository
+    + addMoodEvent(MoodEvent, OnSuccessListener<MoodEvent>, OnFailureListener)
+    + getMoodEvent(String, OnSuccessListener<MoodEvent>, OnFailureListener)
+    + updateMoodEvent(MoodEvent, OnSuccessListener<MoodEvent>, OnFailureListener)
+    + deleteMoodEvent(String, OnSuccessListener<String>, OnFailureListener)
+    + getAllMoodEvents(OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    + getAllMoodEventsFrom(String, OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    + uploadAndAttachImage(MoodEvent, Uri, OnSuccessListener<MoodEvent>, OnFailureListener)
+    + downloadImage(String, OnSuccessListener<Bitmap>, OnFailureListener)
+    - onMoodEventAdded(MoodEvent)
+    - onMoodEventUpdated(MoodEvent)
+    - onMoodEventDeleted(String)
+}
+MoodEventRepository --|> GenericRepository
+
+interface MoodEventListener {
+    onMoodEventAdded(MoodEvent)
+    onMoodEventUpdated(MoodEvent)
+    onMoodEventDeleted(String)
+}
+
+class UserRepository {
+    - {static} instance : UserRepository
+    - db : FirebaseFirestore
+    + {static} USER_COLLECTION : String
+    - usersRef : CollectionReference
+    - UserRepository()
+    - UserRepository(FirebaseFirestore)
+    + {static} getInstanceUserRepository
+    + {static} setInstanceForTesting(FirebaseFirestore)
+    + startListening()
+    + addUser(User, OnSuccessListener<User>, OnFailureListener)
+    + doesUserExist(String, OnSuccessListener<User>, OnFailureListener)
+    + getUser(String, OnSuccessListener<User>, OnFailureListener)
+    + getFollowing(String, OnSuccessListener<List<String>>, OnFailureListener)
+    + getFollowingMoodList(String, OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    + getFollowStatusHashMap(String, OnSuccessListener<HashMap<String,FollowStatus>>, OnFailureListener)
+    + getFollowerCount(String, OnSuccessListener<Integer>, OnFailureListener)
+    - onUserAdded(User)
+}
+UserRepository --|> GenericRepository
+
+interface UserListener {
+    onUserAdded(User)
+}
+
+enum FollowStatus {
+    FOLLOWING
+    REQUESTED
+    NEITHER
+}
+FollowStatus --+ UserRepository
+
+class FollowRepository {
+    - {static} instance : FollowRepository
+    + {static} FOLLOW_COLLECTION : String
+    - db : FirebaseFirestore
+    - followsRef : CollectionReference
+    - FollowRepository()
+    + {static} getInstance() : FollowRepository
+    + addFollow(Follow, OnSuccessListener<Follow>, OnFailureListener)
+    + getFollow(String, String, OnSuccessListener<Follow>, OnFailureListener)
+    + deleteFollow(String, String, OnSuccessListener<Void>, OnFailureListener)
+    + isFollowing(String, String, OnSuccessListener<Boolean>, OnFailureListener)
+    - getCompoundId(String, String) : String
+    - onFollowAdded(Follow)
+    - onFollowDeleted(String, String)
+}
+FollowRepository --|> GenericRepository
+
+interface FollowListener {
+    onFollowAdded(Follow)
+    onFollowDeleted(String, String)
+}
+
+class FollowRequestRepository {
+    - {static} instance : FollowRequestRepository
+    + {static} FOLLOW_REQ_COLLECTION : String
+    - db : FirebaseFirestore
+    - followReqsRef : CollectionReference
+    - FollowRequestRepository()
+    + {static} getInstance() : FollowRequestRepository
+    + addFollowRequest(FollowRequest, OnSuccessListener<FollowRequest>, OnFailureListener)
+    + getFollowRequest(String, String, OnSuccessListener<FollowRequest>, OnFailureListener)
+    + deleteFollowRequest(String, String, OnSuccessListener<Void>, OnFailureListener)
+    + didRequest(String, String, OnSuccessListener<Boolean>, OnFailureListener)
+    + acceptRequest(FollowRequest, OnSuccessListener<Follow>, OnFailureListener)
+    + getAllRequestsTo(String, OnSuccessListener<ArrayList<FollowRequest>>, OnFailureListener)
+    + getAllRequestsFrom(String, OnSuccessListener<ArrayList<FollowRequest>>, OnFailureListener)
+    - getCompoundId(String, String) : String
+    - onFollowRequestAdded(FollowRequest)
+    - onFollowRequestDeleted(String, String)
+}
+FollowRequestRepository --|> GenericRepository
+
+interface FollowRequestListener {
+    onFollowRequestAdded(FollowRequest)
+    onFollowRequestDeleted(String, String)
+}
+
+
+
+' Services '
+
+class SessionManager {
+    - {static} preferenceName : String
+    - {static} isLoggedInKey : String
+    - {static} usernameKey : String
+    - prefs : SharedPreferences
+    - editor : SharedPreferences.Editor
+    + SessionManager(Context)
+    + saveSession(String)
+    + isLoggedIn() : boolean
+    + getUsername() : String
+    + logout()
+}
+
+class AuthManager {
+    - sessionManager : SessionManager
+    + AuthManager(Context)
+    + login(String, String, OnSuccessListener<User>, OnFailureListener)
+    + signUp(String, String, String, String, OnSuccessListener<User>, OnFailureListener)
+    - hashPassword(String) : String
+}
+
+
+
+' Utils '
+
+class MoodEventArrayAdapter {
+    - moodEvents : ArrayList<MoodEvent>
+    - context : Context
+    - user : String
+    - followStatus : HashMap<String,FollowStatus>
+    - imageCache : LruCache<String,Bitmap>
+    + MoodEventArrayAdapter(Context, ArrayList<MoodEvent>, HashMap<String,FollowStatus>)
+    + getView(int, View, ViewGroup) : View
+    + getItemViewType(int) : int
+    + getViewTypeCount() : int
+    - handleException(Exception)
+    + followStatusPut(String, FollowStatus)
+    + followStatusRemove(String)
+}
+
+class FollowRequestArrayAdapter {
+    - context : Context
+    - requests : ArrayList<FollowRequest>
+    + FollowRequestArrayAdapter(Context, ArrayList<FollowRequest>)
+    + getView(int, View, ViewGroup) : View
+    - handleException(Exception)
+}
+
+class MoodEventListFilter {
+    - minDateTime : Timestamp
+    - maxDateTime : Timestamp
+    - emotion : Emotion
+    - reasonWhyTextKeyword : String
+    + MoodEventListFilter()
+    + MoodEventListFilter(Timestamp, Timestamp, Emotion, String)
+    + applyFilter(ArrayList<MoodEvent>) : ArrayList<MoodEvent>
+    + wouldBeFiltered(MoodEvent) : boolean
+    + getMinDateTime() : Timestamp
+    + setMinDateTime(Timestamp)
+    + clearMinDateTime()
+    + getMaxDateTime() : Timestamp
+    + setMaxDateTime(Timestamp)
+    + clearMaxDateTime()
+    + getEmotion() : Emotion
+    + setEmotion(Emotion)
+    + clearEmotion()
+    + getReasonWhyTextKeyword() : String
+    + setReasonWhyTextKeyword(String)
+    + clearReasonWhyKeyword()
+}
+
+
+
+' Views '
+
+class MainActivity {
+    # onCreate(Bundle)
+}
+
+class LoginActivity {
+    - usernameEditText : EditText
+    - loginController : LoginController
+    # onCreate(Bundle)
+    - loginUser()
+}
+
+class BaseActivity {
+    - MOOD_FOLLOWING_LIST_UNSELECTED : Drawable
+    - MOOD_FOLLOWING_LIST_SELECTED : Drawable
+    - DISCOVER_UNSELECTED : Drawable
+    - DISCOVER_SELECTED : Drawable
+    - MAP_UNSELECTED : Drawable
+    - MAP_SELECTED : Drawable
+    - PROFILE_UNSELECTED : Drawable
+    - PROFILE_SELECTED : Drawable
+    - moodFollowingListBtn : ImageButton
+    - discoverBtn : ImageButton
+    - mapBtn : ImageButton
+    - profileBtn : ImageButton
+    # onCreate(Bundle)
+    # {abstract} getActivityLayout() : int
+    # deselectAllHeaderButtons()
+    # selectMoodFollowingListHeaderButton()
+    # selectDiscoverHeaderButton()
+    # selectMapHeaderButton()
+    # selectProfileHeaderButton()
+}
+
+class FollowRequestsActivity {
+    controller : FollowRequestController
+    # onCreate(Bundle)
+    # onStop()
+    # getActivityLayout() : int
+}
+FollowRequestsActivity --|> BaseActivity
+
+class UpdateOrDeleteMoodEventActivity {
+    SELECT_PICTURE : int
+    IVPreviewImage : ImageView
+    - addMoodController : AddMoodController
+    - spinnerMood : Spinner
+    - spinnerSocial : Spinner
+    - checkShareLocation : CheckBox
+    - editTextUpdateTextExplanation : EditText
+    - datePicked : TextView
+    - updateOrDeleteMoodEventController : UpdateOrDeleteMoodEventController
+    # onCreate(Bundle)
+    - onUpdateMoodEvent(MoodEvent, String)
+    - onDeleteMoodEvent(MoodEvent)
+    - showDatePickerDialog(EditText)
+}
+
+class MyProfileActivity {
+    logout : Button
+    followRequests : Button
+    followingMoodListButton : ImageButton
+    addButton : ImageButton
+    # onCreate(Bundle)
+    - onAddButtonClick()
+    - onLogoutButtonClick()
+    - onFollowRequests()
+    # getActivityLayout() : int
+}
+MyProfileActivity --|> BaseActivity
+
+class MoodAddActivity {
+    - addMoodController : AddMoodController
+    - spinnerMood : Spinner
+    - spinnerSocial : Spinner
+    - checkShareLocation : CheckBox
+    - etReasonWhyText : EditText
+    - etExplanation : EditText
+    - datePicked : EditText
+    - selectedImageUri : Uri
+    SELECT_PICTURE : int
+    IVPreviewImage : ImageView
+    # onCreate(Bundle)
+    - showDatePickerDialog(EditText)
+    - images()
+    + onActivityResult(int, int, Intent)
+}
+
+class MoodHistoryActivity {
+    - user : String
+    # onCreate(Bundle)
+    + getUser() : String
+}
+MoodHistoryActivity --|> MoodListActivity
+
+class SignUpActivity {
+    - signUpController : SignUpController
+    - nameField : EditText
+    # onCreate(Bundle)
+    - signUpUser()
+}
+
+class MapActivity {
+    # onCreate(Bundle)
+    # getActivityLayout() : int
+}
+MapActivity --|> BaseActivity
+
+class FollowingMoodEventListActivity {
+    # onCreate(Bundle)
+}
+FollowingMoodEventListActivity --|> MoodListActivity
+
+class DiscoverActivity {
+    # onCreate(Bundle)
+}
+DiscoverActivity --|> MoodListActivity
+
+class MoodListActivity {
+    # controller : MoodListController
+    # moodListView : ListView
+    # onCreate(Bundle)
+    - initializeMinDateFilter()
+    - initializeMaxDateFilter()
+    - initializeEmotionSpinner()
+    - initializeReasonWhyKeywordFilter()
+    - showDatePickerDialog(Timestamp, OnDateSetListener)
+    # onMoodClick(MoodEvent, String)
+    # initializeMoodClick()
+    # getActivityLayout() : int
+    # handleException(Exception)
+}
+MoodListActivity --|> BaseActivity
+
+
+
+' Controllers '
+AddMoodController --> MoodEvent
+AddMoodController --> MoodEventRepository
+DiscoverController --> MoodEvent
+DiscoverController --> MoodEventRepository
+DiscoverController --> UserRepository
+FollowingMoodListController --> MoodEvent
+FollowingMoodListController --> MoodEventRepository
+FollowingMoodListController --> UserRepository
+FollowingMoodListController --> Follow
+FollowRequestController o-- "1" FollowRequestArrayAdapter
+FollowRequestController o-- "0..*" FollowRequest
+FollowRequestController --> FollowRequestRepository
+LoginController o-- "1" AuthManager
+MoodHistoryController --> MoodEvent
+MoodHistoryController --> MoodEventRepository
+MoodListController o-- "1" MoodEventListFilter
+MoodListController o-- "0..*" MoodEvent
+MoodListController o-- "1" MoodEventArrayAdapter
+MoodListController --> MoodEventRepository
+SignUpController o-- "1" AuthManager
+UpdateOrDeleteMoodEventController --> MoodEvent
+UpdateOrDeleteMoodEventController --> MoodEventRepository
+
+
+' Models '
+MoodEvent o-- "1" Emotion
+MoodEvent o-- "1" SocialSituation
+
+' Repositories '
+FollowRepository --> Follow
+FollowRepository --> "Notifies" FollowListener
+FollowRequestRepository --> FollowRequest
+FollowRequestRepository --> "Notifies" FollowRequestListener
+MoodEventRepository --> MoodEvent
+MoodEventRepository --> "Notifies" MoodEventListener
+UserRepository --> User
+UserRepository --> "Notifies" UserListener
+
+' Services '
+AuthManager o-- "1" SessionManager
+AuthManager --> UserRepository
+
+' Utils '
+FollowRequestArrayAdapter o-- "0..*" FollowRequest
+FollowRequestArrayAdapter --> FollowRequestRepository
+MoodEventArrayAdapter o-- "0..*" MoodEvent
+MoodEventArrayAdapter --> "0..*" FollowStatus
+MoodEventArrayAdapter --> MoodEvent
+MoodEventArrayAdapter --> MoodEventRepository
+MoodEventListFilter o-- "1" Emotion
+MoodEventListFilter --> "0..*" MoodEvent
+
+' Views '
+DiscoverActivity o-- "1" DiscoverController
+FollowingMoodEventListActivity o-- "1" FollowingMoodListController
+FollowRequestsActivity o-- "1" FollowRequestController
+LoginActivity o-- "1" LoginController
+MainActivity --> SessionManager
+MoodAddActivity o-- "1" AddMoodController
+MoodAddActivity --> MoodEvent
+MoodHistoryActivity o-- "1" MoodHistoryController
+MoodListActivity o-- "1" MoodListController
+MoodListActivity --> MoodEvent
+SignUpActivity o-- "1" SignUpController
+SignUpActivity --> AuthManager
+UpdateOrDeleteMoodEventActivity o-- "1" UpdateOrDeleteMoodEventController
+UpdateOrDeleteMoodEventActivity --> MoodEvent
+
+
+
+' Notes '
+note left of GenericRepository : All repositories\ninteract with the\nFirestore database.
+note left of BaseActivity : Handles the navigation menu.
+note left of AuthManager : Authenticates with the\ndatabase. Responsible\nfor logging in and signing up.
+note left of SessionManager : Manages login information\nlocally. Responsible for\nproviding logged in username,\nsigning out, and saving\nlogged in username.
+note left of MoodListActivity : Shows any list\nof mood events.
+note left of MoodListController : Handles mood event\narrays for MoodListActivity.\nApplies filters, requests\nmood events, updates\non changes, etc.
+note left of MainActivity : Redirects user to\nlogin page if not\nlogged in or to the\nhome page otherwise.
+note left of MoodEventListFilter : Stores, modifies, and\napplies a filter to\nan array of mood events.
+
+@enduml

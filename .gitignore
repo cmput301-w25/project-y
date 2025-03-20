@@ -1,8 +1,9 @@
 .DS_Store
+./code/app/.attach*
 # Gradle files
 **/.gradle/
 **/build/
-
+!code/gradle/wrapper/gradle-wrapper.jar
 # Local configuration file
 **/local.properties
 
@@ -55,3 +56,8 @@
 # Virtual machine crash logs
 **/hs_err_pid*
 **/replay_pid*
+
+# FireBase Testing Stuff
+**/firebase.json
+**/.firebaserc
+

@@ -14,16 +14,44 @@
     <string name="emotion_laughter_emoji">💀</string>
 
     <!-- emoticon -->
+    <string-array name="emotionEmoticonArray">
+        <item>( •`Δ´•)!</item>
+        <item>( @_@)?</item>
+        <item>( ¬＿¬)</item>
+        <item>(( •Д•))</item>
+        <item>( ｡•ᴗ•｡)</item>
+        <item>( ಥ╭╮ಥ)</item>
+        <item>( ｡•́~•̀｡)</item>
+        <item>( ⊙_⊙)!</item>
+        <item>( ≧∇≦)</item>
+    </string-array>
 
-    <string name="emotion_anger">( •`Δ´•)!</string>
-    <string name="emotion_confusion">( @_@)?</string>
-    <string name="emotion_disgust">( ¬＿¬)</string>
-    <string name="emotion_fear">(( •Д•))</string>
-    <string name="emotion_happiness">( ｡•ᴗ•｡)</string>
-    <string name="emotion_sadness">( ಥ╭╮ಥ)</string>
-    <string name="emotion_shame">( ｡•́~•̀｡)</string>
-    <string name="emotion_surprise">( ⊙_⊙)!</string>
-    <string name="emotion_laughter">( ≧∇≦)</string>
+    <!-- Emotion Colours -->
+    <string-array name="emotionColorArray">
+        <item>#E82828</item>
+        <item>#DC326C</item>
+        <item>#5C904E</item>
+        <item>#A147D9</item>
+        <item>#F2E46D</item>
+        <item>#3C66A2</item>
+        <item>#4C4C4C</item>
+        <item>#7C0909</item>
+        <item>#F28E3D</item>
+    </string-array>
+
+    <!-- Emotion Text -->
+    <string-array name="emotionTextArray">
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+        <item>Laughter</item>
+    </string-array>
+
 
     <!-- Values -->
     <string name="email">Email</string>
@@ -38,6 +66,7 @@
 
     <string name="mood_following">Mood Following</string>
     <string name="mood_map">Mood Map</string>
+    <string name="search">Search</string>
     <string name="user_profile">User Profile</string>
     <string name="user">User</string>
     <string name="date_and_time">Date and Time</string>
@@ -50,6 +79,8 @@
     <string name="name">Name</string>
     <string name="logout">Logout</string>
     <string name="addMoodEvent">Add</string>
+    <string name="my_mood_history">My Mood History</string>
+    <string name="my_personal_journal">My Personal Journal</string>
     <string name="follow_requests">Follow Requests</string>
     <string name="home">Home</string>
 
@@ -61,13 +92,25 @@
     <!--add mood form strings-->
     <string name="back">Back</string>
     <string name="insert_image">Insert Image</string>
-    <string name="hint_reason">Why do you feel this way?</string>
+    <string name="hint_reason_why_text">Why do you feel this way?</string>
+    <string name="hint_trigger">What was the trigger?</string>
     <string name="hint_explanation">Explain your mood...</string>
-    <string name="share_location">Share location with others</string>
+    <string name="share_location">Share location</string>
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
-    <string name="mood_history">Mood History</string>
+    <string name="delete_this_mood">Delete this mood</string>
+    <string name="edit_this_mood">Edit this mood.</string>
+    <string name="update_this_mood">Update this mood</string>
+
+    <!-- Date filter buttons -->
+    <string name="minDateBtnText">Min Date</string>
+    <string name="maxDateBtnText">Max Date</string>
+    <string name="private_this_mood_event">Private this Mood Event</string>
+    <string name="privateString">Private</string>
+    <string name="add_a_comment">Add a comment...</string>
+    <string name="send">Send</string>
+    <string name="mood_event_image">Mood Event Image</string>
 
     <string-array name="mood_array">
         <item>😡</item>
@@ -87,6 +130,7 @@
         <item>With one other person</item>
         <item>With two to several people</item>
         <item>With a crowd</item>
+
     </string-array>
 
 

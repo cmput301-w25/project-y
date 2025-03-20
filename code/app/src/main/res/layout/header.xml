@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:padding="4dp"
     android:background="#FFFFFF"
     android:gravity="center">
 
@@ -12,39 +12,65 @@
         android:id="@+id/btnMoodFollowing"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:padding="8dp"
         android:src="@drawable/home_black"
         android:scaleType="fitCenter"
         android:background="@null"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnDiscover"
+        app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/mood_following" />
 
     <ImageButton
         android:id="@+id/btnDiscover"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:padding="8dp"
         android:src="@drawable/compass_white"
         android:scaleType="fitCenter"
         android:background="@null"
-        android:contentDescription="Discover"
-        android:layout_marginStart="24dp" />
+        app:layout_constraintLeft_toRightOf="@id/btnMoodFollowing"
+        app:layout_constraintRight_toLeftOf="@id/btnSearch"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Discover" />
+
+    <ImageButton
+        android:id="@+id/btnSearch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:src="@drawable/search_white"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        app:layout_constraintLeft_toRightOf="@id/btnDiscover"
+        app:layout_constraintRight_toLeftOf="@id/btnMoodMap"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/search" />
 
     <ImageButton
         android:id="@+id/btnMoodMap"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:padding="8dp"
         android:src="@drawable/map_white"
         android:scaleType="fitCenter"
         android:background="@null"
-        android:contentDescription="@string/mood_map"
-        android:layout_marginStart="24dp" />
+        app:layout_constraintLeft_toRightOf="@id/btnSearch"
+        app:layout_constraintRight_toLeftOf="@id/btnUserProfile"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/mood_map" />
 
     <ImageButton
         android:id="@+id/btnUserProfile"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:padding="8dp"
         android:src="@drawable/profile_white"
         android:scaleType="fitCenter"
         android:background="@null"
-        android:contentDescription="@string/user_profile"
-        android:layout_marginStart="24dp" />
+        app:layout_constraintLeft_toRightOf="@id/btnMoodMap"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/user_profile" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

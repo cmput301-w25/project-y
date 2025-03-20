@@ -1,6 +1,7 @@
 package com.example.y.views;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,13 +15,21 @@ public class FollowRequestsActivity extends BaseActivity {
     TextView NoFollowRequests;
 
 
+    public void setvisible() {
+        NoFollowRequests.setVisibility(View.VISIBLE);
+    }
+
+    public void setnotvisible() {
+        NoFollowRequests.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deselectAllHeaderButtons();
-        TextView NoFollowRequests = findViewById(R.id.EmptyFollowRequests);
         ListView reqListView = findViewById(R.id.listviewFollowRequests);
-        controller = new FollowRequestController(this, NoFollowRequests, unused -> {
+        NoFollowRequests = findViewById(R.id.EmptyFollowRequests);
+        controller = new FollowRequestController(this, unused -> {
             reqListView.setAdapter(controller.getAdapter());
         }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }

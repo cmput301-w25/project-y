@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.y.R;
 import com.example.y.controllers.LoginController;
 import com.example.y.services.AuthManager;
+import com.example.y.utils.GenericTextWatcher;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,6 +27,9 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
+
+        usernameEditText.addTextChangedListener(new GenericTextWatcher(usernameEditText,"Username cannot be empty!"));
+        passwordEditText.addTextChangedListener(new GenericTextWatcher(passwordEditText,"Password cannot be empty!"));
 
         Button loginButton = findViewById(R.id.login_button);
         Button signUpButton = findViewById(R.id.signup_button);
