@@ -201,9 +201,8 @@ public class MoodListActivity extends BaseActivity {
      * Handles when a mood event is clicked
      *
      * @param moodEvent The mood event that was clicked
-     * @param userName  The username of the user clicking
      */
-    protected void onMoodClick(MoodEvent moodEvent, String userName) {
+    protected void onMoodClick(MoodEvent moodEvent) {
         // If the user clicked on their own mood even then we'll open the edit/delete activity.
 
 
@@ -242,9 +241,8 @@ public class MoodListActivity extends BaseActivity {
      * Initializes click events on mood events inside the mood list.
      */
     protected void initializeMoodClick() {
-        SessionManager sessionManager = new SessionManager(this);
         moodListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            onMoodClick(controller.getFilteredMoodEvent(i), sessionManager.getUsername());
+            onMoodClick(controller.getFilteredMoodEvent(i));
         });
     }
 
