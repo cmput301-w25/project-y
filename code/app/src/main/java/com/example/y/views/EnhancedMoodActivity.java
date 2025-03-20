@@ -3,6 +3,8 @@ package com.example.y.views;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +41,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             };
 
     private LinearLayout border;
+    private GeoPoint location;
     private ImageButton backButton;
     private Button commentButton;
     private TextView posterUsername;
@@ -51,7 +54,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private TextView socialSituation;
     private TextView moodText;
     private ImageButton editButton;
-
+    private SessionManager sessionManager;
     private ImageView photoImgView;
 
     private EditText newComment;
@@ -60,6 +63,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.enhanced_mood_event_with_photo);
+        sessionManager = new SessionManager(this);
+
         MoodEvent currentMoodEvent = getIntent().getParcelableExtra("mood_event");
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
@@ -84,8 +89,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         currentMoodEvent.setSocialSituation(receivedSocial);
 
 
+        boolean tempPriv = getIntent().getBooleanExtra("private", false);
+        currentMoodEvent.setIsPrivate(tempPriv);
         border = findViewById(R.id.border);
         border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
+
         // Grab da views:
         photoImgView = findViewById(R.id.photo);
         backButton = findViewById(R.id.backButton);
@@ -113,7 +121,17 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         String emoji = currentEmotion.getEmoticon(this);
         emoticon.setText(emoji);
         //dateTime.setText(currentMoodEvent.getDateTime().toString());
-        GeoPoint location = currentMoodEvent.getLocation();
+
+        double latitude = getIntent().getDoubleExtra("location_lat", 0.0);
+        double longitude = getIntent().getDoubleExtra("location_lng", 0.0);
+        if (latitude != 0.0 && longitude != 0.0) {
+            // No location provided
+            location = new GeoPoint(latitude, longitude);
+        } else {
+            location = null;
+        }
+
+//         location = new GeoPoint(latitude, longitude);
         if (currentMoodEvent.getSocialSituation() == null && currentMoodEvent.getLocation() == null) {
             // Hide layout if they're both null
             findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
@@ -127,6 +145,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             }
 
             if (location != null) {
+                Log.i("Location != Check", "Latitude: " + latitude);
+
                 locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() + ")");
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
@@ -180,6 +200,37 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                 photoImgView.setVisibility(View.GONE);
                 photoImgView.setTag(null);
             }
+        }
+
+
+        if (currentMoodEvent.getPosterUsername().equals(sessionManager.getUsername())) {
+            editButton = findViewById(R.id.editMenuIcon);
+            editButton.setVisibility(View.VISIBLE);
+            editButton.setOnClickListener(v -> {
+                Intent intent = new Intent(this, UpdateOrDeleteMoodEventActivity.class);
+                intent.putExtra("mood_event", (Parcelable) currentMoodEvent);
+                Emotion sendEmotion = currentMoodEvent.getEmotion();
+                intent.putExtra("emotion", sendEmotion.ordinal());
+                if (currentMoodEvent.getSocialSituation() != null) {
+                    SocialSituation sendSocial = currentMoodEvent.getSocialSituation();
+                    intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+                }
+                Boolean privateMood = currentMoodEvent.getIsPrivate();
+
+                if (privateMood != null) {
+                    intent.putExtra("private", privateMood);
+                }
+                if (currentMoodEvent.getLocation() != null) {
+                    Log.i("OnMoodClick", "MoodEvent location: " + currentMoodEvent.getLocation());
+                    GeoPoint location = currentMoodEvent.getLocation();
+                    intent.putExtra("location_lat", location.getLatitude());
+                    intent.putExtra("location_lng", location.getLongitude());
+                }
+                startActivity(intent);
+            });
+        } else {
+            editButton = findViewById(R.id.editMenuIcon);
+            editButton.setVisibility(View.GONE);
         }
 
 
