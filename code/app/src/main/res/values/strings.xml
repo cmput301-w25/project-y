@@ -12,6 +12,7 @@
     <string name="emotion_shame_emoji">😞</string>
     <string name="emotion_surprise_emoji">😳</string>
     <string name="emotion_laughter_emoji">💀</string>
+    <string name="more_than_one_mood">➕</string>
 
     <!-- emoticon -->
     <string-array name="emotionEmoticonArray">
