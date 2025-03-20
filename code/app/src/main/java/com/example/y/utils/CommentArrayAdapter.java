@@ -1,6 +1,8 @@
 package com.example.y.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 
 import com.example.y.R;
 import com.example.y.models.Comment;
+import com.example.y.views.UserProfileActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,18 +48,22 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
         }
 
         Comment comment = commentsForMoodEvent.get(position);
-        TextView usernameTextView = view.findViewById(R.id.commentPosterName);
         TextView postingTime = view.findViewById(R.id.commentDateTime);
         TextView commentTextView = view.findViewById(R.id.commentText);
 
-        usernameTextView.setText(comment.getPosterUsername());
-        commentTextView.setText(comment.getText());
+        commentTextView.setText(Html.fromHtml("<b>" + comment.getPosterUsername() + "</b> " + comment.getText()));
         if (comment.getTimestamp() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             postingTime.setText(sdf.format(comment.getTimestamp().toDate()));
         } else {
             postingTime.setText("Just now");
         }
+
+        commentTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("user", comment.getPosterUsername());
+            context.startActivity(intent);
+        });
 
         return view;
     }

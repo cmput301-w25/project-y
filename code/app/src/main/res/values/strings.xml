@@ -12,6 +12,7 @@
     <string name="emotion_shame_emoji">😞</string>
     <string name="emotion_surprise_emoji">😳</string>
     <string name="emotion_laughter_emoji">💀</string>
+    <string name="more_than_one_mood">➕</string>
 
     <!-- emoticon -->
     <string-array name="emotionEmoticonArray">
@@ -110,6 +111,7 @@
     <string name="privateString">Private</string>
     <string name="add_a_comment">Add a comment...</string>
     <string name="send">Send</string>
+    <string name="mood_event_image">Mood Event Image</string>
 
     <string-array name="mood_array">
         <item>😡</item>

@@ -24,6 +24,7 @@ import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.services.SessionManager;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -149,7 +150,8 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
     }
 
@@ -170,10 +172,12 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
         });
     }
 
@@ -201,42 +205,37 @@ public class MoodListActivity extends BaseActivity {
      */
     protected void onMoodClick(MoodEvent moodEvent, String userName) {
         // If the user clicked on their own mood even then we'll open the edit/delete activity.
-        if (moodEvent.getPosterUsername().equals(userName)) {
 
-            Log.i("MoodEvent", moodEvent.getId());
-            Intent intent = new Intent(this, UpdateOrDeleteMoodEventActivity.class);
-            Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
-            Log.i("OnMoodClick", "MoodEvent social: " + moodEvent.getSocialSituation());
-            // Taken from https://stackoverflow.com/a/6954561
-            // Taken by Tegen Hilker Readman
-            // Authored By Turtle
-            // Taken on 2025-03-05
-            intent.putExtra("mood_event", (Parcelable) moodEvent);
-            Emotion sendEmotion = moodEvent.getEmotion();
-            intent.putExtra("emotion", sendEmotion.ordinal());
-            if (moodEvent.getSocialSituation() != null) {
-                SocialSituation sendSocial = moodEvent.getSocialSituation();
-                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
-                intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());}
-            Boolean privateMood = moodEvent.getIsPrivate();
-            if (privateMood != null) {
-                intent.putExtra("private", privateMood);
-            }
-            startActivity(intent);
-        } else {
-            Intent intent;
-            intent = new Intent(this, EnhancedMoodActivity.class);
-            intent.putExtra("mood_event", (Parcelable) moodEvent);
-            intent.putExtra("emotion", moodEvent.getEmotion().ordinal());
-            if (moodEvent.getSocialSituation() != null) {
-                SocialSituation sendSocial = moodEvent.getSocialSituation();
+
+        Log.i("MoodEvent", moodEvent.getId());
+        Intent intent = new Intent(this, EnhancedMoodActivity.class);
+        Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
+        Log.i("OnMoodClick", "MoodEvent social: " + moodEvent.getSocialSituation());
+        Log.i("OnMoodClick", "MoodEvent location: " + moodEvent.getLocation());
+        // Taken from https://stackoverflow.com/a/6954561
+        // Taken by Tegen Hilker Readman
+        // Authored By Turtle
+        // Taken on 2025-03-05
+        intent.putExtra("mood_event", (Parcelable) moodEvent);
+        Emotion sendEmotion = moodEvent.getEmotion();
+        intent.putExtra("emotion", sendEmotion.ordinal());
+        if (moodEvent.getSocialSituation() != null) {
+            SocialSituation sendSocial = moodEvent.getSocialSituation();
             intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
-
-            }
-            startActivity(intent);
-
-
         }
+        Boolean privateMood = moodEvent.getIsPrivate();
+        if (privateMood != null) {
+            intent.putExtra("private", privateMood);
+        }
+        if (moodEvent.getLocation() != null) {
+            Log.i("OnMoodClick", "MoodEvent location: " + moodEvent.getLocation());
+            GeoPoint location = moodEvent.getLocation();
+            intent.putExtra("location_lat", location.getLatitude());
+            intent.putExtra("location_lng", location.getLongitude());
+        }
+
+        startActivity(intent);
+
     }
 
     /**

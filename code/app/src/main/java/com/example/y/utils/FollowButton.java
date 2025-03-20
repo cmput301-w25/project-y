@@ -36,11 +36,11 @@ public class FollowButton extends AppCompatButton {
     public void initialize(String profileUser, UserRepository.FollowStatus followStatus) {
         this.profileUser = profileUser;
         this.followStatus = followStatus;
-        initializeStyles();
+        setStyles();
         setOnClickListener(this::onClick);
     }
 
-    private void initializeStyles() {
+    private void setStyles() {
         // Hide button if looking at your own profile
         if (profileUser.equals(loggedInUser)) {
             setVisibility(View.INVISIBLE);
@@ -111,6 +111,7 @@ public class FollowButton extends AppCompatButton {
 
     public void setFollowStatus(UserRepository.FollowStatus followStatus) {
         this.followStatus = followStatus;
+        setStyles();
     }
 
     public UserRepository.FollowStatus getFollowStatus() {

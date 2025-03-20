@@ -7,6 +7,7 @@ import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowRequestArrayAdapter;
+import com.example.y.views.FollowRequestsActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -51,6 +52,9 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             // Create adapter
             adapter = new FollowRequestArrayAdapter(context, this.reqs);
 
+            // Check if empty
+            updateEmptyState();
+
             onSuccess.onSuccess(null);
         }, onFailure);
     }
@@ -64,6 +68,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void onFollowRequestAdded(FollowRequest followRequest) {
         if (followRequest.getRequestee().equals(user)) {
             insertReq(followRequest);
+            updateEmptyState();
             notifyAdapter();
         }
     }
@@ -78,6 +83,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void onFollowRequestDeleted(String requester, String requestee) {
         if (requestee.equals(user)) {
             reqs.removeIf(req -> req.getRequester().equals(requester));
+            updateEmptyState();
             notifyAdapter();
         }
     }
@@ -149,5 +155,19 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     public void setReqs(ArrayList<FollowRequest> reqs) {
         this.reqs = reqs;
     }
+
+    private void updateEmptyState() {
+        if (context instanceof FollowRequestsActivity) {
+            FollowRequestsActivity activity = (FollowRequestsActivity) context;
+            ((Activity) context).runOnUiThread(() -> {
+                if (reqs == null || reqs.isEmpty()) {
+                    activity.setvisible();
+                } else {
+                    activity.setnotvisible();
+                }
+            });
+        }
+    }
+
 
 }

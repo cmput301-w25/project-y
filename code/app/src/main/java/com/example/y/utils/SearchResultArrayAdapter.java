@@ -80,8 +80,7 @@ public class SearchResultArrayAdapter extends ArrayAdapter<User> {
         TextView usernameTextView = view.findViewById(R.id.username);
         usernameTextView.setText(user.getUsername());
 
-        usernameTextView.setOnClickListener(v -> {
-            // Create an intent to open MyProfileActivity with the clicked username
+        view.findViewById(R.id.resultView).setOnClickListener(v -> {
             Intent intent = new Intent(context, UserProfileActivity.class);
             intent.putExtra("user", user.getUsername());
             context.startActivity(intent);

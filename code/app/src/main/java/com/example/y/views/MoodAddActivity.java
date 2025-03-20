@@ -72,7 +72,6 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
-
         // Initialize views
         spinnerMood = findViewById(R.id.spinnerMood);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);
@@ -90,6 +89,7 @@ public class MoodAddActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerContent);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMood.setAdapter(adapter);
+
 
         initializeBorderColors();
         makeSocialSpinner();
