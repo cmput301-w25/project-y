@@ -140,6 +140,7 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeString(text);
         parcel.writeString(photoURL);
         parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
+
     }
 
     @Override

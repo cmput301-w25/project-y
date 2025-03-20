@@ -72,7 +72,6 @@ public class MoodAddActivity extends AppCompatActivity {
 
         // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
         locationController = new LocationController(this);
-
         // Initialize views
         spinnerMood = findViewById(R.id.spinnerMood);
         checkShareLocation = findViewById(R.id.checkboxShareLocation);

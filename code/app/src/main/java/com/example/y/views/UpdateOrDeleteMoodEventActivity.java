@@ -84,7 +84,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         boolean tempPriv = getIntent().getBooleanExtra("private", false);
         moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
 
-        sharedLocation = getIntent().getIntExtra("location", 0);
+        //sharedLocation = getIntent().getIntExtra("location", 0);
 
 
         dateTextView = findViewById(R.id.dateUpdateMood);

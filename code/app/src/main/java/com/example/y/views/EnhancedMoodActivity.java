@@ -50,6 +50,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private TextView locationTextView;
     private TextView socialSituation;
     private TextView moodText;
+    private ImageButton editButton;
 
     private ImageView photoImgView;
 
@@ -95,6 +96,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         locationTextView = findViewById(R.id.location);
         socialSituation = findViewById(R.id.socialSituation);
         moodText = findViewById(R.id.text);
+        editButton = findViewById(R.id.editMenuIcon);
         ListView commentListView;
 
         // Make username clickable
