@@ -98,7 +98,7 @@ public class UserProfileActivity extends BaseActivity
 
         // Initialize all things for my user profile
         if (session.getUsername().equals(targetUser)) {
-            initMyMood();
+            initMyProfile();
         }
     }
 
@@ -138,7 +138,7 @@ public class UserProfileActivity extends BaseActivity
     /**
      * Initializes all the extra stuff that has to do with the logged in user's profile
      */
-    private void initMyMood() {
+    private void initMyProfile() {
         selectProfileHeaderButton();
 
         // Get buttons
