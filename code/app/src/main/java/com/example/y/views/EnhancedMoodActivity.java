@@ -58,6 +58,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private ImageView photoImgView;
 
     private EditText newComment;
+    private String moodEventId;
+    private MoodEvent currentMoodEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +118,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
         newComment = findViewById(R.id.commentEditText);
         // Set the values of the views
-        posterUsername.setText(currentMoodEvent.getPosterUsername());
+//        posterUsername.setText(currentMoodEvent.getPosterUsername());
         Emotion currentEmotion = currentMoodEvent.getEmotion();
         String emoji = currentEmotion.getEmoticon(this);
         emoticon.setText(emoji);
@@ -132,27 +134,28 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         }
 
 //         location = new GeoPoint(latitude, longitude);
-        if (currentMoodEvent.getSocialSituation() == null && currentMoodEvent.getLocation() == null) {
-            // Hide layout if they're both null
-            findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
-        } else {
-            // Otherwise ony fill in the non-null fields
-            if (socialSituation != null) {
-                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
-                socialSituation.setVisibility(View.VISIBLE);
-            } else {
-                socialSituation.setVisibility(View.GONE);
-            }
-
-            if (location != null) {
-                Log.i("Location != Check", "Latitude: " + latitude);
-
-                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() + ")");
-                locationTextView.setVisibility(View.VISIBLE);
-            } else {
-                locationTextView.setVisibility(View.GONE);
-            }
-        }
+//        if (currentMoodEvent.getSocialSituation() == null && currentMoodEvent.getLocation() == null) {
+//            // Hide layout if they're both null
+//            findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
+//        } else {
+//            // Otherwise ony fill in the non-null fields
+//            if (socialSituation != null) {
+//                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
+//                socialSituation.setVisibility(View.VISIBLE);
+//            } else {
+//                socialSituation.setVisibility(View.GONE);
+//            }
+//
+//            if (location != null) {
+//                Log.i("Location != Check", "Latitude: " + latitude);
+//
+//                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() + ")");
+//                locationTextView.setVisibility(View.VISIBLE);
+//            } else {
+//                locationTextView.setVisibility(View.GONE);
+//            }
+//        }
+        setUI();
         //socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
 
 
@@ -226,6 +229,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                     intent.putExtra("location_lat", location.getLatitude());
                     intent.putExtra("location_lng", location.getLongitude());
                 }
+                moodEventId = currentMoodEvent.getId();
                 startActivity(intent);
             });
         } else {
@@ -262,5 +266,45 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
-}
+
+
+@Override
+protected void onResume() {
+    super.onResume();
+    // Re-register the location launcher
+    if (moodEventId != null) {
+        MoodEventRepository.getInstance().getMoodEvent(moodEventId,updatedMoodEvent -> {
+        if (updatedMoodEvent != null){
+            currentMoodEvent = updatedMoodEvent;
+            setUI();
+        }
+
+        },
+                e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+
+}}
+private void setUI() {
+    if (currentMoodEvent != null) {
+        border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
+        posterUsername.setText(currentMoodEvent.getPosterUsername());
+        emoticon.setText(currentMoodEvent.getEmotion().getEmoticon(this));
+        dateTime.setText("Mood Event on " + new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(currentMoodEvent.getDateTime().toDate()));
+        moodText.setText(currentMoodEvent.getText());
+
+        if (currentMoodEvent.getLocation() != null) {
+            locationTextView.setText("Location : (" + currentMoodEvent.getLocation().getLatitude() + ", " + currentMoodEvent.getLocation().getLongitude() + ")");
+            locationTextView.setVisibility(View.VISIBLE);
+        } else {
+            locationTextView.setVisibility(View.GONE);
+        }
+
+        if (currentMoodEvent.getSocialSituation() != null) {
+            socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
+            socialSituation.setVisibility(View.VISIBLE);
+        } else {
+            socialSituation.setVisibility(View.GONE);
+        }
+    }
+}}
+
 

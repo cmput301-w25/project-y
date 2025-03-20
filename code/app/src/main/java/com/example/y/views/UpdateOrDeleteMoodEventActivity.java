@@ -3,6 +3,7 @@ package com.example.y.views;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.LruCache;
@@ -234,6 +235,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private void onDeleteMoodEvent(MoodEvent moodEventToUpdateOrDelete) {
         updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
             Toast.makeText(this, "Mood Deleted!", LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
