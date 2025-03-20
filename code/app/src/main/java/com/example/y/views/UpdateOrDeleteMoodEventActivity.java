@@ -3,6 +3,7 @@ package com.example.y.views;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.LruCache;
@@ -40,8 +41,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
                     return value.getByteCount() / 1024;
                 }
             };
-    private Button updateButton;
-    private Button deleteButton;
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
@@ -49,15 +48,13 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private EditText moodTextEditText;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private LocationController locationController;
-    private TextView dateTextView;
-    private int sharedLocation;
-
     private ImageView photoImgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
+
         locationController = new LocationController(this);
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
@@ -83,11 +80,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
         boolean tempPriv = getIntent().getBooleanExtra("private", false);
         moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
-
-        sharedLocation = getIntent().getIntExtra("location", 0);
-
-
-        dateTextView = findViewById(R.id.dateUpdateMood);
+        TextView dateTextView = findViewById(R.id.dateUpdateMood);
 
         // Set the Emotion spinner
         spinnerMood = findViewById(R.id.spinnerMoodUpdate);
@@ -110,20 +103,30 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
 
+        double latitude = getIntent().getDoubleExtra("location_lat", 0.0);
+        double longitude = getIntent().getDoubleExtra("location_lng", 0.0);
+        GeoPoint location;
+        if (latitude != 0.0 && longitude != 0.0) {
+            // No location provided
+            location = new GeoPoint(latitude, longitude);
+        } else {
+            location = null;
+        }
+
         // Grab the text explanation view as well as the date
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkBoxLocationUpdate);
         moodTextEditText = findViewById(R.id.updateText);
         privateCheckbox = findViewById(R.id.privacyCheckBoxUpdate);
-        updateButton = findViewById(R.id.UpdateMoodButton);
-        deleteButton = findViewById(R.id.deleteMoodButton);
+        Button updateButton = findViewById(R.id.UpdateMoodButton);
+        Button deleteButton = findViewById(R.id.deleteMoodButton);
 
 
         // Populate form with the mood event's data
         privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
 
 
-        checkShareLocation.setChecked((sharedLocation == 1));
+        checkShareLocation.setChecked((location != null));
 
         moodTextEditText.setText(moodEventToUpdateOrDelete.getText());
         SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
@@ -232,6 +235,9 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private void onDeleteMoodEvent(MoodEvent moodEventToUpdateOrDelete) {
         updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
             Toast.makeText(this, "Mood Deleted!", LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
