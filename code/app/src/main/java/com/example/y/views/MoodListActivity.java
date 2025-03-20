@@ -222,6 +222,9 @@ public class MoodListActivity extends BaseActivity {
         if (moodEvent.getSocialSituation() != null) {
             SocialSituation sendSocial = moodEvent.getSocialSituation();
             intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+            Log.d("onMoodClick", "sendSocial "+ sendSocial);;
+            assert sendSocial != null;
+            Log.d("onMoodClick", "sendSocial "+ sendSocial.ordinal());;
         }
         Boolean privateMood = moodEvent.getIsPrivate();
         if (privateMood != null) {
