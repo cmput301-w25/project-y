@@ -28,6 +28,7 @@ public class CommentRepository extends GenericRepository<CommentRepository.Comme
 
     private CommentRepository() {
         db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
         commentsRef = db.collection(COMMENT_COLLECTION);
         startListening();
     }
