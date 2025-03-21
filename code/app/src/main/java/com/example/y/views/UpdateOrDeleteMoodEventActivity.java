@@ -2,10 +2,13 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +22,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.y.R;
 import com.example.y.controllers.LocationController;
@@ -49,14 +56,32 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private LocationController locationController;
     private ImageView photoImgView;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
 
-        locationController = new LocationController(this);
-        updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    LOCATION_PERMISSION_REQUEST_CODE
+            );
+        } else {
+            locationController = new LocationController(this);
+        }
+
+
+
+
+    updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
         // Get mood event to update
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
@@ -125,7 +150,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         // Populate form with the mood event's data
         privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
 
-
+        Log.i("UpdateOrDeleteMoodEventActivity", "Location: " + location);
         checkShareLocation.setChecked((location != null));
 
         moodTextEditText.setText(moodEventToUpdateOrDelete.getText());
@@ -272,6 +297,29 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             }
 
         });
+    }
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            boolean granted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    granted = false;
+                    break;
+                }
+            }
+
+            if (granted) {
+                // All permissions granted
+                locationController = new LocationController(this);
+            } else {
+                // At least one permission was denied
+                Toast.makeText(this, "Location permissions are required to use this feature.", LENGTH_SHORT).show();
+            }
+        }
     }
 }
 

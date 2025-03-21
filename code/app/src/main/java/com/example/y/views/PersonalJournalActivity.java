@@ -14,7 +14,6 @@ public class PersonalJournalActivity extends MoodListActivity {
         // Initialize controller
         controller = new PersonalJournalController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-            initializeMoodClick();
         }, this::handleException);
     }
 

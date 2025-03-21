@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.controllers.CommentController;
-import com.example.y.controllers.LocationController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
@@ -52,7 +51,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private CommentController controller;
 
     private TextView locationTextView;
-    private TextView socialSituation;
+    private TextView socialSituationTextView;
     private TextView moodText;
     private ImageButton editButton;
     private SessionManager sessionManager;
@@ -72,8 +71,9 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
 
-        // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
-        LocationController locationController = new LocationController(this);
+
+
+//        LocationController locationController = new LocationController(this);
 
         // Taken from https://stackoverflow.com/a/6954561
         // Taken by Tegen Hilker Readman
@@ -106,11 +106,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         emoticon = findViewById(R.id.emoticon);
         dateTime = findViewById(R.id.dateTime);
         locationTextView = findViewById(R.id.location);
-        socialSituation = findViewById(R.id.socialSituation);
+        socialSituationTextView = findViewById(R.id.socialSituation);
         moodText = findViewById(R.id.text);
         editButton = findViewById(R.id.editMenuIcon);
         ListView commentListView;
-
+        posterUsername.setText(currentMoodEvent.getPosterUsername());
         // Make username clickable
         posterUsername.setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
@@ -133,8 +133,12 @@ public class EnhancedMoodActivity extends AppCompatActivity {
             location = new GeoPoint(latitude, longitude);
             locationTextView.setText(String.format("Location : (%s, %s)", location.getLatitude(), location.getLongitude()));
             locationTextView.setVisibility(View.VISIBLE);
+            currentMoodEvent.setLocation(location);
         } else {
             location = null;
+            locationTextView.setVisibility(View.GONE);
+        }
+        if (location == null){
             locationTextView.setVisibility(View.GONE);
         }
 
@@ -144,11 +148,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 //            findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
 //        } else {
 //            // Otherwise ony fill in the non-null fields
-            if (socialSituation != null) {
-                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
-                socialSituation.setVisibility(View.VISIBLE);
+            if (currentMoodEvent.getSocialSituation() != null) {
+                socialSituationTextView.setText(currentMoodEvent.getSocialSituation().getText(this));
+                socialSituationTextView.setVisibility(View.VISIBLE);
             } else {
-                socialSituation.setVisibility(View.GONE);
+                socialSituationTextView.setVisibility(View.GONE);
             }
 //
 //            if (location != null) {
@@ -201,7 +205,9 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                 if (privateMood != null) {
                     intent.putExtra("private", privateMood);
                 }
+                Log.i("OnMoodClick", "MoodEvent location: " + currentMoodEvent.getLocation());
                 if (currentMoodEvent.getLocation() != null) {
+
                     Log.i("OnMoodClick", "MoodEvent location: " + currentMoodEvent.getLocation());
                     GeoPoint location = currentMoodEvent.getLocation();
                     intent.putExtra("location_lat", location.getLatitude());
@@ -209,6 +215,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                 }
                 moodEventId = currentMoodEvent.getId();
                 startActivity(intent);
+                finish();
             });
         } else {
             editButton = findViewById(R.id.editMenuIcon);
@@ -277,16 +284,17 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
             if (currentMoodEvent.getLocation() != null) {
                 locationTextView.setText(MessageFormat.format("Location : ({0}, {1})", currentMoodEvent.getLocation().getLatitude(), currentMoodEvent.getLocation().getLongitude()));
+
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
                 locationTextView.setVisibility(View.GONE);
             }
             Log.i("SetUI", "currentMoodEvent.getSocialSituation(): " + currentMoodEvent.getSocialSituation());
             if (currentMoodEvent.getSocialSituation() != null) {
-                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
-                socialSituation.setVisibility(View.VISIBLE);
+                socialSituationTextView.setText(currentMoodEvent.getSocialSituation().getText(this));
+                socialSituationTextView.setVisibility(View.VISIBLE);
             } else {
-                socialSituation.setVisibility(View.GONE);
+                socialSituationTextView.setVisibility(View.GONE);
             }
         }
     }
