@@ -18,6 +18,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.Arrays;
+
 /**
  * A reusable controller that checks for location permission,
  * requests it if needed, and then fetches the current location.
@@ -34,6 +36,7 @@ public class LocationController {
     private final ActivityResultLauncher<String> permissionLauncher;
     private LocationCallback locationCallback; // Stores callback while waiting for permission
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public LocationController(Activity activity) {
         this.activity = activity;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
@@ -61,19 +64,26 @@ public class LocationController {
      */
     public void getCurrentLocation(LocationCallback callback) {
         this.locationCallback = callback;
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+
+        boolean fineGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+        boolean coarseGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        if (fineGranted || coarseGranted) {
             fetchLocationInternal();
         } else {
-            // Request the location permission.
-            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            permissionLauncher.launch(Arrays.toString(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            }));
         }
     }
 
     /**
      * Internal method that actually fetches the location.
      */
-
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @SuppressLint("MissingPermission")
     private void fetchLocationInternal() {
         fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)

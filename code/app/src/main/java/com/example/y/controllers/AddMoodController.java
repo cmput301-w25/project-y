@@ -85,7 +85,7 @@ public class AddMoodController {
         //      reason why text (at most 20 characters or 3 words)
         if (mood.getText() != null) {
             if (mood.getText().length() >=199) {
-                onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters"));
+                onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters!"));
                 return;
             }
 

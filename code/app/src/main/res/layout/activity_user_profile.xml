@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -75,7 +76,7 @@
     </LinearLayout>
 
     <!-- Mood list for the user -->
-    <ListView
+    <com.example.y.utils.MoodListView
         android:id="@+id/listviewMoodEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

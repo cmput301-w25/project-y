@@ -1,7 +1,6 @@
 package com.example.y.views;
 
 import android.os.Bundle;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +13,7 @@ import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
+import com.example.y.utils.MoodListView;
 
 public class UserProfileActivity extends BaseActivity
         implements
@@ -76,7 +76,7 @@ public class UserProfileActivity extends BaseActivity
 
         // 4) Initialize MoodHistoryController to display this user’s public mood list
         controller = new MoodHistoryController(this, targetUser, unused -> {
-            ListView moodListView = findViewById(R.id.listviewMoodEvents);
+            MoodListView moodListView = findViewById(R.id.listviewMoodEvents);
             moodListView.setAdapter(controller.getMoodAdapter());
         }, error -> {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();

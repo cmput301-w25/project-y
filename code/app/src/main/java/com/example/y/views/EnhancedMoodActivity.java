@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.controllers.CommentController;
-import com.example.y.controllers.LocationController;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
@@ -29,6 +28,7 @@ import com.example.y.services.SessionManager;
 import com.example.y.utils.GenericTextWatcher;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -54,7 +54,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     private CommentController controller;
 
     private TextView locationTextView;
-    private TextView socialSituation;
+    private TextView socialSituationTextView;
     private TextView moodText;
     private ImageButton editButton;
     private SessionManager sessionManager;
@@ -74,8 +74,9 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         Emotion recievedEmotion = null;
         SocialSituation receivedSocial = null;
 
-        // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
-        LocationController locationController = new LocationController(this);
+
+
+//        LocationController locationController = new LocationController(this);
 
         // Taken from https://stackoverflow.com/a/6954561
         // Taken by Tegen Hilker Readman
@@ -90,8 +91,9 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         int tempSocial = getIntent().getIntExtra("social", -1);
         if (tempSocial >= 0 && tempSocial < SocialSituation.values().length) {
             receivedSocial = SocialSituation.values()[tempSocial];
+            Log.d("Enhanced", "recieved social: " + receivedSocial);
+            currentMoodEvent.setSocialSituation(receivedSocial);
         }
-        currentMoodEvent.setSocialSituation(receivedSocial);
 
 
         boolean tempPriv = getIntent().getBooleanExtra("private", false);
@@ -107,11 +109,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         emoticon = findViewById(R.id.emoticon);
         dateTime = findViewById(R.id.dateTime);
         locationTextView = findViewById(R.id.location);
-        socialSituation = findViewById(R.id.socialSituation);
+        socialSituationTextView = findViewById(R.id.socialSituation);
         moodText = findViewById(R.id.text);
         editButton = findViewById(R.id.editMenuIcon);
         ListView commentListView;
-
+        posterUsername.setText(currentMoodEvent.getPosterUsername());
         // Make username clickable
         posterUsername.setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
@@ -132,8 +134,15 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         if (latitude != 0.0 && longitude != 0.0) {
             // No location provided
             location = new GeoPoint(latitude, longitude);
+            locationTextView.setText(String.format("Location : (%s, %s)", location.getLatitude(), location.getLongitude()));
+            locationTextView.setVisibility(View.VISIBLE);
+            currentMoodEvent.setLocation(location);
         } else {
             location = null;
+            locationTextView.setVisibility(View.GONE);
+        }
+        if (location == null){
+            locationTextView.setVisibility(View.GONE);
         }
 
 //         location = new GeoPoint(latitude, longitude);
@@ -142,12 +151,12 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 //            findViewById(R.id.locationSocialSituationLayout).setVisibility(View.GONE);
 //        } else {
 //            // Otherwise ony fill in the non-null fields
-//            if (socialSituation != null) {
-//                socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
-//                socialSituation.setVisibility(View.VISIBLE);
-//            } else {
-//                socialSituation.setVisibility(View.GONE);
-//            }
+            if (currentMoodEvent.getSocialSituation() != null) {
+                socialSituationTextView.setText(currentMoodEvent.getSocialSituation().getText(this));
+                socialSituationTextView.setVisibility(View.VISIBLE);
+            } else {
+                socialSituationTextView.setVisibility(View.GONE);
+            }
 //
 //            if (location != null) {
 //                Log.i("Location != Check", "Latitude: " + latitude);
@@ -173,40 +182,11 @@ public class EnhancedMoodActivity extends AppCompatActivity {
 
         if (currentMoodEvent.getDateTime() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            dateTime.setText("Mood Event on " + sdf.format(currentMoodEvent.getDateTime().toDate()));
+            dateTime.setText(MessageFormat.format("Mood Event on {0}", sdf.format(currentMoodEvent.getDateTime().toDate())));
         }
 
 
-        String photoURL = currentMoodEvent.getPhotoURL();
-        if (photoImgView != null) {
-            if (photoURL != null && !photoURL.isEmpty()) {
-                // Set tag to track proper image association
-                photoImgView.setTag(photoURL);
-                photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
-                photoImgView.setVisibility(View.VISIBLE);
-
-                // Check image cache first
-                Bitmap cachedBitmap = imageCache.get(photoURL);
-                if (cachedBitmap != null) {
-                    photoImgView.setImageBitmap(cachedBitmap);
-                } else {
-                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
-                        // Cache downloaded image
-                        imageCache.put(photoURL, bitmap);
-
-                        // Only set image if tag matches current URL
-                        if (photoURL.equals(photoImgView.getTag())) {
-                            photoImgView.setImageBitmap(bitmap);
-                        }
-                    }, this::handleException);
-                }
-            } else {
-                // Clear if there is no photo
-                photoImgView.setImageDrawable(null);
-                photoImgView.setVisibility(View.GONE);
-                photoImgView.setTag(null);
-            }
-        }
+        setUpPhotoDisplay(currentMoodEvent);
 
 
         if (currentMoodEvent.getPosterUsername().equals(sessionManager.getUsername())) {
@@ -219,14 +199,18 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                 intent.putExtra("emotion", sendEmotion.ordinal());
                 if (currentMoodEvent.getSocialSituation() != null) {
                     SocialSituation sendSocial = currentMoodEvent.getSocialSituation();
+                    Log.d("TAG", "sendSocial: " + sendSocial);
                     intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
                 }
+
                 Boolean privateMood = currentMoodEvent.getIsPrivate();
 
                 if (privateMood != null) {
                     intent.putExtra("private", privateMood);
                 }
+                Log.i("OnMoodClick", "MoodEvent location: " + currentMoodEvent.getLocation());
                 if (currentMoodEvent.getLocation() != null) {
+
                     Log.i("OnMoodClick", "MoodEvent location: " + currentMoodEvent.getLocation());
                     GeoPoint location = currentMoodEvent.getLocation();
                     intent.putExtra("location_lat", location.getLatitude());
@@ -272,43 +256,88 @@ public class EnhancedMoodActivity extends AppCompatActivity {
     }
 
 
-@Override
-protected void onResume() {
-    super.onResume();
-    // Re-register the location launcher
-    if (moodEventId != null) {
-        MoodEventRepository.getInstance().getMoodEvent(moodEventId,updatedMoodEvent -> {
-        if (updatedMoodEvent != null){
-            currentMoodEvent = updatedMoodEvent;
-            setUI();
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Re-register the location launcher
+        if (moodEventId != null) {
+            MoodEventRepository.getInstance().getMoodEvent(moodEventId, updatedMoodEvent -> {
+                        if (updatedMoodEvent != null) {
+                            currentMoodEvent = updatedMoodEvent;
+                            setUI();
+                        }
 
-        },
-                e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                    },
+                    e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
-}}
-private void setUI() {
-    if (currentMoodEvent != null) {
-        border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
-        posterUsername.setText(currentMoodEvent.getPosterUsername());
-        emoticon.setText(currentMoodEvent.getEmotion().getEmoticon(this));
-        dateTime.setText("Mood Event on " + new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(currentMoodEvent.getDateTime().toDate()));
-        moodText.setText(currentMoodEvent.getText());
-
-        if (currentMoodEvent.getLocation() != null) {
-            locationTextView.setText("Location : (" + currentMoodEvent.getLocation().getLatitude() + ", " + currentMoodEvent.getLocation().getLongitude() + ")");
-            locationTextView.setVisibility(View.VISIBLE);
-        } else {
-            locationTextView.setVisibility(View.GONE);
-        }
-
-        if (currentMoodEvent.getSocialSituation() != null) {
-            socialSituation.setText(currentMoodEvent.getSocialSituation().toString());
-            socialSituation.setVisibility(View.VISIBLE);
-        } else {
-            socialSituation.setVisibility(View.GONE);
         }
     }
-}}
+
+    /***
+     * Sets the UI elements to display the current mood event
+     */
+
+    private void setUI() {
+        if (currentMoodEvent != null) {
+            border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
+            posterUsername.setText(currentMoodEvent.getPosterUsername());
+            emoticon.setText(currentMoodEvent.getEmotion().getEmoticon(this));
+            dateTime.setText(String.format("Mood Event on %s", new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(currentMoodEvent.getDateTime().toDate())));
+            moodText.setText(currentMoodEvent.getText());
+
+            if (currentMoodEvent.getLocation() != null) {
+                locationTextView.setText(MessageFormat.format("Location : ({0}, {1})", currentMoodEvent.getLocation().getLatitude(), currentMoodEvent.getLocation().getLongitude()));
+
+                locationTextView.setVisibility(View.VISIBLE);
+            } else {
+                locationTextView.setVisibility(View.GONE);
+            }
+            Log.i("SetUI", "currentMoodEvent.getSocialSituation(): " + currentMoodEvent.getSocialSituation());
+            if (currentMoodEvent.getSocialSituation() != null) {
+                socialSituationTextView.setText(currentMoodEvent.getSocialSituation().getText(this));
+                socialSituationTextView.setVisibility(View.VISIBLE);
+            } else {
+                socialSituationTextView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /***
+     * Sets up the photo display for the mood event
+     * @param currentMoodEvent MoodEvent to display
+     */
+    public void setUpPhotoDisplay(MoodEvent currentMoodEvent) {
+        String photoURL = currentMoodEvent.getPhotoURL();
+        if (photoImgView != null) {
+            if (photoURL != null && !photoURL.isEmpty()) {
+                // Set tag to track proper image association
+                photoImgView.setTag(photoURL);
+                photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
+                photoImgView.setVisibility(View.VISIBLE);
+
+                // Check image cache first
+                Bitmap cachedBitmap = imageCache.get(photoURL);
+                if (cachedBitmap != null) {
+                    photoImgView.setImageBitmap(cachedBitmap);
+                } else {
+                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
+                        // Cache downloaded image
+                        imageCache.put(photoURL, bitmap);
+
+                        // Only set image if tag matches current URL
+                        if (photoURL.equals(photoImgView.getTag())) {
+                            photoImgView.setImageBitmap(bitmap);
+                        }
+                    }, this::handleException);
+                }
+            } else {
+                // Clear if there is no photo
+                photoImgView.setImageDrawable(null);
+                photoImgView.setVisibility(View.GONE);
+                photoImgView.setTag(null);
+            }
+        }
+    }
 
 
+}
