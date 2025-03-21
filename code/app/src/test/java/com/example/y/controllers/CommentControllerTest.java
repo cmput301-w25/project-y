@@ -1,6 +1,6 @@
 package com.example.y.controllers;
 
-import static org.junit.Assert.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
