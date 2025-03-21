@@ -3,7 +3,6 @@ package com.example.y.controllers;
 import android.content.Context;
 
 import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -15,9 +14,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class UpdateOrDeleteMoodEventController {
 
     private final SessionManager session;
+    private final Context context;
 
     public UpdateOrDeleteMoodEventController(Context context){
         session = new SessionManager(context);
+        this.context = context;
     }
 
     /**
@@ -43,7 +44,7 @@ public class UpdateOrDeleteMoodEventController {
             }
         }
 
-        MoodEventRepository.getInstance().updateMoodEvent(moodEvent, onSuccess, onFailure);
+        MoodEventRepository.getInstance().updateMoodEvent(moodEvent, context, onSuccess, onFailure);
     }
 
     /**
@@ -54,7 +55,7 @@ public class UpdateOrDeleteMoodEventController {
      * @param onFailure Callback for deletion failure.
      */
     public void onDeleteMoodEvent(MoodEvent moodEvent,OnSuccessListener<String> onSuccess, OnFailureListener onFailure){
-        MoodEventRepository.getInstance().deleteMoodEvent(moodEvent.getId(), onSuccess, onFailure);
+        MoodEventRepository.getInstance().deleteMoodEvent(moodEvent.getId(), context, onSuccess, onFailure);
     }
 
 }
