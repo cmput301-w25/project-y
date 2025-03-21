@@ -1,7 +1,12 @@
 package com.example.y.repositories;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -14,6 +19,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,6 +68,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
     private MoodEventRepository() {
         db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
         moodEventRef = db.collection(MOOD_EVENT_COLLECTION);
         startListening();
     }
@@ -81,9 +89,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      * @return Instance of MoodEventRepository
      */
     public static synchronized MoodEventRepository getInstance() {
-        if (instance == null) {
-            instance = new MoodEventRepository();
-        }
+        if (instance == null) instance = new MoodEventRepository();
         return instance;
     }
 
@@ -127,6 +133,12 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
         instance = new MoodEventRepository(firestore);
     }
 
+    protected boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm = getSystemService(context, ConnectivityManager.class);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
     /**
      * Add a mood event to the database.
      *
@@ -136,14 +148,23 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      */
     public void addMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
         moodEvent.setCreationDateTime(Timestamp.now());
-        moodEventRef.add(moodEvent)
-                .addOnSuccessListener(doc -> {
-                    moodEvent.setId(doc.getId());
+        moodEventRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                onFailure.onFailure(new Exception("Mood event document creation failed", e));
+                return;
+            }
+
+            if (snapshot != null) {
+                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
+                    String id = docChange.getDocument().getId();
+                    moodEvent.setId(id);
                     onSuccess.onSuccess(moodEvent);
-                })
-                .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Mood event document creation failed: " + e.getMessage()));
-                });
+                    return;
+                }
+            }
+        });
+
+        moodEventRef.add(moodEvent);
     }
 
     /**
@@ -179,6 +200,28 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      *
      * @param moodEvent Mood event that was updated locally.
      *                  In the database, the id will be used to update the document.
+     * @param context   Application context.
+     * @param onSuccess Success callback function to which the updated mood event is passed to.
+     * @param onFailure Failure callback function.
+     */
+    public void updateMoodEvent(MoodEvent moodEvent, Context context, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        moodEventRef.document(moodEvent.getId())
+                .set(moodEvent)
+                .addOnSuccessListener(unused -> onSuccess.onSuccess(moodEvent))
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Mood event document update failed: " + e.getMessage()));
+                });
+
+        if (!isNetworkAvailable(context)) {
+            onSuccess.onSuccess(moodEvent);
+        }
+    }
+
+    /**
+     * Updates a mood event in the database.
+     *
+     * @param moodEvent Mood event that was updated locally.
+     *                  In the database, the id will be used to update the document.
      * @param onSuccess Success callback function to which the updated mood event is passed to.
      * @param onFailure Failure callback function.
      */
@@ -189,6 +232,37 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Mood event document update failed: " + e.getMessage()));
                 });
+    }
+
+    /**
+     * Deletes a mood event from the database.
+     *
+     * @param id        Id of the mood event to delete.
+     * @param onSuccess Success callback function to which the deleted id is passed to.
+     * @param context   Application context
+     * @param onFailure Failure callback function
+     */
+    public void deleteMoodEvent(String id, Context context, OnSuccessListener<String> onSuccess, OnFailureListener onFailure) {
+        DocumentReference docRef = moodEventRef.document(id);
+        docRef.get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        docRef.delete()
+                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id)) // TODO: Delete image from storage if exists
+                                .addOnFailureListener(e -> {
+                                    onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
+                                });
+                    } else {
+                        onFailure.onFailure(new Exception("Mood event document does not exist."));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to get mood event document when trying to delete: " + e.getMessage()));
+                });
+
+        if (!isNetworkAvailable(context)) {
+            onSuccess.onSuccess(id);
+        }
     }
 
     /**

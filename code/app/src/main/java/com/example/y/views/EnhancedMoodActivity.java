@@ -32,6 +32,9 @@ import com.google.firebase.firestore.GeoPoint;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class EnhancedMoodActivity extends AppCompatActivity {
     private final LruCache<String, Bitmap> imageCache =
             new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
@@ -231,6 +234,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
                 }
                 moodEventId = currentMoodEvent.getId();
                 startActivity(intent);
+                finish();
             });
         } else {
             editButton = findViewById(R.id.editMenuIcon);
