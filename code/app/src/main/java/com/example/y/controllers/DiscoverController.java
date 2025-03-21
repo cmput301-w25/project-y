@@ -5,7 +5,6 @@ import android.content.Context;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 

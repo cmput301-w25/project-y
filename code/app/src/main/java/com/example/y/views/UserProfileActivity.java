@@ -22,6 +22,7 @@ import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.y.utils.MoodListView;
 
 /**
  * Activity for viewing the profile of a user.
@@ -91,6 +92,7 @@ public class UserProfileActivity extends BaseActivity
         // Initialize MoodHistoryController to display this user’s public mood list
         moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new MoodHistoryController(this, targetUser, unused -> {
+            MoodListView moodListView = findViewById(R.id.listviewMoodEvents);
             moodListView.setAdapter(controller.getMoodAdapter());
         }, error -> {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();

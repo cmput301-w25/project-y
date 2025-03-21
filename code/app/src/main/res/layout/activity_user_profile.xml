@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -136,10 +138,12 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/listviewMoodEvents"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
+    <!-- Mood list for the user -->
+    <com.example.y.utils.MoodListView
+        android:id="@+id/listviewMoodEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -154,6 +158,5 @@
         android:backgroundTint="@color/addMood"
         android:contentDescription="Mood add button"
         app:elevation="8dp" />
-
 
 </FrameLayout>
