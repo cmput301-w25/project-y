@@ -75,6 +75,34 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/followReqBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/logOutBtn"
+                    app:layout_constraintLeft_toRightOf="@id/tvUsername"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:cornerRadius="5dp"
+                    android:backgroundTint="@color/button"
+                    android:layout_marginHorizontal="4dp"
+                    android:text="Requests" />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/logOutBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/followReqBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:cornerRadius="5dp"
+                    android:backgroundTint="@color/button"
+                    android:layout_marginHorizontal="4dp"
+                    android:text="Log Out" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout

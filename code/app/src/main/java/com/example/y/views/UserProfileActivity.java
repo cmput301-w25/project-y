@@ -144,12 +144,16 @@ public class UserProfileActivity extends BaseActivity
         // Get buttons
         Button myMoodHistoryBtn = findViewById(R.id.myHistoryBtn);
         Button myPersonalJournalBtn = findViewById(R.id.myPersonalJournalBtn);
+        Button followReqsBtn = findViewById(R.id.followReqBtn);
+        Button logOutBtn = findViewById(R.id.logOutBtn);
         FloatingActionButton addMoodBtn = findViewById(R.id.addMoodBtn);
 
-        // Show mood buttons and add button, hide back button
+        // Show buttons and add button, hide back button
         LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
         moodListPickerLayout.setVisibility(ListView.VISIBLE);
         addMoodBtn.setVisibility(View.VISIBLE);
+        followReqsBtn.setVisibility(View.VISIBLE);
+        logOutBtn.setVisibility(View.VISIBLE);
         backBtn.setVisibility(View.GONE);
 
         // Initial button colours
@@ -185,6 +189,20 @@ public class UserProfileActivity extends BaseActivity
         // Add mood button click
         addMoodBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, MoodAddActivity.class);
+            startActivity(intent);
+        });
+
+        // Log out button click
+        logOutBtn.setOnClickListener(view -> {
+            session.logout();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finishAffinity();
+        });
+
+        // Follow requests button click
+        followReqsBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, FollowRequestsActivity.class);
             startActivity(intent);
         });
 

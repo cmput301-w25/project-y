@@ -2,13 +2,11 @@ package com.example.y.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +16,6 @@ import com.example.y.R;
 import com.example.y.models.Emotion;
 import com.example.y.models.User;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
-import com.example.y.views.MyProfileActivity;
 import com.example.y.views.UserProfileActivity;
 
 import java.util.ArrayList;
