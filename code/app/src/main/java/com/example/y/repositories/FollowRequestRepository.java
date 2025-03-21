@@ -12,6 +12,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirestoreKt;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -25,8 +26,8 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
 
     private static FollowRequestRepository instance;  // Singleton instance
     public static final String FOLLOW_REQ_COLLECTION = "follow-requests";
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference followReqsRef = db.collection(FOLLOW_REQ_COLLECTION);
+    private final FirebaseFirestore db;
+    private final CollectionReference followReqsRef;
 
     /**
      * Listens for follow requests being added or deleted.
@@ -49,17 +50,37 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
         void onFollowRequestDeleted(String requester, String requestee);
     }
 
+    private FollowRequestRepository() {
+        db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
+        followReqsRef = db.collection(FOLLOW_REQ_COLLECTION);
+        startListening();
+    }
 
     /**
      * @param firestore
      *      Firestore db instance.
      */
+    private FollowRequestRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        followReqsRef = db.collection(FOLLOW_REQ_COLLECTION);
+        startListening();
+    }
 
+    /**
+     * Gets singleton instance of this repository
+     * @return
+     *      Instance of FollowRepository
+     */
+    public static synchronized FollowRequestRepository getInstance() {
+        if (instance == null) instance = new FollowRequestRepository();
+        return instance;
+    }
 
     /**
      * Initialize the follow requests snapshot listener
      */
-    private FollowRequestRepository() {
+    private void startListening() {
         // Listen for real-time updates and notify all listeners
         followReqsRef.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
@@ -83,21 +104,6 @@ public class FollowRequestRepository extends GenericRepository<FollowRequestList
                 }
             }
         });
-    }
-
-    /**
-     * Gets singleton instance of this repository
-     * @return
-     *      Instance of FollowRepository
-     */
-    public static synchronized FollowRequestRepository getInstance() {
-        if (instance == null) instance = new FollowRequestRepository();
-        return instance;
-    }
-
-    private FollowRequestRepository(FirebaseFirestore firestore) {
-        db = firestore;
-        followReqsRef = db.collection(FOLLOW_REQ_COLLECTION );
     }
 
     /**

@@ -58,6 +58,7 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     private UserRepository() {
         db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
         usersRef = db.collection(USER_COLLECTION);
         startListening();
     }

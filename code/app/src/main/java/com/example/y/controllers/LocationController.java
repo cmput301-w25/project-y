@@ -1,6 +1,7 @@
 package com.example.y.controllers;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -83,6 +84,7 @@ public class LocationController {
      * Internal method that actually fetches the location.
      */
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @SuppressLint("MissingPermission")
     private void fetchLocationInternal() {
         fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(activity, new OnSuccessListener<Location>() {

@@ -32,6 +32,9 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class EnhancedMoodActivity extends AppCompatActivity {
     private final LruCache<String, Bitmap> imageCache =
             new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
