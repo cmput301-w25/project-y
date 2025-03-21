@@ -43,6 +43,7 @@ public class SearchController
         this.session = new SessionManager(context);
 
 
+
         // Fetch all users
         UserRepository.getInstance().getAllUsers(allUsers -> {
 
