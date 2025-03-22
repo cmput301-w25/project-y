@@ -14,7 +14,6 @@ public class FollowingMoodEventListActivity extends MoodListActivity {
         // Initialize controller
         controller = new FollowingMoodListController(this, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-            initializeMoodClick();
         }, this::handleException);
     }
 

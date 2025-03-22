@@ -27,7 +27,6 @@ public class MoodHistoryActivity extends MoodListActivity {
         // Initialize controller
         controller = new MoodHistoryController(this, user, unused -> {
             moodListView.setAdapter(controller.getMoodAdapter());
-            initializeMoodClick();
         }, this::handleException);
     }
 

@@ -13,6 +13,11 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+
+
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -25,6 +30,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Y"
         tools:targetApi="31">
+        <activity
+            android:name=".views.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.PersonalJournalActivity"
+            android:exported="false" />
         <activity
             android:name=".views.FollowRequestsActivity"
             android:exported="false" />
@@ -42,9 +53,8 @@
         <activity
             android:name=".views.DiscoverActivity"
             android:exported="false" />
-        <activity
-            android:name=".views.MyProfileActivity"
-            android:exported="true" />
+        <activity android:name=".views.UserProfileActivity"
+            android:exported="true"/>
         <activity
             android:name=".views.SignUpActivity"
             android:exported="true" />
@@ -53,6 +63,25 @@
             android:exported="true" />
         <activity
             android:name=".views.LoginActivity"
+            android:exported="true" />
+
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAo3z504InN2IfH6j1S3KhCLEMsQcJTI3s" />
+
+
+        <activity android:name=".views.EnhancedMoodActivity"
             android:exported="true" />
         <activity
             android:name=".views.MainActivity"

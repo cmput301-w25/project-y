@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.y.R;
+import com.example.y.services.SessionManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -19,6 +20,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Drawable MOOD_FOLLOWING_LIST_SELECTED;
     private Drawable DISCOVER_UNSELECTED;
     private Drawable DISCOVER_SELECTED;
+    private Drawable SEARCH_UNSELECTED;
+    private Drawable SEARCH_SELECTED;
     private Drawable MAP_UNSELECTED;
     private Drawable MAP_SELECTED;
     private Drawable PROFILE_UNSELECTED;
@@ -26,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private ImageButton moodFollowingListBtn;
     private ImageButton discoverBtn;
+    private ImageButton searchBtn;
     private ImageButton mapBtn;
     private ImageButton profileBtn;
 
@@ -39,11 +43,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         MOOD_FOLLOWING_LIST_SELECTED = AppCompatResources.getDrawable(this, R.drawable.home_black);
         DISCOVER_UNSELECTED = AppCompatResources.getDrawable(this, R.drawable.compass_white);
         DISCOVER_SELECTED = AppCompatResources.getDrawable(this, R.drawable.compass_black);
+        SEARCH_UNSELECTED = AppCompatResources.getDrawable(this, R.drawable.search_white);
+        SEARCH_SELECTED = AppCompatResources.getDrawable(this, R.drawable.search_black);
         MAP_UNSELECTED = AppCompatResources.getDrawable(this, R.drawable.map_white);
         MAP_SELECTED = AppCompatResources.getDrawable(this, R.drawable.map_black);
         PROFILE_UNSELECTED = AppCompatResources.getDrawable(this, R.drawable.profile_white);
         PROFILE_SELECTED = AppCompatResources.getDrawable(this, R.drawable.profile_black);
-
 
         // Dynamically add the activity-specific layout to the content area
         FrameLayout contentFrame = findViewById(R.id.content);
@@ -58,6 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         discoverBtn = findViewById(R.id.btnDiscover);
         mapBtn = findViewById(R.id.btnMoodMap);
         profileBtn = findViewById(R.id.btnUserProfile);
+        searchBtn = findViewById(R.id.btnSearch);
+
 
         // Header navigation
         moodFollowingListBtn.setOnClickListener(view -> {
@@ -70,13 +77,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
+        searchBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        });
         mapBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, MapActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
         profileBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MyProfileActivity.class);
+            SessionManager session = new SessionManager(this);
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra("user", session.getUsername());
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
@@ -87,6 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void deselectAllHeaderButtons() {
         moodFollowingListBtn.setImageDrawable(MOOD_FOLLOWING_LIST_UNSELECTED);
         discoverBtn.setImageDrawable(DISCOVER_UNSELECTED);
+        searchBtn.setImageDrawable(SEARCH_UNSELECTED);
         mapBtn.setImageDrawable(MAP_UNSELECTED);
         profileBtn.setImageDrawable(PROFILE_UNSELECTED);
     }
@@ -99,6 +114,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void selectDiscoverHeaderButton() {
         deselectAllHeaderButtons();
         discoverBtn.setImageDrawable(DISCOVER_SELECTED);
+    }
+
+    protected void selectSearchHeaderButton() {
+        deselectAllHeaderButtons();
+        searchBtn.setImageDrawable(SEARCH_SELECTED);
     }
 
     protected void selectMapHeaderButton() {

@@ -12,6 +12,7 @@
     <string name="emotion_shame_emoji">😞</string>
     <string name="emotion_surprise_emoji">😳</string>
     <string name="emotion_laughter_emoji">💀</string>
+    <string name="more_than_one_mood">➕</string>
 
     <!-- emoticon -->
     <string-array name="emotionEmoticonArray">
@@ -39,6 +40,19 @@
         <item>#F28E3D</item>
     </string-array>
 
+    <!-- Emotion Text -->
+    <string-array name="emotionTextArray">
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+        <item>Laughter</item>
+    </string-array>
+
 
     <!-- Values -->
     <string name="email">Email</string>
@@ -53,6 +67,7 @@
 
     <string name="mood_following">Mood Following</string>
     <string name="mood_map">Mood Map</string>
+    <string name="search">Search</string>
     <string name="user_profile">User Profile</string>
     <string name="user">User</string>
     <string name="date_and_time">Date and Time</string>
@@ -66,6 +81,7 @@
     <string name="logout">Logout</string>
     <string name="addMoodEvent">Add</string>
     <string name="my_mood_history">My Mood History</string>
+    <string name="my_personal_journal">My Personal Journal</string>
     <string name="follow_requests">Follow Requests</string>
     <string name="home">Home</string>
 
@@ -80,7 +96,7 @@
     <string name="hint_reason_why_text">Why do you feel this way?</string>
     <string name="hint_trigger">What was the trigger?</string>
     <string name="hint_explanation">Explain your mood...</string>
-    <string name="share_location">Share location with others</string>
+    <string name="share_location">Share location</string>
     <string name="submit">Submit</string>
     <string name="permission_denied">Storage permission required to select images</string>
     <string name="date_for_mood_event">Date For Mood Event</string>
@@ -91,6 +107,11 @@
     <!-- Date filter buttons -->
     <string name="minDateBtnText">Min Date</string>
     <string name="maxDateBtnText">Max Date</string>
+    <string name="private_this_mood_event">Private this Mood Event</string>
+    <string name="privateString">Private</string>
+    <string name="add_a_comment">Add a comment...</string>
+    <string name="send">Send</string>
+    <string name="mood_event_image">Mood Event Image</string>
 
     <string-array name="mood_array">
         <item>😡</item>
@@ -110,6 +131,7 @@
         <item>With one other person</item>
         <item>With two to several people</item>
         <item>With a crowd</item>
+
     </string-array>
 
 
