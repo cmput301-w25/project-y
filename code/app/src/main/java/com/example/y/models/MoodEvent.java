@@ -70,18 +70,9 @@ public class MoodEvent implements Serializable, Parcelable {
         socialSituation = socialSituationIndex == -1 ? null : SocialSituation.values()[socialSituationIndex];
         text = in.readString();
         photoURL = in.readString();
-//
-
-        byte hasLocation = in.readByte();
-        if (hasLocation == 1){
-            double lat = in.readDouble();
-            double lng = in.readDouble();
-            location = new GeoPoint(lat, lng);
-
-        }else {
-            location = null;
-        }
-
+        double lat = in.readDouble();
+        double lon = in.readDouble();
+        location = (lat == 0 && lon == 0) ? null : new GeoPoint(lat, lon);
     }
 
     @Exclude
@@ -175,6 +166,7 @@ public class MoodEvent implements Serializable, Parcelable {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(id);
@@ -186,11 +178,8 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeInt(socialSituation == null ? -1 : socialSituation.getIndex());
         parcel.writeString(text);
         parcel.writeString(photoURL);
-        parcel.writeByte((byte) (location != null ? 1 : 0));
-        if (location != null){
-        parcel.writeDouble(location.getLatitude());
-        parcel.writeDouble(location.getLongitude());
-        }
+        parcel.writeDouble(location == null ? 0 : location.getLatitude());
+        parcel.writeDouble(location == null ? 0 : location.getLongitude());
     }
 
     @Override
