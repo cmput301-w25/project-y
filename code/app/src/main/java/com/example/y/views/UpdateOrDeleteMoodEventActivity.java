@@ -41,13 +41,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * User can update or delete their mood event
+ */
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
+
     private final LruCache<String, Bitmap> imageCache =
             new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
                 protected int sizeOf(String key, Bitmap value) {
                     return value.getByteCount() / 1024;
                 }
             };
+
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
@@ -78,34 +83,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             locationController = new LocationController(this);
         }
 
-
-
-
     updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
         // Get mood event to update
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
-        Emotion recievedEmotion = null;
-        SocialSituation receivedSocial = null;
-
-        // Taken from https://stackoverflow.com/a/6954561
-        // Taken by Tegen Hilker Readman
-        // Authored By Turtle
-        // Taken on 2025-03-05
-        int temp = getIntent().getIntExtra("emotion", -1);
-        if (temp >= 0 && temp < Emotion.values().length)
-            recievedEmotion = Emotion.values()[temp];
-        assert moodEventToUpdateOrDelete != null;
-        moodEventToUpdateOrDelete.setEmotion(recievedEmotion);
-
-        int tempSocial = getIntent().getIntExtra("social", -1);
-        if (tempSocial >= 0 && tempSocial < SocialSituation.values().length) {
-            receivedSocial = SocialSituation.values()[tempSocial];
-        }
-        moodEventToUpdateOrDelete.setSocialSituation(receivedSocial);
-        boolean tempPriv = getIntent().getBooleanExtra("private", false);
-        moodEventToUpdateOrDelete.setIsPrivate(tempPriv);
-        TextView dateTextView = findViewById(R.id.dateUpdateMood);
 
         // Set the Emotion spinner
         spinnerMood = findViewById(R.id.spinnerMoodUpdate);
@@ -128,16 +109,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSocial.setAdapter(socialAdapter);
 
-        double latitude = getIntent().getDoubleExtra("location_lat", 0.0);
-        double longitude = getIntent().getDoubleExtra("location_lng", 0.0);
-        GeoPoint location;
-        if (latitude != 0.0 && longitude != 0.0) {
-            // No location provided
-            location = new GeoPoint(latitude, longitude);
-        } else {
-            location = null;
-        }
-
         // Grab the text explanation view as well as the date
         //https://developer.android.com/training/permissions/requesting
         checkShareLocation = findViewById(R.id.checkBoxLocationUpdate);
@@ -146,12 +117,10 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         Button updateButton = findViewById(R.id.UpdateMoodButton);
         Button deleteButton = findViewById(R.id.deleteMoodButton);
 
-
         // Populate form with the mood event's data
         privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
 
-        Log.i("UpdateOrDeleteMoodEventActivity", "Location: " + location);
-        checkShareLocation.setChecked((location != null));
+        checkShareLocation.setChecked((moodEventToUpdateOrDelete.getLocation() != null));
 
         moodTextEditText.setText(moodEventToUpdateOrDelete.getText());
         SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
@@ -160,13 +129,12 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         String photoURL = moodEventToUpdateOrDelete.getPhotoURL();
         photoImgView = findViewById(R.id.imageView);
 
-
         initializeBorderColors();
+        TextView dateTextView = findViewById(R.id.dateUpdateMood);
         if (moodEventToUpdateOrDelete.getDateTime() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
             dateTextView.setText("Mood Event scheduled for " + sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
         }
-
 
         if (photoImgView != null) {
             if (photoURL != null && !photoURL.isEmpty()) {
@@ -267,16 +235,6 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());
     }
 
-    /**
-     * Handles exception by showing a Toast
-     *
-     * @param e Exception to handle
-     */
-    private void handleException(Exception e) {
-        Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show();
-    }
-
-
     private void initializeBorderColors() {
         // Set border to match the selected emotion in the spinner
         Emotion emotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
@@ -298,6 +256,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
         });
     }
+
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -321,6 +280,16 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Handles exception by showing a Toast and logging it
+     * @param e Exception to handle
+     */
+    private void handleException(Exception e) {
+        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
+    }
+
 }
 
 

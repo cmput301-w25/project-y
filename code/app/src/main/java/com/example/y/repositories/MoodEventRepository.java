@@ -19,8 +19,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -341,6 +339,34 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                         onSuccess.onSuccess(allPublicMoods);
                     } else {
                         onFailure.onFailure(new Exception("Failed to fetch all public mood events from user " + username, task.getException()));
+                        Log.e("Repository Error", task.getException().toString());
+                    }
+                });
+    }
+
+    /**
+     * Gets every mood event from a user. Ordered by dateTime descending.
+     *
+     * @param username  Username of the user to get moods from.
+     * @param onSuccess Success callback function to which the array of mood events is passed to.
+     * @param onFailure Failure callback function.
+     */
+    public void getAllMoodEventsFrom(String username, OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        moodEventRef
+                .whereEqualTo("posterUsername", username)
+                .orderBy("dateTime", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> allMoods = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            MoodEvent mood = doc.toObject(MoodEvent.class);
+                            mood.setId(doc.getId());
+                            allMoods.add(mood);
+                        }
+                        onSuccess.onSuccess(allMoods);
+                    } else {
+                        onFailure.onFailure(new Exception("Failed to fetch all mood events from user " + username, task.getException()));
                         Log.e("Repository Error", task.getException().toString());
                     }
                 });

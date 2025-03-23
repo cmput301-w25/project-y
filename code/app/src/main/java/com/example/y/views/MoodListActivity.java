@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,11 +30,17 @@ public class MoodListActivity extends BaseActivity {
 
     protected MoodListController controller;
     protected MoodListView moodListView;
+    private View slotMachineAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         moodListView = findViewById(R.id.listviewMoodEvents);
+
+        // Add the slot machine ad as a header
+        slotMachineAdView = getLayoutInflater().inflate(R.layout.slot_machine_ad, moodListView, false);
+
+        moodListView.addHeaderView(slotMachineAdView);
 
         // Filter functionality
         initializeMinDateFilter();
@@ -197,6 +204,15 @@ public class MoodListActivity extends BaseActivity {
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
+    }
+
+    public View getSlotMachineAdView() {
+        return slotMachineAdView;
+    }
+
+    public MoodListView getMoodListView() {
+        return moodListView;
     }
 
 }

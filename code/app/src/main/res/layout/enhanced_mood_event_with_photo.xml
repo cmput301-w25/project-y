@@ -18,8 +18,8 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
@@ -42,8 +42,8 @@
 
         <ImageButton
             android:id="@+id/editMenuIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
@@ -151,7 +151,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="@string/reason"
+                    android:text="@string/reason_why_text"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp" />
 

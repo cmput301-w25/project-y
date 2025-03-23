@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
@@ -11,7 +10,6 @@ import com.example.y.repositories.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,7 +20,7 @@ public class FollowingMoodListController extends MoodListController {
     private final HashMap<String, Integer> moodCount;
 
     /**
-     * Initializes the controller and fetches the 3 most recet public mood events from users that the logged-in user is following.
+     * Initializes the controller and fetches the 3 most recent public mood events from users that the logged-in user is following.
      * @param context   The context.
      * @param onSuccess Callback for successful initialization.
      * @param onFailure Callback for initialization failure.
@@ -183,6 +181,11 @@ public class FollowingMoodListController extends MoodListController {
         if (insertInMoodLists(newMoodEvent)) {
             Log.e("Y DEBUG", "`onMoodEventAdded`: Mood event from " + newMoodEvent.getPosterUsername() + " added!\n");
         }
+
+        // Check if user is now sad
+        if (session.getUsername().equals(newMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     @Override
@@ -195,6 +198,11 @@ public class FollowingMoodListController extends MoodListController {
         if (removeFromMoodLists(updatedMoodEvent.getId())) {
             Log.e("Y DEBUG", "`onMoodEventUpdated`: Mood event from " + updatedMoodEvent.getPosterUsername() + " removed!");
         }
+
+        // Check if user is now sad
+        if (session.getUsername().equals(updatedMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     @Override
@@ -202,6 +210,9 @@ public class FollowingMoodListController extends MoodListController {
         if (removeFromMoodLists(deletedId)) {
             Log.e("Y DEBUG", "`onMoodEventDeleted`: Mood event removed!");
         }
+
+        // Check if user is now sad
+        checkIfSlotMachineAdShouldShow();
     }
 
     @Override
