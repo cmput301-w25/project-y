@@ -1,8 +1,18 @@
 package com.example.y.controllers;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.y.R;
 import com.example.y.models.Follow;
 import com.example.y.models.FollowRequest;
 import com.example.y.repositories.FollowRepository;
@@ -13,6 +23,8 @@ import com.example.y.utils.MoodEventArrayAdapter;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
 import com.example.y.utils.MoodEventListFilter;
+import com.example.y.views.MoodListActivity;
+import com.example.y.views.SlotMachineActivity;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -34,11 +46,16 @@ public abstract class MoodListController
     protected ArrayList<MoodEvent> filteredMoodEventList;
     protected MoodEventArrayAdapter moodAdapter;
     protected final SessionManager session;
+    private MoodListActivity view;
 
     public MoodListController(Context context) {
         this.filter = new MoodEventListFilter();
         this.context = context;
         this.session = new SessionManager(context);
+
+        if (context instanceof MoodListActivity) {
+            this.view = (MoodListActivity) this.context;
+        }
     }
 
     /**
@@ -59,6 +76,67 @@ public abstract class MoodListController
 
         // Initialize the array adapter
         moodAdapter = new MoodEventArrayAdapter(context, filteredMoodEventList, followStatus);
+
+        // Init slot machine ad, notifies adapter, that's why it needs to be initialized here
+        initSlotMachineAd();
+    }
+
+    /**
+     * Initializes the slot machine ad functionality
+     */
+    private void initSlotMachineAd() {
+        if (view == null) return;
+        Button slotMachineBtn = view.getSlotMachineAdView().findViewById(R.id.slotMachineBtn);
+
+        // On click take user to the slot machine activity
+        slotMachineBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SlotMachineActivity.class);
+            context.startActivity(intent);
+        });
+
+        // Make text pop in and out
+        AnimatorSet popInOut = new AnimatorSet();
+        ObjectAnimator scaleXUp = ObjectAnimator.ofFloat(slotMachineBtn, "scaleX", 1f, 1.1f);
+        ObjectAnimator scaleYUp = ObjectAnimator.ofFloat(slotMachineBtn, "scaleY", 1f, 1.1f);
+        ObjectAnimator scaleXDown = ObjectAnimator.ofFloat(slotMachineBtn, "scaleX", 1.1f, 1f);
+        ObjectAnimator scaleYDown = ObjectAnimator.ofFloat(slotMachineBtn, "scaleY", 1.1f, 1f);
+        popInOut.play(scaleXUp).with(scaleYUp);
+        popInOut.play(scaleXDown).with(scaleYDown).after(scaleXUp);
+        popInOut.setDuration(500);
+        popInOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animation.start();
+            }
+        });
+        popInOut.start();
+
+        // Turn on if user is sad
+        checkIfSlotMachineAdShouldShow();
+    }
+
+    /**
+     * Toggles the slot machine ad
+     * @param show
+     *      True to show, false to hide.
+     */
+    protected void showSlotMachineAd(boolean show) {
+        if (view == null) return;
+        if (!show) {
+            view.getSlotMachineAdView().setVisibility(View.GONE);
+            return;
+        }
+        view.getSlotMachineAdView().setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Checks if the user is sad, if they are, then show the slot machine ad.
+     */
+    public void checkIfSlotMachineAdShouldShow() {
+        UserRepository.getInstance().isUserSad(session.getUsername(), isSad -> {
+            showSlotMachineAd(isSad);
+            view.getMoodListView().setSlotMachineAdOn(isSad);
+        }, e -> handleError("Error checking if user is sad or not", e));
     }
 
     /**
@@ -171,6 +249,11 @@ public abstract class MoodListController
             insertMoodEventSortedDateTime(filteredMoodEventList, newMoodEvent);
             notifyAdapter();
         }
+
+        // Check if user is now sad
+        if (session.getUsername().equals(newMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     /**
@@ -184,9 +267,12 @@ public abstract class MoodListController
         if (originalMoodEventList == null || filteredMoodEventList == null) return;
 
         // Remove mood from both cached arrays and notify array adapter.
-        filteredMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
-        originalMoodEventList.removeIf(mood -> mood.getId().equals(deletedId));
+        filteredMoodEventList.removeIf(m -> m.getId().equals(deletedId));
+        originalMoodEventList.removeIf(m -> m.getId().equals(deletedId));
         notifyAdapter();
+
+        // Check if user is now sad
+        checkIfSlotMachineAdShouldShow();
     }
 
     /**
@@ -237,6 +323,11 @@ public abstract class MoodListController
             insertMoodEventSortedDateTime(filteredMoodEventList, updatedMoodEvent);
         }
         notifyAdapter();
+
+        // Check if user is now sad
+        if (session.getUsername().equals(updatedMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     /**
@@ -281,16 +372,24 @@ public abstract class MoodListController
         }
     }
 
+    /**
+     * Toasts and logs an error.
+     * @param msg
+     *      Error message.
+     * @param e
+     *      Exception object.
+     */
+    protected void handleError(String msg, Exception e) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", msg, e);
+    }
+
     public MoodEventListFilter getFilter() {
         return filter;
     }
 
     public MoodEventArrayAdapter getMoodAdapter() {
         return moodAdapter;
-    }
-
-    public MoodEvent getFilteredMoodEvent(int position) {
-        return filteredMoodEventList.get(position);
     }
 
 }

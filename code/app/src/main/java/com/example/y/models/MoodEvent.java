@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class MoodEvent implements Serializable, Parcelable {
 
-    public static final Creator<MoodEvent> CREATOR = new Creator<MoodEvent>() {
+    public static final Creator<MoodEvent> CREATOR = new Creator<>() {
         @Override
         public MoodEvent createFromParcel(Parcel in) {
             return new MoodEvent(in);
@@ -29,6 +29,7 @@ public class MoodEvent implements Serializable, Parcelable {
             return new MoodEvent[size];
         }
     };
+
     // Hidden requirements
     @Exclude
     private String id;
@@ -40,7 +41,6 @@ public class MoodEvent implements Serializable, Parcelable {
     private Boolean isPrivate;
     // Optional
     private SocialSituation socialSituation;
-    private String trigger;
     private String text;
     private String photoURL;
     private GeoPoint location;
@@ -64,14 +64,10 @@ public class MoodEvent implements Serializable, Parcelable {
         creationDateTime = in.readParcelable(Timestamp.class.getClassLoader());
         posterUsername = in.readString();
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
-
-        int emotionIndex = in.readInt();
-        emotion = (emotionIndex >= 0) ? Emotion.values()[emotionIndex]: null;
-
-        isPrivate = in.readInt() != 0;
-
-        int socialIndex = in.readInt();
-        socialSituation = (socialIndex >= 0) ? SocialSituation.values()[socialIndex] : null;
+        emotion = Emotion.values()[in.readInt()];
+        isPrivate = in.readInt() == 1;
+        int socialSituationIndex = in.readInt();
+        socialSituation = socialSituationIndex == -1 ? null : SocialSituation.values()[socialSituationIndex];
         text = in.readString();
         photoURL = in.readString();
 //

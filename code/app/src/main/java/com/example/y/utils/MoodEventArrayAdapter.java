@@ -185,8 +185,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
     /**
      * Returns number of different layouts
-     *  0 if no photo
-     *  1 if there is a photo
      * @return number of view types used
      */
     @Override
@@ -201,6 +199,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
      */
     private void handleException(Exception e) {
         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
     }
 
     /**
