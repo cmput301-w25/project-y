@@ -82,22 +82,23 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         // Taken by Tegen Hilker Readman
         // Authored By Turtle
         // Taken on 2025-03-05
-        int temp = getIntent().getIntExtra("emotion", -1);
-        if (temp >= 0 && temp < Emotion.values().length)
-            recievedEmotion = Emotion.values()[temp];
+//        int temp = getIntent().getIntExtra("emotion", -1);
+//        if (temp >= 0 && temp < Emotion.values().length)
+//            recievedEmotion = Emotion.values()[temp];
+//        assert currentMoodEvent != null;
+//        currentMoodEvent.setEmotion(recievedEmotion);
+//
+//        int tempSocial = getIntent().getIntExtra("social", -1);
+//        if (tempSocial >= 0 && tempSocial < SocialSituation.values().length) {
+//            receivedSocial = SocialSituation.values()[tempSocial];
         assert currentMoodEvent != null;
-        currentMoodEvent.setEmotion(recievedEmotion);
-
-        int tempSocial = getIntent().getIntExtra("social", -1);
-        if (tempSocial >= 0 && tempSocial < SocialSituation.values().length) {
-            receivedSocial = SocialSituation.values()[tempSocial];
-            Log.d("Enhanced", "recieved social: " + receivedSocial);
-            currentMoodEvent.setSocialSituation(receivedSocial);
-        }
+        Log.d("enhanced", "onCreate: " + currentMoodEvent.getSocialSituation());
+//            currentMoodEvent.setSocialSituation(receivedSocial);
+//        }
 
 
-        boolean tempPriv = getIntent().getBooleanExtra("private", false);
-        currentMoodEvent.setIsPrivate(tempPriv);
+//        boolean tempPriv = getIntent().getBooleanExtra("private", false);
+//        currentMoodEvent.setIsPrivate(tempPriv);
         border = findViewById(R.id.border);
         border.setBackgroundColor(currentMoodEvent.getEmotion().getColor(this));
 
@@ -115,6 +116,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         ListView commentListView;
         posterUsername.setText(currentMoodEvent.getPosterUsername());
         // Make username clickable
+
+
         posterUsername.setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
             intent.putExtra("user", currentMoodEvent.getPosterUsername());

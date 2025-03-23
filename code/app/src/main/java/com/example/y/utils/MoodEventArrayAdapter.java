@@ -3,6 +3,7 @@ package com.example.y.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +70,8 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Create follow button
         FollowButton followBtn = view.findViewById(R.id.btnFollowFromMood);
         followBtn.initialize(mood.getPosterUsername(), followStatus.get(mood.getPosterUsername()));
+        Log.d("ME AA" , mood.getPosterUsername());
+        Log.d("ME AA" , String.valueOf(followStatus.get(mood.getPosterUsername())));
         if (!isUsernameActive) followBtn.hide();
 
         // Set username
@@ -114,7 +117,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             }
 
             if (location != null) {
-                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() +")");  
+                locationTextView.setText(String.format("Location : (%s, %s)", location.getLatitude(), location.getLongitude()));
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
                 locationTextView.setVisibility(View.GONE);

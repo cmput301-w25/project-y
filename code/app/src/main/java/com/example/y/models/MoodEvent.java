@@ -64,9 +64,28 @@ public class MoodEvent implements Serializable, Parcelable {
         creationDateTime = in.readParcelable(Timestamp.class.getClassLoader());
         posterUsername = in.readString();
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
-        trigger = in.readString();
+
+        int emotionIndex = in.readInt();
+        emotion = (emotionIndex >= 0) ? Emotion.values()[emotionIndex]: null;
+
+        isPrivate = in.readInt() != 0;
+
+        int socialIndex = in.readInt();
+        socialSituation = (socialIndex >= 0) ? SocialSituation.values()[socialIndex] : null;
         text = in.readString();
         photoURL = in.readString();
+//
+
+        byte hasLocation = in.readByte();
+        if (hasLocation == 1){
+            double lat = in.readDouble();
+            double lng = in.readDouble();
+            location = new GeoPoint(lat, lng);
+
+        }else {
+            location = null;
+        }
+
     }
 
     @Exclude
@@ -166,10 +185,16 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeParcelable(creationDateTime, i);
         parcel.writeString(posterUsername);
         parcel.writeParcelable(dateTime, i);
-        parcel.writeString(trigger);
+        parcel.writeInt(emotion.getIndex());
+        parcel.writeInt(isPrivate ? 1 : 0);
+        parcel.writeInt(socialSituation == null ? -1 : socialSituation.getIndex());
         parcel.writeString(text);
         parcel.writeString(photoURL);
-        parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
+        parcel.writeByte((byte) (location != null ? 1 : 0));
+        if (location != null){
+        parcel.writeDouble(location.getLatitude());
+        parcel.writeDouble(location.getLongitude());
+        }
     }
 
     @Override
