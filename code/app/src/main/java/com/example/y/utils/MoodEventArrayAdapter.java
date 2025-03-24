@@ -70,8 +70,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Create follow button
         FollowButton followBtn = view.findViewById(R.id.btnFollowFromMood);
         followBtn.initialize(mood.getPosterUsername(), followStatus.get(mood.getPosterUsername()));
-        Log.d("ME AA" , mood.getPosterUsername());
-        Log.d("ME AA" , String.valueOf(followStatus.get(mood.getPosterUsername())));
         if (!isUsernameActive) followBtn.hide();
 
         // Set username
