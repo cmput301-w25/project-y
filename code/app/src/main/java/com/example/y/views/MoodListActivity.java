@@ -37,10 +37,8 @@ public class MoodListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         moodListView = findViewById(R.id.listviewMoodEvents);
 
-        // Add the slot machine ad as a header
+        // Inflate the slot machine ad
         slotMachineAdView = getLayoutInflater().inflate(R.layout.slot_machine_ad, moodListView, false);
-
-        moodListView.addHeaderView(slotMachineAdView);
 
         // Filter functionality
         initializeMinDateFilter();
@@ -195,6 +193,21 @@ public class MoodListActivity extends BaseActivity {
             listener.onDateSet(null, 0, 0, 0);
         });
         dateDialog.show();
+    }
+
+    /**
+     * Adds/removes the ad from the array adapter
+     * @param show
+     *      Boolean
+     */
+    public void showSlotMachineAd(boolean show) {
+        if (show) {
+            if (moodListView.getHeaderViewsCount() == 0) {
+                moodListView.addHeaderView(slotMachineAdView);
+            }
+        } else {
+            moodListView.removeHeaderView(slotMachineAdView);
+        }
     }
 
     @Override

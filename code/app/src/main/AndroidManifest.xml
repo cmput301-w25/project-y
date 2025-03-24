@@ -34,13 +34,7 @@
             android:name=".views.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".views.PersonalJournalActivity"
-            android:exported="false" />
-        <activity
             android:name=".views.FollowRequestsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".views.MoodHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".views.MapActivity"

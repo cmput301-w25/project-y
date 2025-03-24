@@ -116,25 +116,13 @@ public abstract class MoodListController
     }
 
     /**
-     * Toggles the slot machine ad
-     * @param show
-     *      True to show, false to hide.
-     */
-    protected void showSlotMachineAd(boolean show) {
-        if (view == null) return;
-        if (!show) {
-            view.getSlotMachineAdView().setVisibility(View.GONE);
-            return;
-        }
-        view.getSlotMachineAdView().setVisibility(View.VISIBLE);
-    }
-
-    /**
      * Checks if the user is sad, if they are, then show the slot machine ad.
      */
     public void checkIfSlotMachineAdShouldShow() {
+        if (view == null) return;
         UserRepository.getInstance().isUserSad(session.getUsername(), isSad -> {
-            showSlotMachineAd(isSad);
+            Log.e("Y DEBUG", "User is " + (isSad ? "" : "not ") + "sad");
+            view.showSlotMachineAd(isSad);
             view.getMoodListView().setSlotMachineAdOn(isSad);
         }, e -> handleError("Error checking if user is sad or not", e));
     }

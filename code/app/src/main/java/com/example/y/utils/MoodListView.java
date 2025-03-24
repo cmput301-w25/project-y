@@ -12,12 +12,11 @@ import com.example.y.views.EnhancedMoodActivity;
 public class MoodListView extends ListView {
 
     private final Context context;
-    private Boolean isSlotMachineAdOn;
+    private Boolean isSlotMachineAdOn = false;
 
     public MoodListView(Context context) {
         super(context);
         this.context = context;
-        this.isSlotMachineAdOn = false;
     }
 
     public MoodListView(Context context, AttributeSet attrs) {

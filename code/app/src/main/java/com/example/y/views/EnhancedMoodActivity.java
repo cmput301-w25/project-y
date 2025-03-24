@@ -111,7 +111,8 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         emoticon.setText(currentEmotion.getEmoticon(this));
 
         // Set poster username
-        mood.setText(mood.getPosterUsername());
+        TextView usernameTextView = findViewById(R.id.username);
+        usernameTextView.setText(mood.getPosterUsername());
 
         // Set date
         String formattedDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(mood.getDateTime().toDate());
