@@ -441,10 +441,10 @@ public class UserRepository extends GenericRepository<UserListener> {
             // Get all mood events closest to right now
             Timestamp now = Timestamp.now();
             ArrayList<MoodEvent> closestMoods = new ArrayList<>();
-            int closest = Math.abs(moodEvents.get(0).getDateTime().compareTo(now));
-            closestMoods.add(moodEvents.get(0));
+            long closest = Long.MAX_VALUE;
+
             for (MoodEvent mood : moodEvents) {
-                int current = Math.abs(mood.getDateTime().compareTo(now));
+                long current = Math.abs(mood.getDateTime().getSeconds() - now.getSeconds());
                 if (current == closest) {
                     closestMoods.add(mood);
                 } else if (current < closest) {
