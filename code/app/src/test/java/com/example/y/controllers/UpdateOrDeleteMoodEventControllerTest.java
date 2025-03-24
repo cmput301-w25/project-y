@@ -182,7 +182,7 @@ public class UpdateOrDeleteMoodEventControllerTest {
         verify(fakeRepo).deleteMoodEvent(anyString(), any(Context.class), any(OnSuccessListener.class), any(OnFailureListener.class));
         assertTrue("Deletion failure callback was not invoked", failureCalled[0]);
     }
-    
+
 
     /**
      * FakeContext extends ContextWrapper.
