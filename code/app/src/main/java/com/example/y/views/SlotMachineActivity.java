@@ -3,7 +3,6 @@ package com.example.y.views;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,7 +78,7 @@ public class SlotMachineActivity extends AppCompatActivity implements ImageViewS
             } else if (image.getValue() == image2.getValue() ||
                        image.getValue() == image3.getValue() ||
                        image2.getValue() == image3.getValue()) {
-                Toast.makeText(this, "You win a small price", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You win a small prize!", Toast.LENGTH_SHORT).show();
                 score += 100;
                 textScore.setText(String.valueOf(score));
             } else {
