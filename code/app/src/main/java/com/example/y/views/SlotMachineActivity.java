@@ -1,19 +1,32 @@
 package com.example.y.views;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.y.R;
+import com.example.y.utils.ImageViewScrolling;
+
+import java.util.Random;
 
 /**
  * User can spin a slot machine when they're sad.
  */
-public class SlotMachineActivity extends AppCompatActivity {
+public class SlotMachineActivity extends AppCompatActivity implements ImageViewScrolling.SpinEventEndListener {
+
+    public static int IMG_COUNT = 6;
+    private Button spinBtn;
+    private ImageViewScrolling image;
+    private ImageViewScrolling image2;
+    private ImageViewScrolling image3;
+    private TextView textScore;
+    private int countDone = 0;
+    private int score = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +35,56 @@ public class SlotMachineActivity extends AppCompatActivity {
 
         // Back btn
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
+        spinBtn = findViewById(R.id.spin_btn);
+
+        image = findViewById(R.id.image);
+        image2 = findViewById(R.id.image2);
+        image3 = findViewById(R.id.image3);
+
+        textScore = findViewById(R.id.txt_score);
+
+        // Set event
+        image.setEventEnd(SlotMachineActivity.this);
+        image2.setEventEnd(SlotMachineActivity.this);
+        image3.setEventEnd(SlotMachineActivity.this);
+
+        spinBtn.setOnClickListener(v -> {
+            if (score >= 50) {
+                spinBtn.setVisibility(View.GONE);
+                image.setValueRandom(new Random().nextInt(IMG_COUNT), new Random().nextInt(16));
+                image2.setValueRandom(new Random().nextInt(IMG_COUNT), new Random().nextInt(16));
+                image3.setValueRandom(new Random().nextInt(IMG_COUNT), new Random().nextInt(16));
+                score -= 50;
+                textScore.setText(String.valueOf(score));
+            } else {
+                Toast.makeText(this, "You don't have enough money to spin", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    @Override
+    public void onSpinFinish(int result, int count) {
+        if (countDone < 2) {
+            countDone++;
+        } else {
+            spinBtn.setVisibility(View.VISIBLE);
+            countDone = 0;
+
+            // Calculate spin result
+            if (image.getValue() == image2.getValue() && image2.getValue() == image3.getValue()) {
+                Toast.makeText(this, "You win!", Toast.LENGTH_SHORT).show();
+                score += 300;
+                textScore.setText(String.valueOf(score));
+            } else if (image.getValue() == image2.getValue() ||
+                       image.getValue() == image3.getValue() ||
+                       image2.getValue() == image3.getValue()) {
+                Toast.makeText(this, "You win a small price", Toast.LENGTH_SHORT).show();
+                score += 100;
+                textScore.setText(String.valueOf(score));
+            } else {
+                Toast.makeText(this, "You lose", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

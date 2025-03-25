@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import com.example.y.controllers.DiscoverController;
 
+/**
+ * Activity for discover page, where every public mood event is shown.
+ */
 public class DiscoverActivity extends MoodListActivity {
 
     @Override

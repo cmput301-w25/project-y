@@ -121,7 +121,6 @@ public abstract class MoodListController
     public void checkIfSlotMachineAdShouldShow() {
         if (view == null) return;
         UserRepository.getInstance().isUserSad(session.getUsername(), isSad -> {
-            Log.e("Y DEBUG", "User is " + (isSad ? "" : "not ") + "sad");
             view.showSlotMachineAd(isSad);
             view.getMoodListView().setSlotMachineAdOn(isSad);
         }, e -> handleError("Error checking if user is sad or not", e));

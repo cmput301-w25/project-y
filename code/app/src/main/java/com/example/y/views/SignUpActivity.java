@@ -16,6 +16,9 @@ import com.example.y.controllers.SignUpController;
 import com.example.y.services.AuthManager;
 import com.example.y.utils.GenericTextWatcher;
 
+/**
+ * Page where user can create a new account.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private SignUpController signUpController;

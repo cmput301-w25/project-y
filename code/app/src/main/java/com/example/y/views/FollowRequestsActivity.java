@@ -9,6 +9,9 @@ import android.widget.Toast;
 import com.example.y.R;
 import com.example.y.controllers.FollowRequestController;
 
+/**
+ * Shows a list of follow requests the logged in user can accept or decline.
+ */
 public class FollowRequestsActivity extends BaseActivity {
 
     FollowRequestController controller;

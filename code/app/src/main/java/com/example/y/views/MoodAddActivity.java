@@ -42,6 +42,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Form to post a new mood event.
+ */
 public class MoodAddActivity extends AppCompatActivity {
 
     private static final String TAG = "MoodAddActivity";

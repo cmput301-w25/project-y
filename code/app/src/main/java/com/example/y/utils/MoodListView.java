@@ -9,6 +9,10 @@ import android.widget.ListView;
 import com.example.y.models.MoodEvent;
 import com.example.y.views.EnhancedMoodActivity;
 
+/**
+ * List view adapted for mood events.
+ * Controls all listeners for each mood in the list.
+ */
 public class MoodListView extends ListView {
 
     private final Context context;
