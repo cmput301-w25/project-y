@@ -5,6 +5,9 @@ import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
 
+/**
+ * Model for a comment in the app.
+ */
 public class Comment implements Serializable {
 
     @Exclude
