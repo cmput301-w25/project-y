@@ -36,6 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Shows mood events on the map.
+ */
 public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;

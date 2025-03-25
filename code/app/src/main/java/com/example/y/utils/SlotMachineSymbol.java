@@ -2,6 +2,9 @@ package com.example.y.utils;
 
 import com.example.y.R;
 
+/**
+ * Holds one of many symbols from the slot machine.
+ */
 public enum SlotMachineSymbol {
 
     // TODO: Insert actual drawables

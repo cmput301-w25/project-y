@@ -26,6 +26,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Generic activity that handles a list of mood events.
+ */
 public class MoodListActivity extends BaseActivity {
 
     protected MoodListController controller;
