@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class MoodEvent implements Serializable, Parcelable {
 
-    public static final Creator<MoodEvent> CREATOR = new Creator<MoodEvent>() {
+    public static final Creator<MoodEvent> CREATOR = new Creator<>() {
         @Override
         public MoodEvent createFromParcel(Parcel in) {
             return new MoodEvent(in);
@@ -29,6 +29,7 @@ public class MoodEvent implements Serializable, Parcelable {
             return new MoodEvent[size];
         }
     };
+
     // Hidden requirements
     @Exclude
     private String id;
@@ -40,7 +41,6 @@ public class MoodEvent implements Serializable, Parcelable {
     private Boolean isPrivate;
     // Optional
     private SocialSituation socialSituation;
-    private String trigger;
     private String text;
     private String photoURL;
     private GeoPoint location;
@@ -64,9 +64,15 @@ public class MoodEvent implements Serializable, Parcelable {
         creationDateTime = in.readParcelable(Timestamp.class.getClassLoader());
         posterUsername = in.readString();
         dateTime = in.readParcelable(Timestamp.class.getClassLoader());
-        trigger = in.readString();
+        emotion = Emotion.values()[in.readInt()];
+        isPrivate = in.readInt() == 1;
+        int socialSituationIndex = in.readInt();
+        socialSituation = socialSituationIndex == -1 ? null : SocialSituation.values()[socialSituationIndex];
         text = in.readString();
         photoURL = in.readString();
+        double lat = in.readDouble();
+        double lon = in.readDouble();
+        location = (lat == 0 && lon == 0) ? null : new GeoPoint(lat, lon);
     }
 
     @Exclude
@@ -166,10 +172,13 @@ public class MoodEvent implements Serializable, Parcelable {
         parcel.writeParcelable(creationDateTime, i);
         parcel.writeString(posterUsername);
         parcel.writeParcelable(dateTime, i);
-        parcel.writeString(trigger);
+        parcel.writeInt(emotion.getIndex());
+        parcel.writeInt(isPrivate ? 1 : 0);
+        parcel.writeInt(socialSituation == null ? -1 : socialSituation.getIndex());
         parcel.writeString(text);
         parcel.writeString(photoURL);
-        parcel.writeInt(isPrivate ? 1 : 0);  // I'm so sorry
+        parcel.writeDouble(location == null ? 0 : location.getLatitude());
+        parcel.writeDouble(location == null ? 0 : location.getLongitude());
     }
 
     @Override

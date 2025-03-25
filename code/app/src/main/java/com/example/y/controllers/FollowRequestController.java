@@ -25,8 +25,7 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
     private FollowRequestArrayAdapter adapter;
     private ArrayList<FollowRequest> reqs;
 
-    public FollowRequestController() {
-    }
+    public FollowRequestController() {}
 
     /**
      * Starts controller and gets follow requests sent to current user
@@ -86,13 +85,6 @@ public class FollowRequestController implements FollowRequestRepository.FollowRe
             updateEmptyState();
             notifyAdapter();
         }
-    }
-
-    /**
-     * Removes controller from follow request repository's listener set
-     */
-    public void onActivityStop() {
-        FollowRequestRepository.getInstance().removeListener(this);
     }
 
     /**

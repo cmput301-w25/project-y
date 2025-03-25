@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/border"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,13 +18,14 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
             android:scaleType="fitCenter"
-            android:src="@drawable/left_arrow" />
+            android:src="@drawable/left_arrow"
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/username"
@@ -40,13 +42,14 @@
 
         <ImageButton
             android:id="@+id/editMenuIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
             android:scaleType="fitCenter"
-            android:src="@drawable/edit_icon" />
+            android:src="@drawable/edit_icon"
+            app:tint="@color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -148,7 +151,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="@string/reason"
+                    android:text="@string/reason_why_text"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp" />
 

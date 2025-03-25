@@ -4,6 +4,9 @@ import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
 
+/**
+ * Stores data of one user requesting to follow another user.
+ */
 public class FollowRequest implements Serializable {
 
     private String requester;

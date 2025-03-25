@@ -2,9 +2,7 @@ package com.example.y.views;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,18 +11,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodListController;
 import com.example.y.models.Emotion;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
+import com.example.y.utils.MoodListView;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,15 +26,22 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Generic activity that handles a list of mood events.
+ */
 public class MoodListActivity extends BaseActivity {
 
     protected MoodListController controller;
-    protected ListView moodListView;
+    protected MoodListView moodListView;
+    private View slotMachineAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         moodListView = findViewById(R.id.listviewMoodEvents);
+
+        // Inflate the slot machine ad
+        slotMachineAdView = getLayoutInflater().inflate(R.layout.slot_machine_ad, moodListView, false);
 
         // Filter functionality
         initializeMinDateFilter();
@@ -198,54 +199,18 @@ public class MoodListActivity extends BaseActivity {
     }
 
     /**
-     * Handles when a mood event is clicked
-     *
-     * @param moodEvent The mood event that was clicked
-     * @param userName  The username of the user clicking
+     * Adds/removes the ad from the array adapter
+     * @param show
+     *      Boolean
      */
-    protected void onMoodClick(MoodEvent moodEvent, String userName) {
-        // If the user clicked on their own mood even then we'll open the edit/delete activity.
-
-
-        Log.i("MoodEvent", moodEvent.getId());
-        Intent intent = new Intent(this, EnhancedMoodActivity.class);
-        Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
-        Log.i("OnMoodClick", "MoodEvent social: " + moodEvent.getSocialSituation());
-        Log.i("OnMoodClick", "MoodEvent location: " + moodEvent.getLocation());
-        // Taken from https://stackoverflow.com/a/6954561
-        // Taken by Tegen Hilker Readman
-        // Authored By Turtle
-        // Taken on 2025-03-05
-        intent.putExtra("mood_event", (Parcelable) moodEvent);
-        Emotion sendEmotion = moodEvent.getEmotion();
-        intent.putExtra("emotion", sendEmotion.ordinal());
-        if (moodEvent.getSocialSituation() != null) {
-            SocialSituation sendSocial = moodEvent.getSocialSituation();
-            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
+    public void showSlotMachineAd(boolean show) {
+        if (show) {
+            if (moodListView.getHeaderViewsCount() == 0) {
+                moodListView.addHeaderView(slotMachineAdView);
+            }
+        } else {
+            moodListView.removeHeaderView(slotMachineAdView);
         }
-        Boolean privateMood = moodEvent.getIsPrivate();
-        if (privateMood != null) {
-            intent.putExtra("private", privateMood);
-        }
-        if (moodEvent.getLocation() != null) {
-            Log.i("OnMoodClick", "MoodEvent location: " + moodEvent.getLocation());
-            GeoPoint location = moodEvent.getLocation();
-            intent.putExtra("location_lat", location.getLatitude());
-            intent.putExtra("location_lng", location.getLongitude());
-        }
-
-        startActivity(intent);
-
-    }
-
-    /**
-     * Initializes click events on mood events inside the mood list.
-     */
-    protected void initializeMoodClick() {
-        SessionManager sessionManager = new SessionManager(this);
-        moodListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            onMoodClick(controller.getFilteredMoodEvent(i), sessionManager.getUsername());
-        });
     }
 
     @Override
@@ -255,6 +220,15 @@ public class MoodListActivity extends BaseActivity {
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
+    }
+
+    public View getSlotMachineAdView() {
+        return slotMachineAdView;
+    }
+
+    public MoodListView getMoodListView() {
+        return moodListView;
     }
 
 }

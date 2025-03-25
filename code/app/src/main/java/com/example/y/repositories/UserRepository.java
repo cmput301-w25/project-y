@@ -58,6 +58,7 @@ public class UserRepository extends GenericRepository<UserListener> {
 
     private UserRepository() {
         db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
         usersRef = db.collection(USER_COLLECTION);
         startListening();
     }
@@ -416,6 +417,52 @@ public class UserRepository extends GenericRepository<UserListener> {
             if (!moodEvents.isEmpty()) {
                 onSuccess.onSuccess(moodEvents.get(0).getEmotion());
             } else onSuccess.onSuccess(null);
+        }, onFailure);
+    }
+
+    /**
+     * Checks if a user is sad.
+     * Determined by the emotion from the mood events closest to now.
+     * @param username
+     *      Username of the user to check.
+     * @param onSuccess
+     *      Success callback function to which boolean is passed to.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void isUserSad(String username, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        MoodEventRepository.getInstance().getAllMoodEventsFrom(username, moodEvents -> {
+
+            if (moodEvents.isEmpty()) {
+                onSuccess.onSuccess(false);
+                return;
+            }
+
+            // Get all mood events closest to right now
+            Timestamp now = Timestamp.now();
+            ArrayList<MoodEvent> closestMoods = new ArrayList<>();
+            long closest = Long.MAX_VALUE;
+
+            for (MoodEvent mood : moodEvents) {
+                long current = Math.abs(mood.getDateTime().getSeconds() - now.getSeconds());
+                if (current == closest) {
+                    closestMoods.add(mood);
+                } else if (current < closest) {
+                    closestMoods.clear();
+                    closestMoods.add(mood);
+                    closest = current;
+                };
+            }
+
+            // If any of these is sad, return true, otherwise false
+            for (MoodEvent mood : closestMoods) {
+                if (mood.getEmotion() == Emotion.SADNESS) {
+                    onSuccess.onSuccess(true);
+                    return;
+                }
+            }
+            onSuccess.onSuccess(false);
+
         }, onFailure);
     }
 
