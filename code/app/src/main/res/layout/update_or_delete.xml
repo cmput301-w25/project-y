@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
                 <LinearLayout
                     android:id="@+id/backBtnLayout"
                     android:layout_width="match_parent"

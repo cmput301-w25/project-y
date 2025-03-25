@@ -45,6 +45,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Form to post a new mood event.
+ */
 public class MoodAddActivity extends AppCompatActivity {
 
     private static final String TAG = "MoodAddActivity";

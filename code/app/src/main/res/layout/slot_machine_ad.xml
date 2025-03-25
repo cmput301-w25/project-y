@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/border"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@color/bg_dark">
+
+    <!-- TODO: Use slot machine ad photo -->
+    <ImageView
+        android:id="@+id/slotMachinePhoto"
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:src="@drawable/mood"
+        android:contentDescription="Ad photo" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/slotMachineBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:background="@color/button"
+        android:text="@string/slot_machine_ad_button"
+        app:cornerRadius="0dp"
+        android:minHeight="40dp"
+        android:padding="0dp" />
+
+    <TextView
+        android:id="@+id/slotMachineText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="@string/slot_machine_ad_text"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:paddingHorizontal="8dp" />
+
+</LinearLayout>

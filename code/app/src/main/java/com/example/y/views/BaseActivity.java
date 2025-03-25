@@ -14,6 +14,9 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
+/**
+ * Handles the menu buttons. An activity can extend this class to have the menu.
+ */
 public abstract class BaseActivity extends AppCompatActivity {
 
     private Drawable MOOD_FOLLOWING_LIST_UNSELECTED;

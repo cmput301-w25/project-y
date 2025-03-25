@@ -3,6 +3,7 @@ package com.example.y.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,8 +183,6 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
     /**
      * Returns number of different layouts
-     *  0 if no photo
-     *  1 if there is a photo
      * @return number of view types used
      */
     @Override
@@ -198,6 +197,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
      */
     private void handleException(Exception e) {
         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
     }
 
     /**
