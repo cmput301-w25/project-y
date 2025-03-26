@@ -12,15 +12,12 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 
 /**
- * Test cases for the {@link GenericTextWatcher} class.
+ * Test cases for the  class.
+ * This class tests the behavior of  under various scenarios:
  *
- * <p>This class tests the behavior of {@code GenericTextWatcher} under various scenarios:
- * <ul>
- *     <li>Generic field: empty vs. non-empty input.</li>
- *     <li>Confirmation field: matching and non-matching text.</li>
- *     <li>"Reason" field: empty input, overly long input, and valid input.</li>
- * </ul>
- * </p>
+ *     Generic field: empty vs. non-empty input.
+ *     Confirmation field: matching and non-matching text.
+ *     "Reason" field: empty input, overly long input, and valid input.
  */
 public class GenericTextWatcherTest {
 
