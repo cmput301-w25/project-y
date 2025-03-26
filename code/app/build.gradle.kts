@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -46,6 +47,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)
     implementation(libs.ext.junit)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
     testImplementation("junit:junit:4.13.2")
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     testImplementation(libs.monitor)
@@ -56,9 +59,10 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("org.mockito:mockito-core:5.7.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
-    androidTestImplementation (libs.runner)
-    androidTestImplementation (libs.rules)
+    androidTestImplementation(libs.runner)
+    androidTestImplementation(libs.rules)
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
-
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 }

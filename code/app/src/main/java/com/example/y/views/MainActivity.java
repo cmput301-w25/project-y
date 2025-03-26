@@ -12,6 +12,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
+/**
+ * Entry point, checks if user is logged in and redirects based on the result.
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -36,4 +39,5 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
 }

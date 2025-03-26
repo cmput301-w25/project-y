@@ -86,10 +86,9 @@ public class GenericTextWatcher implements TextWatcher {
 
         if (isEmpty(reason)) {
             editText.setError("Reason why cannot be empty!");
-        } else if (reason.length() > 20) {
-            editText.setError("Reason why cannot be more than 20 characters");
-        } else if (reason.split("\\s+").length > 3) {
-            editText.setError("Reason why cannot be more than 3 words");
+        } else if (reason.length() >= 199) {
+            editText.setError("Reason why cannot be more than 200 characters!");
+
 
         } else {
             editText.setError(null);

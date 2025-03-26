@@ -2,8 +2,13 @@ package com.example.y.models;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.example.y.R;
 
+/**
+ * Holds one of many different social situations
+ */
 public enum SocialSituation {
     ALONE(0),
     ONE_OTHER(1),

@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/white">
 
-    android:descendantFocusability="blocksDescendants"
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp" />
 
-            <Button
+            <com.example.y.utils.FollowButton
                 android:id="@+id/btnFollowFromMood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:descendantFocusability="blocksDescendants"
-            android:text="@string/reason"
+            android:text="@string/reason_why_text"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
             android:layout_marginTop="8dp"

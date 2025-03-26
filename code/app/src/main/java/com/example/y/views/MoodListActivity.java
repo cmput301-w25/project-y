@@ -11,35 +11,37 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.content.Intent;
-import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.example.y.R;
 import com.example.y.controllers.MoodListController;
 import com.example.y.models.Emotion;
+import com.example.y.utils.MoodListView;
+import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import com.example.y.models.MoodEvent;
-import com.example.y.models.SocialSituation;
-import com.example.y.services.SessionManager;
-import com.google.firebase.Timestamp;
 
+/**
+ * Generic activity that handles a list of mood events.
+ */
 public class MoodListActivity extends BaseActivity {
 
     protected MoodListController controller;
-    protected ListView moodListView;
+    protected MoodListView moodListView;
+    private View slotMachineAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         moodListView = findViewById(R.id.listviewMoodEvents);
+
+        // Inflate the slot machine ad
+        slotMachineAdView = getLayoutInflater().inflate(R.layout.slot_machine_ad, moodListView, false);
 
         // Filter functionality
         initializeMinDateFilter();
@@ -123,7 +125,7 @@ public class MoodListActivity extends BaseActivity {
 
         // Spinner content (null + all emotions)
         ArrayList<String> adapterContent = new ArrayList<>();
-        adapterContent.add("Any");
+        adapterContent.add("Emotion");
         Arrays.asList(Emotion.values()).forEach(emotion -> {
             adapterContent.add(emotion.toString());
         });
@@ -149,7 +151,8 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
     }
 
@@ -170,10 +173,12 @@ public class MoodListActivity extends BaseActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
         });
     }
 
@@ -194,46 +199,36 @@ public class MoodListActivity extends BaseActivity {
     }
 
     /**
-     * Handles when a mood event is clicked
-     * @param moodEvent The mood event that was clicked
-     * @param userName The username of the user clicking
+     * Adds/removes the ad from the array adapter
+     * @param show
+     *      Boolean
      */
-    protected void onMoodClick(MoodEvent moodEvent, String userName) {
-        // If the user clicked on their own mood even then we'll open the edit/delete activity.
-        if (moodEvent.getPosterUsername().equals(userName)) {
-
-            Log.i("MoodEvent", moodEvent.getId());
-            Intent intent = new Intent(this, UpdateOrDeleteMoodEventActivity.class);
-            Log.i("onMoodClick", "MoodEvent emotion: " + moodEvent.getEmotion());
-            Log.i("OnMoodClick", "MoodEvent social: " + moodEvent.getSocialSituation());
-            // Taken from https://stackoverflow.com/a/6954561
-            // Taken by Tegen Hilker Readman
-            // Authored By Turtle
-            // Taken on 2025-03-05
-            intent.putExtra("mood_event", (Parcelable) moodEvent);
-            Emotion sendEmotion = moodEvent.getEmotion();
-            intent.putExtra("emotion",sendEmotion.ordinal());
-            SocialSituation sendSocial = moodEvent.getSocialSituation();
-            intent.putExtra("social", sendSocial == null ? null : sendSocial.ordinal());
-            startActivity(intent);
+    public void showSlotMachineAd(boolean show) {
+        if (show) {
+            if (moodListView.getHeaderViewsCount() == 0) {
+                moodListView.addHeaderView(slotMachineAdView);
+            }
+        } else {
+            moodListView.removeHeaderView(slotMachineAdView);
         }
     }
 
-    /**
-     * Initializes click events on mood events inside the mood list.
-     */
-    protected void initializeMoodClick() {
-        SessionManager sessionManager = new SessionManager(this);
-        moodListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            onMoodClick(controller.getFilteredMoodEvent(i), sessionManager.getUsername());
-        });
-    }
-
     @Override
-    protected int getActivityLayout() { return R.layout.mood_list_view; }
+    protected int getActivityLayout() {
+        return R.layout.mood_list_view;
+    }
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
+    }
+
+    public View getSlotMachineAdView() {
+        return slotMachineAdView;
+    }
+
+    public MoodListView getMoodListView() {
+        return moodListView;
     }
 
 }

@@ -13,6 +13,9 @@ import com.example.y.controllers.LoginController;
 import com.example.y.services.AuthManager;
 import com.example.y.utils.GenericTextWatcher;
 
+/**
+ * User can provide credentials to log into the app.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameEditText, passwordEditText;

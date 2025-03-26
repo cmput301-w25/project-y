@@ -17,6 +17,8 @@ public class MoodEventListFilter {
     private Emotion emotion = null;
     private String reasonWhyTextKeyword = null;
 
+    private boolean sharedLocation = false;
+
     /**
      * Filter list of mood events based on criteria
      */
@@ -25,13 +27,15 @@ public class MoodEventListFilter {
         maxDateTime = null;
         emotion = null;
         reasonWhyTextKeyword = null;
+        sharedLocation = false;
     }
 
-    public MoodEventListFilter(Timestamp minDateTime, Timestamp maxDateTime, Emotion emotion, String reasonWhyTextKeyword) {
+    public MoodEventListFilter(Timestamp minDateTime, Timestamp maxDateTime, Emotion emotion, String reasonWhyTextKeyword, boolean sharedLocation) {
         this.minDateTime = minDateTime;
         this.maxDateTime = maxDateTime;
         this.emotion = emotion;
         this.reasonWhyTextKeyword = reasonWhyTextKeyword;
+        this.sharedLocation = sharedLocation;
     }
 
     /**
@@ -67,7 +71,7 @@ public class MoodEventListFilter {
                 (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
                 (emotion != null && mood.getEmotion() != emotion) ||
                 (reasonWhyTextKeyword != null && mood.getText() != null &&!(mood.getText().toLowerCase().contains(reasonWhyTextKeyword.toLowerCase()))) ||
-                (mood.getText() == null);
+                (mood.getText() == null) || (sharedLocation == true && mood.getLocation() == null);
     }
 
     public Timestamp getMinDateTime() { return minDateTime; }
@@ -93,5 +97,11 @@ public class MoodEventListFilter {
     public void setReasonWhyTextKeyword(String reasonWhyTextKeyword) { this.reasonWhyTextKeyword = reasonWhyTextKeyword; }
 
     public void clearReasonWhyKeyword() { reasonWhyTextKeyword = null; }
+
+    public void setSharedLocation() { sharedLocation = true;}
+
+    public void clearSharedLocation() { sharedLocation = false;}
+
+
 
 }

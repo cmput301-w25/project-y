@@ -1,8 +1,9 @@
 package com.example.y.models;
-import com.example.y.models.FollowRequest;
+
 import static org.junit.Assert.assertEquals;
 
 import com.google.firebase.Timestamp;
+
 import org.junit.Test;
 
 public class FollowRequestTest {

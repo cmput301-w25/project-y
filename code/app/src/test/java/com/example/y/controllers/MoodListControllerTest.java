@@ -52,7 +52,6 @@ public class MoodListControllerTest {
     private SessionManager mocksessionmanager;
     @Mock
     private FirebaseFirestore mockFirestore;
-    private FollowRequestController followRequestController;
     @Mock
     private MoodEventArrayAdapter mockMoodAdapter;
     private MockedStatic<FirebaseApp> firebaseAppMock;
