@@ -309,6 +309,47 @@ public class UserRepository extends GenericRepository<UserListener> {
     }
 
     /**
+     * Gets the latest mood event (with a location) for each unique user that the given user is following.
+     * @param username
+     *      The username whose followed mood events (with location) are considered.
+     * @param onSuccess
+     *      Callback function to which the list of unique, latest mood events is passed.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    public void getLatestUniqueMoodEventPerUser(String username,
+                                                OnSuccessListener<ArrayList<MoodEvent>> onSuccess, OnFailureListener onFailure) {
+        // Reuse the existing method to get all public mood events with location from followed users
+        getFollowedPublicMoodEventsWithLocation(username, moodEvents -> {
+            // Map to store the latest mood event per user
+            HashMap<String, MoodEvent> latestEventByUser = new HashMap<>();
+
+            for (MoodEvent event : moodEvents) {
+                String poster = event.getPosterUsername();
+                // If this is the first mood event for this user, add it to the map
+                if (!latestEventByUser.containsKey(poster)) {
+                    latestEventByUser.put(poster, event);
+                } else {
+                    // If an event already exists for this user, compare the dates
+                    MoodEvent existingEvent = latestEventByUser.get(poster);
+                    if (event.getDateTime().compareTo(existingEvent.getDateTime()) > 0) {
+                        latestEventByUser.put(poster, event);
+                    }
+                }
+            }
+
+            // Convert the map values to a list
+            ArrayList<MoodEvent> uniqueLatestEvents = new ArrayList<>(latestEventByUser.values());
+
+            // Optional: sort the list in descending order by date (most recent first)
+            uniqueLatestEvents.sort(Comparator.comparing(MoodEvent::getDateTime).reversed());
+
+            onSuccess.onSuccess(uniqueLatestEvents);
+        }, onFailure);
+    }
+
+
+    /**
      * Gets a hashmap of a user's follow status in relation to all users.
      * @param user
      *      User to get hashmap for.

@@ -18,8 +18,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.Arrays;
-
 /**
  * A reusable controller that checks for location permission,
  * requests it if needed, and then fetches the current location.
@@ -33,7 +31,7 @@ public class LocationController {
 
     private final Activity activity;
     private final FusedLocationProviderClient fusedLocationProviderClient;
-    private final ActivityResultLauncher<String> permissionLauncher;
+    private final ActivityResultLauncher<String[]> permissionLauncher;
     private LocationCallback locationCallback; // Stores callback while waiting for permission
 
     @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
@@ -41,11 +39,13 @@ public class LocationController {
         this.activity = activity;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
 
-        // Register for the permission result using the Activity Result API.
+        // Register for the permission result using the Activity Result API for multiple permissions.
         permissionLauncher = ((ComponentActivity) activity).registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    if (isGranted) {
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    Boolean fineLocationGranted = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
+                    Boolean coarseLocationGranted = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+                    if (Boolean.TRUE.equals(fineLocationGranted) || Boolean.TRUE.equals(coarseLocationGranted)) {
                         fetchLocationInternal();
                     } else {
                         Toast.makeText(activity, "Location permission denied", Toast.LENGTH_SHORT).show();
@@ -73,10 +73,11 @@ public class LocationController {
         if (fineGranted || coarseGranted) {
             fetchLocationInternal();
         } else {
-            permissionLauncher.launch(Arrays.toString(new String[]{
+            // Request both permissions simultaneously.
+            permissionLauncher.launch(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
-            }));
+            });
         }
     }
 
