@@ -32,9 +32,7 @@ public class AddMoodController {
     private String loggedInUser;
     private Context context;
 
-
-    public AddMoodController() {
-    }
+    public AddMoodController() {}
 
     public AddMoodController(Context context) {
         this.context = context;

@@ -229,7 +229,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         updateOrDeleteMoodEventController.onDeleteMoodEvent(moodEventToUpdateOrDelete, deletedId -> {
             Toast.makeText(this, "Mood Deleted!", LENGTH_SHORT).show();
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, FollowingMoodEventListActivity.class);
             startActivity(intent);
             finish();
         }, e -> Toast.makeText(this, e.getMessage(), LENGTH_SHORT).show());

@@ -6,6 +6,107 @@ skinparam classAttributeIconSize 0
 
 ' Controllers '
 
+class AddMoodController {
+    - loggedInUser : String
+    - context : Context
+    + AddMoodController()
+    + AddMoodController(Context)
+    + onSubmitMood(MoodEvent, Uri, OnSuccessListener<MoodEvent>, OnFailureListener)
+    - getImageSize(Uri) : long
+    + setLoggedInUser(String)
+}
+
+' TODO
+class CommentController {
+    - commenter : String
+    - context : Context
+    - commentArrayAdapter : CommentArrayAdapter
+    - commentsList : ArrayList<Comment>
+    - moodEventToComment : MoodEvent
+    + CommentController()
+    + CommentController(MoodEvent, Context, OnSuccessListener<Void>, OnFailureListener)
+    + onCommentAdded(Comment)
+    - notifyAdapter()
+    + getAdapter() : CommentArrayAdapter
+    + addComment(String)
+}
+CommentController ..|> CommentListener
+
+class DiscoverController {
+    + DiscoverController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+}
+DiscoverController --|> MoodListController
+
+class FollowingMoodListController {
+    - followingList : ArrayList<String>
+    + FollowingMoodListController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+    + onFollowAdded(Follow)
+    + onFollowDeleted(String, String)
+}
+FollowingMoodListController --|> MoodListController
+
+class FollowRequestController {
+    - session : SessionManager
+    - context : Context
+    - adapter : FollowRequestArrayAdapter
+    - reqs : ArrayList<FollowRequest>
+    + FollowRequestController()
+    + FollowRequestController(Context, OnSuccessListener<Void>, OnFailureListener)
+    + onFollowRequestAdded(FollowRequest)
+    + onFollowRequestDeleted(String, String)
+    + onActivityStop()
+    # insertReq(FollowRequest)
+    - notifyAdapter()
+    + getAdapter() : FollowRequestArrayAdapter
+    + getReqs() : ArrayList<FollowRequest>
+    + setReqs(ArrayList<FollowRequest>)
+}
+FollowRequestController ..|> FollowRequestListener
+
+' TODO
+class LocationController {
+    - activity : Activity
+    - fusedLocationProviderClient : FusedLocationProviderClient
+    - permissionLauncher : ActivityResultLauncher<String>
+    - locationCallback : LocationCallback
+    + LocationController(Activity)
+    + getCurrentLocation(LocationCallback)
+    - fetchLocationInternal()
+}
+
+' TODO
+class LocationMoodController {
+    - session : SessionManager
+    - userRepo : UserRepository
+    - moodEventRepo : MoodEventRepository
+    + LocationMoodController(Context)
+    + getMoodEventsWithLocation(OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    + getMoodEventsWithLocationAndFollowed(OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    + getMoodEventWithin5kmFromUser( Location, OnSuccessListener<ArrayList<MoodEvent>>, OnFailureListener)
+    - isWithin5km( MoodEvent, Location) : boolean
+    - haversine(double, double, double, double) : double
+}
+
+class LoginController {
+    - authManager : AuthManager
+    + LoginController()
+    + LoginController(Context)
+    + onLoginUser(String, String, OnSuccessListener<User>, OnFailureListener)
+    + setAuthManager(AuthManager)
+}
+
+class MoodHistoryController {
+    - poster : String
+    + MoodHistoryController(Context, String, OnSuccessListener<Void>, OnFailureListener)
+    + doesBelongInOriginal(MoodEvent) : boolean
+    + isPosterAllowed(String) : boolean
+}
+MoodHistoryController --|> MoodListController
+
 class MoodListController {
     # context : Context
     # filter : MoodEventListFilter
@@ -36,48 +137,36 @@ MoodListController ..|> MoodEventListener
 MoodListController ..|> FollowListener
 MoodListController ..|> FollowRequestListener
 
-class FollowRequestController {
-    - session : SessionManager
-    - context : Context
-    - adapter : FollowRequestArrayAdapter
-    - reqs : ArrayList<FollowRequest>
-    + FollowRequestController()
-    + FollowRequestController(Context, OnSuccessListener<Void>, OnFailureListener)
-    + onFollowRequestAdded(FollowRequest)
-    + onFollowRequestDeleted(String, String)
-    + onActivityStop()
-    # insertReq(FollowRequest)
-    - notifyAdapter()
-    + getAdapter() : FollowRequestArrayAdapter
-    + getReqs() : ArrayList<FollowRequest>
-    + setReqs(ArrayList<FollowRequest>)
-}
-FollowRequestController ..|> FollowRequestListener
-
-class DiscoverController {
-    + DiscoverController(Context, OnSuccessListener<Void>, OnFailureListener)
+' TODO
+class PersonalJournalController {
+    + PersonalJournalController(Context, OnSuccessListener<Void>, OnFailureListener)
     + doesBelongInOriginal(MoodEvent) : boolean
     + isPosterAllowed(String) : boolean
 }
-DiscoverController --|> MoodListController
+PersonalJournalController --|> MoodListController
 
-class LoginController {
-    - authManager : AuthManager
-    + LoginController()
-    + LoginController(Context)
-    + onLoginUser(String, String, OnSuccessListener<User>, OnFailureListener)
-    + setAuthManager(AuthManager)
-}
-
-class AddMoodController {
-    - loggedInUser : String
+' TODO
+class SearchController {
     - context : Context
-    + AddMoodController()
-    + AddMoodController(Context)
-    + onSubmitMood(MoodEvent, Uri, OnSuccessListener<MoodEvent>, OnFailureListener)
-    - getImageSize(Uri) : long
-    + setLoggedInUser(String)
+    - session : SessionManager
+    - allUsers : ArrayList<User>
+    - searchResult : ArrayList<User>
+    - adapter : SearchResultArrayAdapter
+    - followStatus : HashMap<String,UserRepository.FollowStatus>
+    + SearchController(Context)
+    + initializeAdapter(OnSuccessListener<Void>, OnFailureListener)
+    + searchUsers(String)
+    + onUserAdded(User)
+    + onFollowAdded(Follow)
+    + onFollowDeleted(String, String)
+    + onFollowRequestAdded(FollowRequest)
+    + onFollowRequestDeleted(String, String)
+    + getAdapter() : SearchResultArrayAdapter
+    # notifyAdapter() : void
 }
+SearchController ..|> UserListener
+SearchController ..|> FollowListener
+SearchController ..|> FollowRequestListener
 
 class SignUpController {
     - authManager : AuthManager
@@ -85,24 +174,6 @@ class SignUpController {
     + SignUpController(Context)
     + onSignUpUser(String, String, String, String, String, String, OnSuccessListener<User>, OnFailureListener)
 }
-
-class MoodHistoryController {
-    - poster : String
-    + MoodHistoryController(Context, String, OnSuccessListener<Void>, OnFailureListener)
-    + doesBelongInOriginal(MoodEvent) : boolean
-    + isPosterAllowed(String) : boolean
-}
-MoodHistoryController --|> MoodListController
-
-class FollowingMoodListController {
-    - followingList : ArrayList<String>
-    + FollowingMoodListController(Context, OnSuccessListener<Void>, OnFailureListener)
-    + doesBelongInOriginal(MoodEvent) : boolean
-    + isPosterAllowed(String) : boolean
-    + onFollowAdded(Follow)
-    + onFollowDeleted(String, String)
-}
-FollowingMoodListController --|> MoodListController
 
 class UpdateOrDeleteMoodEventController {
     - session : SessionManager
@@ -116,6 +187,38 @@ class UpdateOrDeleteMoodEventController {
 
 ' Models '
 
+' TODO
+class Comment {
+    - id : String
+    - moodEventId : String
+    - timestamp : Timestamp
+    - posterUsername : String
+    - text : String
+    + Comment()
+    + getId() : String
+    + setId(String)
+    + getMoodEventId() : String
+    + setMoodEventId(String)
+    + getTimestamp() : Timestamp
+    + setTimestamp(Timestamp)
+    + getPosterUsername() : String
+    + setPosterUsername(String)
+    + getText() : String
+    + setText(String)
+}
+
+enum Emotion {
+    ANGER
+    CONFUSION
+    DISGUST
+    FEAR
+    HAPPINESS
+    SADNESS
+    SHAME
+    SURPRISE
+    LAUGHTER
+}
+
 class Follow {
     - followerUsername : String
     - followedUsername : String
@@ -127,6 +230,20 @@ class Follow {
     + getFollowedUsernameString
     + setFollowedUsername(String)
     + getTimestampTimestamp
+    + setTimestamp(Timestamp)
+}
+
+class FollowRequest {
+    - requester : String
+    - requestee : String
+    - timestamp : Timestamp
+    + FollowRequest()
+    + FollowRequest(String, String, Timestamp)
+    + getRequester() : String
+    + setRequester(String)
+    + getRequestee() : String
+    + setRequestee(String)
+    + getTimestamp() : Timestamp
     + setTimestamp(Timestamp)
 }
 
@@ -172,18 +289,11 @@ class MoodEvent {
  + writeToParcel(Parcel, int)
 }
 
-class FollowRequest {
-    - requester : String
-    - requestee : String
-    - timestamp : Timestamp
-    + FollowRequest()
-    + FollowRequest(String, String, Timestamp)
-    + getRequester() : String
-    + setRequester(String)
-    + getRequestee() : String
-    + setRequestee(String)
-    + getTimestamp() : Timestamp
-    + setTimestamp(Timestamp)
+enum SocialSituation {
+    ALONE
+    ONE_OTHER
+    TWO_OR_MORE_OTHERS
+    CROWD
 }
 
 class User {
@@ -207,25 +317,6 @@ class User {
     + setJoinDateTime(Timestamp)
 }
 
-enum SocialSituation {
-    ALONE
-    ONE_OTHER
-    TWO_OR_MORE_OTHERS
-    CROWD
-}
-
-enum Emotion {
-    ANGER
-    CONFUSION
-    DISGUST
-    FEAR
-    HAPPINESS
-    SADNESS
-    SHAME
-    SURPRISE
-    LAUGHTER
-}
-
 
 
 ' Repositories '
@@ -234,6 +325,28 @@ class GenericRepository {
     # listeners : Set<Listener>
     + addListener(Listener) : boolean
     + removeListener(Listener)
+}
+
+' TODO
+class CommentRepository {
+    + {static} COMMENT_COLLECTION : String
+    - {static} instance : CommentRepository
+    - db : FirebaseFirestore
+    - commentsRef : CollectionReference
+    - CommentRepository()
+    - CommentRepository(FirebaseFirestore)
+    + {static} getInstanceCommentRepository
+    + {static} setInstanceForTesting(FirebaseFirestore)
+    - startListening()
+    + addComment(Comment, OnSuccessListener<Comment>, OnFailureListener)
+    + getAllCommentsFromMood(String, OnSuccessListener<ArrayList<Comment>>, OnFailureListener)
+    - onCommentAdded(Comment)
+}
+CommentRepository --|> GenericRepository
+
+' TODO
+interface CommentListener {
+    onCommentAdded(Comment)
 }
 
 class MoodEventRepository {
@@ -344,8 +457,15 @@ interface FollowRequestListener {
 }
 
 
-
 ' Services '
+
+class AuthManager {
+    - sessionManager : SessionManager
+    + AuthManager(Context)
+    + login(String, String, OnSuccessListener<User>, OnFailureListener)
+    + signUp(String, String, String, String, OnSuccessListener<User>, OnFailureListener)
+    - hashPassword(String) : String
+}
 
 class SessionManager {
     - {static} preferenceName : String
@@ -360,17 +480,45 @@ class SessionManager {
     + logout()
 }
 
-class AuthManager {
-    - sessionManager : SessionManager
-    + AuthManager(Context)
-    + login(String, String, OnSuccessListener<User>, OnFailureListener)
-    + signUp(String, String, String, String, OnSuccessListener<User>, OnFailureListener)
-    - hashPassword(String) : String
-}
-
 
 
 ' Utils '
+
+' TODO
+class CommentArrayAdapter {
+    - context : Context
+    - commentsForMoodEvent : ArrayList<Comment>
+    + CommentArrayAdapter(Context, ArrayList<Comment>)
+    + getView(int, View, ViewGroup) : View
+}
+
+' TODO
+class FollowButton {
+    - context : Context
+    - loggedInUser : String
+    - profileUser : String
+    - followStatus : UserRepository.FollowStatus
+    + FollowButton(Context, AttributeSet)
+    + initialize(String, UserRepository.FollowStatus)
+    - setStyles()
+    - onClick(View)
+    + hide()
+    - handleException(Exception)
+    + setFollowStatus(UserRepository.FollowStatus)
+    + getFollowStatus() : UserRepository.FollowStatus
+}
+
+class FollowRequestArrayAdapter {
+    - context : Context
+    - requests : ArrayList<FollowRequest>
+    + FollowRequestArrayAdapter(Context, ArrayList<FollowRequest>)
+    + getView(int, View, ViewGroup) : View
+    - handleException(Exception)
+}
+
+class GenericTextWatcher {
+    ' TODO
+}
 
 class MoodEventArrayAdapter {
     - moodEvents : ArrayList<MoodEvent>
@@ -385,14 +533,6 @@ class MoodEventArrayAdapter {
     - handleException(Exception)
     + followStatusPut(String, FollowStatus)
     + followStatusRemove(String)
-}
-
-class FollowRequestArrayAdapter {
-    - context : Context
-    - requests : ArrayList<FollowRequest>
-    + FollowRequestArrayAdapter(Context, ArrayList<FollowRequest>)
-    + getView(int, View, ViewGroup) : View
-    - handleException(Exception)
 }
 
 class MoodEventListFilter {
@@ -418,6 +558,17 @@ class MoodEventListFilter {
     + clearReasonWhyKeyword()
 }
 
+' TODO
+class SearchResultArrayAdapter {
+    - context : Context
+    - users : ArrayList<User>
+    - followStatus : HashMap<String,UserRepository.FollowStatus>
+    - emotionCache : HashMap<String,Emotion>
+    + SearchResultArrayAdapter(Context, ArrayList<User>, HashMap<String,UserRepository.FollowStatus>)
+    + getView(int, View, ViewGroup) : View
+    + followStatusPut(String, UserRepository.FollowStatus)
+}
+
 
 
 ' Views '
@@ -438,12 +589,15 @@ class BaseActivity {
     - MOOD_FOLLOWING_LIST_SELECTED : Drawable
     - DISCOVER_UNSELECTED : Drawable
     - DISCOVER_SELECTED : Drawable
+    - SEARCH_UNSELECTED : Drawable
+    - SEARCH_SELECTED : Drawable
     - MAP_UNSELECTED : Drawable
     - MAP_SELECTED : Drawable
     - PROFILE_UNSELECTED : Drawable
     - PROFILE_SELECTED : Drawable
     - moodFollowingListBtn : ImageButton
     - discoverBtn : ImageButton
+    - searchBtn : ImageButton
     - mapBtn : ImageButton
     - profileBtn : ImageButton
     # onCreate(Bundle)
@@ -451,6 +605,7 @@ class BaseActivity {
     # deselectAllHeaderButtons()
     # selectMoodFollowingListHeaderButton()
     # selectDiscoverHeaderButton()
+    # selectSearchHeaderButton()
     # selectMapHeaderButton()
     # selectProfileHeaderButton()
 }
@@ -463,6 +618,7 @@ class FollowRequestsActivity {
 }
 FollowRequestsActivity --|> BaseActivity
 
+' TODO: Update
 class UpdateOrDeleteMoodEventActivity {
     SELECT_PICTURE : int
     IVPreviewImage : ImageView
@@ -479,6 +635,7 @@ class UpdateOrDeleteMoodEventActivity {
     - showDatePickerDialog(EditText)
 }
 
+' TODO: Remove
 class MyProfileActivity {
     logout : Button
     followRequests : Button
@@ -490,7 +647,6 @@ class MyProfileActivity {
     - onFollowRequests()
     # getActivityLayout() : int
 }
-MyProfileActivity --|> BaseActivity
 
 class MoodAddActivity {
     - addMoodController : AddMoodController
@@ -523,6 +679,7 @@ class SignUpActivity {
     - signUpUser()
 }
 
+' TODO: Update
 class MapActivity {
     # onCreate(Bundle)
     # getActivityLayout() : int
@@ -554,6 +711,68 @@ class MoodListActivity {
     # handleException(Exception)
 }
 MoodListActivity --|> BaseActivity
+
+' TODO
+class EnhancedMoodActivity {
+    - imageCache : LruCache<String,Bitmap>
+    - border : LinearLayout
+    - location : GeoPoint
+    - backButton : ImageButton
+    - commentButton : Button
+    - posterUsername : TextView
+    - emoticon : TextView
+    - dateTime : TextView
+    - controller : CommentController
+    - locationTextView : TextView
+    - socialSituation : TextView
+    - moodText : TextView
+    - editButton : ImageButton
+    - sessionManager : SessionManager
+    - photoImgView : ImageView
+    - newComment : EditText
+    - moodEventId : String
+    - currentMoodEvent : MoodEvent
+    # onCreate(Bundle)
+    - handleException(Exception)
+    # onResume()
+    - setUI() 
+}
+
+' TODO
+class PersonalJournalActivity{
+    # onCreate(Bundle)
+}
+PersonalJournalActivity --|> MoodListActivity
+
+' TODO
+class SearchActivity {
+    - controller : SearchController
+    # onCreate(Bundle)
+    # getActivityLayout() : int
+}
+SearchActivity --|> BaseActivity
+
+' TODO
+class UserProfileActivity {
+    - controller : MoodListController
+    - followButton : FollowButton
+    - session : SessionManager
+    - targetUser : String
+    - followerCountTv : TextView
+    - moodListView : ListView
+    - backBtn : ImageButton
+    # onCreate(Bundle)
+    # getActivityLayout() : int
+    + onFollowAdded(Follow)
+    + onFollowDeleted(String, String)
+    - initMyProfile() : void
+    + onFollowRequestAdded(FollowRequest)
+    + onFollowRequestDeleted(String, String)
+}
+UserProfileActivity ..|> FollowListener
+UserProfileActivity ..|> FollowRequestListener
+UserProfileActivity --|> BaseActivity
+
 
 
 
