@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:padding="8dp"
     android:layout_height="match_parent"
     tools:context=".views.SlotMachineActivity">
 
@@ -15,7 +14,8 @@
         android:layout_margin="8dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" >
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/slotMachineLayout">
 
         <ImageButton
             android:id="@+id/btnBack"
@@ -30,6 +30,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/slotMachineLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/hi"
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:textColor="@color/white"
-            android:text="1000" />
+            android:text="$100" />
 
         <FrameLayout
             android:id="@+id/frame_bar"
@@ -78,29 +79,6 @@
 
         </FrameLayout>
 
-        <ImageView
-            android:id="@+id/btn_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="51dp"
-            android:layout_toEndOf="@id/frame_bar"
-            android:layout_toRightOf="@id/frame_bar"
-            android:src="@drawable/tochange"
-            android:layout_marginLeft="0dp" />
-
-        <ImageView
-            android:id="@+id/btn_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="79dp"
-            android:layout_toEndOf="@id/frame_bar"
-            android:layout_toRightOf="@id/frame_bar"
-            android:visibility="gone"
-            android:screenReaderFocusable="@drawable/tochange" />
-
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +94,7 @@
                 android:layout_centerInParent="true"
                 app:cornerRadius="2dp"
                 android:background="@color/button"
-                android:text="Spin" />
+                android:text="Spin (-$5)" />
 
         </RelativeLayout>
 

@@ -7,6 +7,9 @@ import com.example.y.services.AuthManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+/**
+ * Handles login logic for the login activity
+ */
 public class LoginController {
 
     private AuthManager authManager;
