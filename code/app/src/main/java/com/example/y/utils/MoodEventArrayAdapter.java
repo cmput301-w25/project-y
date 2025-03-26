@@ -115,7 +115,7 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
             }
 
             if (location != null) {
-                locationTextView.setText("Location : (" + location.getLatitude() + ", " + location.getLongitude() +")");  
+                locationTextView.setText(String.format("Location : (%s, %s)", location.getLatitude(), location.getLongitude()));
                 locationTextView.setVisibility(View.VISIBLE);
             } else {
                 locationTextView.setVisibility(View.GONE);

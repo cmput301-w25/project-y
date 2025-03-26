@@ -100,7 +100,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/mood" />
 
-                <EditText
+                <TextView
                     android:id="@+id/datePickerAddMood"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
