@@ -52,7 +52,7 @@ public class FollowingMoodListController extends MoodListController {
         }, onFailure);
     }
 
-    private boolean isFollowing(String username) {
+    protected boolean isFollowing(String username) {
         return moodCount.containsKey(username);
     }
 
@@ -68,7 +68,7 @@ public class FollowingMoodListController extends MoodListController {
      * @return
      *      True if the mood was inserted in the original list (it may not have been inserted in the filtered list though), false otherwise.
      */
-    private boolean insertInMoodLists(MoodEvent mood) {
+    protected boolean insertInMoodLists(MoodEvent mood) {
         if (!isFollowing(mood.getPosterUsername())) return false;
         if (mood.getIsPrivate() == null) {
             Log.e("Y ERROR", mood + " has isPrivate = null");
@@ -130,7 +130,7 @@ public class FollowingMoodListController extends MoodListController {
      * @return
      *      true if the mood event was removed from both lists, does not guarantee that another mood event was added in its place.
      */
-    private boolean removeFromMoodLists(String id) {
+    protected boolean removeFromMoodLists(String id) {
         // Remove from original mood list if it exists
         MoodEvent mood = null;
         for (int i = 0; i < originalMoodEventList.size(); i++) {
