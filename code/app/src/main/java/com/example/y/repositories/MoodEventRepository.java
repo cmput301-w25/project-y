@@ -159,6 +159,8 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                     onSuccess.onSuccess(moodEvent);
                     return;
                 }
+            } else {
+                onFailure.onFailure(new Exception("Mood event with id " + moodEvent.getId() + " does not exist in the database"));
             }
         });
 
