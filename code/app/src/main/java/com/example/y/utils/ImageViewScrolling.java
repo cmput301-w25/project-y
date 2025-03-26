@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.y.R;
-import com.example.y.views.SlotMachineActivity;
 
 /**
  * Image scrolling view for the slot machine.
@@ -58,7 +57,7 @@ public class ImageViewScrolling extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(@NonNull Animator animator) {
-                        setImage(currentImage, oldValue % SlotMachineActivity.IMG_COUNT);
+                        setImage(currentImage, oldValue % SlotMachineSymbol.values().length);
                         currentImage.setTranslationY(0);
                         if (oldValue != rotateCount) {
                             setValueRandom(imageIndex, rotateCount);
@@ -66,7 +65,7 @@ public class ImageViewScrolling extends FrameLayout {
                         } else {
                             oldValue = 0;
                             setImage(nextImage, imageIndex);
-                            eventEnd.onSpinFinish(imageIndex % SlotMachineActivity.IMG_COUNT, rotateCount);
+                            eventEnd.onSpinFinish(imageIndex % SlotMachineSymbol.values().length, rotateCount);
                         }
                     }
 
