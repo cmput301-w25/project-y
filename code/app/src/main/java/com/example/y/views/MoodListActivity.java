@@ -69,18 +69,20 @@ public class MoodListActivity extends BaseActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 Timestamp minDate = new Timestamp(calendar.getTime());
 
-                // Only set if date is smaller than max date
+                // Only set if date is smaller than or equal to max date
                 Timestamp maxDateTime = controller.getFilter().getMaxDateTime();
-                if (maxDateTime == null || minDate.compareTo(maxDateTime) < 0) {
-                    controller.getFilter().setMinDateTime(minDate);
-                    controller.saveFilter();
-
-                    // Update button text
-                    SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
-                    minDateBtn.setText(displayFormat.format(calendar.getTime()));
-                } else {
+                if (maxDateTime != null && minDate.compareTo(maxDateTime) > 0) {
                     Toast.makeText(this, "Min date must be smaller than max date", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Update filter
+                controller.getFilter().setMinDateTime(minDate);
+                controller.saveFilter();
+
+                // Update button text
+                SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+                minDateBtn.setText(displayFormat.format(calendar.getTime()));
             });
         });
     }
@@ -104,18 +106,20 @@ public class MoodListActivity extends BaseActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 Timestamp maxDate = new Timestamp(calendar.getTime());
 
-                // Only set if date is larger than min date
+                // Only set if date is larger than or equal to min date
                 Timestamp minDateTime = controller.getFilter().getMinDateTime();
-                if (minDateTime == null || maxDate.compareTo(minDateTime) > 0) {
-                    controller.getFilter().setMaxDateTime(maxDate);
-                    controller.saveFilter();
-
-                    // Update button text
-                    SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
-                    maxDateBtn.setText(displayFormat.format(calendar.getTime()));
-                } else {
+                if (minDateTime != null && maxDate.compareTo(minDateTime) < 0) {
                     Toast.makeText(this, "Max date must be larger than min date", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Update filter
+                controller.getFilter().setMaxDateTime(maxDate);
+                controller.saveFilter();
+
+                // Update button text
+                SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+                maxDateBtn.setText(displayFormat.format(calendar.getTime()));
             });
         });
     }
