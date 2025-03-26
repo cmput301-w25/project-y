@@ -36,6 +36,13 @@ android {
         unitTests.isReturnDefaultValues = true
     }
 
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+    }
+
 }
 
 dependencies {
@@ -49,6 +56,7 @@ dependencies {
     implementation(libs.ext.junit)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation(libs.espresso.intents)
     testImplementation("junit:junit:4.13.2")
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     testImplementation(libs.monitor)

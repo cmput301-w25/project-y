@@ -16,6 +16,7 @@ rules = "1.0.2"
 runner = "1.0.2"
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.1.0"
+espressoIntents = "3.5.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -33,6 +34,7 @@ rules = { module = "com.android.support.test:rules", version.ref = "rules" }
 monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
