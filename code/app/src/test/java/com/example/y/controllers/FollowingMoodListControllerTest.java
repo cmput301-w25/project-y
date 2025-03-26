@@ -48,10 +48,7 @@ public class FollowingMoodListControllerTest {
     private FirebaseFirestore mockDb;
     private TestFollowingMoodListController controller;
 
-    /**
-     * A subclass of FollowingMoodListController that exposes protected methods for testing.
-     * Also bypasses asynchronous initialization and overrides the filter to allow all moods.
-     */
+
     private class TestFollowingMoodListController extends FollowingMoodListController {
         public TestFollowingMoodListController(Context context) {
             super(context,
@@ -63,7 +60,7 @@ public class FollowingMoodListControllerTest {
             // Force the session username to "testUser" to avoid login errors.
             session.saveSession("testUser");
 
-            // Override the filter so that wouldBeFiltered() always returns false.
+
             try {
                 Field filterField = MoodListController.class.getDeclaredField("filter");
                 filterField.setAccessible(true);
@@ -78,7 +75,7 @@ public class FollowingMoodListControllerTest {
             }
         }
 
-        // Expose the protected insertInMoodLists method for testing.
+
         public boolean callInsertInMoodLists(MoodEvent mood) {
             return insertInMoodLists(mood);
         }
@@ -107,7 +104,6 @@ public class FollowingMoodListControllerTest {
         mockDb = mock(FirebaseFirestore.class);
         firestoreMock.when(FirebaseFirestore::getInstance).thenReturn(mockDb);
 
-        // Stub out db.collection() so that UserRepository.usersRef is not null.
         CollectionReference mockCollectionRef = mock(CollectionReference.class);
         when(mockDb.collection(anyString())).thenReturn(mockCollectionRef);
 
@@ -115,7 +111,7 @@ public class FollowingMoodListControllerTest {
         ListenerRegistration dummyRegistration = mock(ListenerRegistration.class);
         when(mockCollectionRef.addSnapshotListener(any())).thenReturn(dummyRegistration);
 
-        // --- Stub the query chain for getFollowing() ---
+
         Query mockQuery = mock(Query.class);
         when(mockCollectionRef.whereEqualTo(anyString(), any())).thenReturn(mockQuery);
         QuerySnapshot mockQuerySnapshot = mock(QuerySnapshot.class);
@@ -153,7 +149,7 @@ public class FollowingMoodListControllerTest {
     }
 
     /**
-     * Test that isFollowing(...) correctly reflects the moodCount map.
+     * Test that isFollowing() correctly reflects the moodCount map.
      */
     @Test
     public void testIsFollowing() {
