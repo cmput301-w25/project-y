@@ -5,6 +5,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.util.Log;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository.MoodEventListener;
+import com.example.y.utils.MoodImageCache;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -132,6 +135,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     protected boolean isNetworkAvailable(Context context) {
+        if (context == null) return false;
         ConnectivityManager cm = getSystemService(context, ConnectivityManager.class);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
@@ -140,31 +144,89 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     /**
      * Add a mood event to the database.
      *
-     * @param moodEvent Mood event to be added.
-     * @param onSuccess Success callback function to which the added mood event is passed to.
-     * @param onFailure Failure callback function.
+     * @param moodEvent     Mood event to be added.
+     * @param photoBitmap   Bitmap of the new mood event or null
+     * @param onSuccess     Success callback function to which the added mood event is passed to.
+     * @param onFailure     Failure callback function.
      */
-    public void addMoodEvent(MoodEvent moodEvent, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
-        moodEvent.setCreationDateTime(Timestamp.now());
+    public void addMoodEvent(MoodEvent moodEvent, Bitmap photoBitmap, Context context, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        Timestamp uploadTimestamp = Timestamp.now();
+        moodEvent.setCreationDateTime(uploadTimestamp);
+
         moodEventRef.addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 onFailure.onFailure(new Exception("Mood event document creation failed", e));
                 return;
             }
 
-            if (snapshot != null) {
-                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
-                    String id = docChange.getDocument().getId();
-                    moodEvent.setId(id);
-                    onSuccess.onSuccess(moodEvent);
-                    return;
-                }
-            } else {
+            if (snapshot == null) {
                 onFailure.onFailure(new Exception("Mood event with id " + moodEvent.getId() + " does not exist in the database"));
+                return;
             }
+
+            // Get mood from document change
+            MoodEvent uploadedMood = null;
+            for (DocumentChange docChange : snapshot.getDocumentChanges()) {
+                MoodEvent current = docChange.getDocument().toObject(MoodEvent.class);
+                if (docChange.getType() == DocumentChange.Type.ADDED && uploadTimestamp.equals(current.getCreationDateTime())) {
+                    String id = docChange.getDocument().getId();
+                    uploadedMood = current;
+                    uploadedMood.setId(id);
+                    break;
+                }
+            }
+            if (uploadedMood == null) return;
+
+            // If no image, then success immediately
+            if (photoBitmap == null) {
+                onSuccess.onSuccess(uploadedMood);
+                return;
+            }
+
+            // Upload image if online
+            if (isNetworkAvailable(context)) {
+                uploadAndAttachImage(uploadedMood, photoBitmap, onSuccess, onFailure);
+                return;
+            }
+
+            // Cache image if offline
+            MoodImageCache.getInstance().put(uploadedMood.getId(), photoBitmap);
+            Log.e("Y DEBUG", "Uploading image to cache");
+            onSuccess.onSuccess(uploadedMood);
+
+            onSuccess.onSuccess(moodEvent);
         });
 
-        moodEventRef.add(moodEvent);
+        moodEventRef
+                .add(moodEvent)
+                .addOnSuccessListener(doc -> {
+
+                    Log.e("Y DEBUG", "1");
+
+                    // When online
+                    String id = doc.getId();
+                    moodEvent.setId(id);
+
+                    // Check if the mood has a cached image
+                    if (MoodImageCache.getInstance().hasCachedImage(id)) {
+
+                        Log.e("Y DEBUG", "2");
+                        // Upload cached image to firebase storage
+                        uploadAndAttachImage(moodEvent, MoodImageCache.getInstance().getBitmap(id), unused1 -> {
+
+                            // Update the mood with the image
+                            updateMoodEvent(moodEvent, context, unused2 -> {
+
+                                // Remove the cached image
+                                MoodImageCache.getInstance().remove(id);
+
+                            }, onFailure);
+
+                        }, onFailure);
+
+                    }
+
+                });
     }
 
     /**
@@ -248,7 +310,15 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         docRef.delete()
-                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id)) // TODO: Delete image from storage if exists
+                                .addOnSuccessListener(unused -> {
+
+                                    // Remove cached image if it has one
+                                    if (MoodImageCache.getInstance().hasCachedImage(id)) {
+                                        MoodImageCache.getInstance().remove(id);
+                                    }
+
+                                    onSuccess.onSuccess(id);
+                                })
                                 .addOnFailureListener(e -> {
                                     onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
                                 });
@@ -278,7 +348,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         docRef.delete()
-                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id)) // TODO: Delete image from storage if exists
+                                .addOnSuccessListener(unused -> onSuccess.onSuccess(id))
                                 .addOnFailureListener(e -> {
                                     onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
                                 });
@@ -440,12 +510,13 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      * @param onSuccess Success callback function to which the updated mood is passed to.
      * @param onFailure Failure callback function
      */
-    public void uploadAndAttachImage(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+    private void uploadAndAttachImage(MoodEvent mood, Uri photoUri, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
         if (photoUri == null) return;
         StorageReference storageRef = FirebaseStorage
                 .getInstance()
                 .getReference()
                 .child(MoodEventRepository.MOOD_PHOTO_STORAGE_NAME + "/" + mood.getPosterUsername() + "_" + System.currentTimeMillis() + ".jpg");
+
         storageRef.putFile(photoUri)
                 .addOnSuccessListener(taskSnapshot -> {
                     storageRef.getDownloadUrl()
@@ -462,17 +533,56 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     }
 
     /**
-     * Downloads an image from firebase storage
+     * Uploads an image to firebase storage and attaches the download URL to the mood event.
      *
-     * @param photoUrl  Download URL of the image.
+     * @param mood          Mood event to attach image URL to.
+     * @param photoBitmap   Bitmap of the photo to upload.
+     * @param onSuccess     Success callback function to which the updated mood is passed to.
+     * @param onFailure     Failure callback function
+     */
+    private void uploadAndAttachImage(MoodEvent mood, Bitmap photoBitmap, OnSuccessListener<MoodEvent> onSuccess, OnFailureListener onFailure) {
+        if (photoBitmap == null) return;
+        StorageReference storageRef = FirebaseStorage
+                .getInstance()
+                .getReference()
+                .child(MoodEventRepository.MOOD_PHOTO_STORAGE_NAME + "/" + mood.getPosterUsername() + "_" + System.currentTimeMillis() + ".jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] img = baos.toByteArray();
+        storageRef.putBytes(img)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                String url = uri.toString();
+                                mood.setPhotoURL(url);
+                                onSuccess.onSuccess(mood);
+                            })
+                            .addOnFailureListener(e -> {
+                                onFailure.onFailure(new Exception("Failed to get download URL for newly uploaded image"));
+                            });
+                })
+                .addOnFailureListener(e -> onFailure.onFailure(new Exception("Failed to upload image to firebase storage", e)));
+    }
+
+    /**
+     * Gets a mood's image from image cache or downloads it image from firebase storage.
+     * @param mood      Mood event containing image url
      * @param onSuccess Success callback function to which the image's bitmap is passed to.
      * @param onFailure Failure callback function.
      */
-    public void downloadImage(String photoUrl, OnSuccessListener<Bitmap> onSuccess, OnFailureListener onFailure) {
-        if (photoUrl == null || photoUrl.isEmpty()) return;
+    public void downloadImage(Context context, MoodEvent mood, OnSuccessListener<Bitmap> onSuccess, OnFailureListener onFailure) {
+        // First, check if the mood has an image cached
+        if (MoodImageCache.getInstance().hasCachedImage(mood.getId())) {
+            onSuccess.onSuccess(MoodImageCache.getInstance().getBitmap(mood.getId()));
+            return;
+        }
+
+        // Otherwise download from firestore if the mood has an image
+        if (mood.getPhotoURL() == null || mood.getPhotoURL().isEmpty() || !isNetworkAvailable(context)) return;
         FirebaseStorage
                 .getInstance()
-                .getReferenceFromUrl(photoUrl)
+                .getReferenceFromUrl(mood.getPhotoURL())
                 .getBytes(Long.MAX_VALUE)
                 .addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

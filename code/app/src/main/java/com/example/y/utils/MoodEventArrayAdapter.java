@@ -61,10 +61,11 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
         // Select either with or without photo context
         View view = convertView;
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(
-                mood.getPhotoURL() == null ? R.layout.mood_event_content_without_photo : R.layout.mood_event_content_with_photo,
-                parent, false
-            );
+            if ((mood.getPhotoURL() != null && !mood.getPhotoURL().isEmpty()) || MoodImageCache.getInstance().hasCachedImage(mood.getId())) {
+                view = LayoutInflater.from(context).inflate(R.layout.mood_event_content_with_photo, parent, false);
+            } else {
+                view = LayoutInflater.from(context).inflate(R.layout.mood_event_content_without_photo, parent, false);
+            }
         }
 
         // Create follow button
@@ -134,32 +135,35 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
 
         // Optional field: Photo
         ImageView photoImgView = view.findViewById(R.id.photo);
-        String photoURL = mood.getPhotoURL();
         if (photoImgView != null) {
-            if (photoURL != null && !photoURL.isEmpty()) {
+            if ((mood.getPhotoURL() != null && !mood.getPhotoURL().isEmpty()) || MoodImageCache.getInstance().hasCachedImage(mood.getId())) {
                 // Set tag to track proper image association
-                photoImgView.setTag(photoURL);
+                photoImgView.setTag(mood.getId());
                 photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
                 photoImgView.setVisibility(View.VISIBLE);
 
                 // Check image cache first
-                Bitmap cachedBitmap = imageCache.get(photoURL);
+                Bitmap cachedBitmap = imageCache.get(mood.getId());
                 if (cachedBitmap != null) {
                     photoImgView.setImageBitmap(cachedBitmap);
                 } else {
-                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
-                        // Cache downloaded image
-                        imageCache.put(photoURL, bitmap);
+                    MoodEventRepository.getInstance().downloadImage(context, mood, bitmap -> {
+                        Log.e("Y DEBUG", "Image has bee retrieved from the cache");
 
-                        // Only set image if tag matches current URL
-                        if (photoURL.equals(photoImgView.getTag())) {
+                        // Cache downloaded image
+                        imageCache.put(mood.getId(), bitmap);
+
+                        // Only set image if tag matches current mood id
+                        if (mood.getId().equals(photoImgView.getTag())) {
+                            Log.e("Y DEBUG", "And " + mood.getId() + " == " + photoImgView.getTag());
                             photoImgView.setImageBitmap(bitmap);
+                        } else {
+                            Log.e("Y DEBUG", "But " + mood.getId() + " != " + photoImgView.getTag());
                         }
                     }, this::handleException);
                 }
             } else {
                 // Clear if there is no photo
-                photoImgView.setImageDrawable(null);
                 photoImgView.setVisibility(View.GONE);
                 photoImgView.setTag(null);
             }

@@ -2,14 +2,19 @@ package com.example.y.controllers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.io.IOException;
 
 /**
  * Controller class  for handling the logic of adding a new mood event.
@@ -82,7 +87,7 @@ public class AddMoodController {
         //          No need to validate this one I don't think
         //      reason why text (at most 20 characters or 3 words)
         if (mood.getText() != null) {
-            if (mood.getText().length() >=199) {
+            if (mood.getText().length() >= 199) {
                 onFailure.onFailure(new Exception("Reason why text length must be at most 200 characters!"));
                 return;
             }
@@ -97,15 +102,12 @@ public class AddMoodController {
         //          Not sure if this needs to be validated
 
         // Finally upload the mood
-        MoodEventRepository moodRepo = MoodEventRepository.getInstance();
-        if (photoUri != null) {
-            // Attach image first if it exists
-            moodRepo.uploadAndAttachImage(mood, photoUri, updatedMood -> {
-                moodRepo.addMoodEvent(mood, onSuccess, onFailure);
-            }, onFailure);
-        } else {
-            // Otherwise directly upload it
-            moodRepo.addMoodEvent(mood, onSuccess, onFailure);
+        try {
+            MoodEventRepository moodRepo = MoodEventRepository.getInstance();
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+            moodRepo.addMoodEvent(mood, bitmap, context, onSuccess, onFailure);
+        } catch (IOException e) {
+            Log.e("Y ERROR", "Error converting URI to Bitmap", e);
         }
     }
 
