@@ -76,8 +76,8 @@ public class MoodAddActivity extends AppCompatActivity {
         // Initialize views
 
         initViews();
-        initializeBorderColors();
         makeEmotionSpinner();
+        initializeBorderColors();
         makeSocialSpinner();
 
         etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason Why Error","Reason Why"));
