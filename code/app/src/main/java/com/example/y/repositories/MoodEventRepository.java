@@ -191,17 +191,12 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
             // Cache image if offline
             MoodImageCache.getInstance().put(uploadedMood.getId(), photoBitmap);
-            Log.e("Y DEBUG", "Uploading image to cache");
             onSuccess.onSuccess(uploadedMood);
-
-            onSuccess.onSuccess(moodEvent);
         });
 
         moodEventRef
                 .add(moodEvent)
                 .addOnSuccessListener(doc -> {
-
-                    Log.e("Y DEBUG", "1");
 
                     // When online
                     String id = doc.getId();
@@ -210,7 +205,6 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                     // Check if the mood has a cached image
                     if (MoodImageCache.getInstance().hasCachedImage(id)) {
 
-                        Log.e("Y DEBUG", "2");
                         // Upload cached image to firebase storage
                         uploadAndAttachImage(moodEvent, MoodImageCache.getInstance().getBitmap(id), unused1 -> {
 

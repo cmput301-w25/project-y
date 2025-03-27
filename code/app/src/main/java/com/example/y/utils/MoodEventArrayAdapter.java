@@ -148,17 +148,12 @@ public class MoodEventArrayAdapter extends ArrayAdapter<MoodEvent> {
                     photoImgView.setImageBitmap(cachedBitmap);
                 } else {
                     MoodEventRepository.getInstance().downloadImage(context, mood, bitmap -> {
-                        Log.e("Y DEBUG", "Image has bee retrieved from the cache");
-
                         // Cache downloaded image
                         imageCache.put(mood.getId(), bitmap);
 
                         // Only set image if tag matches current mood id
                         if (mood.getId().equals(photoImgView.getTag())) {
-                            Log.e("Y DEBUG", "And " + mood.getId() + " == " + photoImgView.getTag());
                             photoImgView.setImageBitmap(bitmap);
-                        } else {
-                            Log.e("Y DEBUG", "But " + mood.getId() + " != " + photoImgView.getTag());
                         }
                     }, this::handleException);
                 }
