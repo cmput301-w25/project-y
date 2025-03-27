@@ -23,6 +23,7 @@ import com.example.y.models.SocialSituation;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.GenericTextWatcher;
+import com.example.y.utils.MoodImageCache;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
@@ -156,7 +157,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         String photoURL = mood.getPhotoURL();
 
         // Hide photo view if mood has no photo
-        if (photoURL == null || photoURL.isEmpty()) {
+        if ((photoURL == null || photoURL.isEmpty()) && !MoodImageCache.getInstance().hasCachedImage(mood.getId())) {
             photoImgView.setVisibility(View.GONE);
             return;
         }
@@ -164,8 +165,7 @@ public class EnhancedMoodActivity extends AppCompatActivity {
         // Set photo otherwise
         photoImgView.setVisibility(View.VISIBLE);
         photoImgView.setImageResource(R.drawable.mood);  // Temporary placeholder image
-        MoodEventRepository.getInstance().downloadImage(photoURL, photoImgView::setImageBitmap, this::handleException);
-
+        MoodEventRepository.getInstance().downloadImage(this, mood, photoImgView::setImageBitmap, this::handleException);
     }
 
     /**

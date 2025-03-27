@@ -35,6 +35,7 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.repositories.MoodEventRepository;
+import com.example.y.utils.MoodImageCache;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
@@ -120,7 +121,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
 
         if (photoImgView != null) {
-            if (photoURL != null && !photoURL.isEmpty()) {
+            if ((photoURL != null && !photoURL.isEmpty()) || MoodImageCache.getInstance().hasCachedImage(moodEventToUpdateOrDelete.getId())) {
                 // Set tag to track proper image association
                 photoImgView.setTag(photoURL);
                 photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
@@ -131,12 +132,12 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
                 if (cachedBitmap != null) {
                     photoImgView.setImageBitmap(cachedBitmap);
                 } else {
-                    MoodEventRepository.getInstance().downloadImage(photoURL, bitmap -> {
+                    MoodEventRepository.getInstance().downloadImage(this, moodEventToUpdateOrDelete, bitmap -> {
                         // Cache downloaded image
-                        imageCache.put(photoURL, bitmap);
+                        imageCache.put(moodEventToUpdateOrDelete.getId(), bitmap);
 
                         // Only set image if tag matches current URL
-                        if (photoURL.equals(photoImgView.getTag())) {
+                        if (moodEventToUpdateOrDelete.getId().equals(photoImgView.getTag())) {
                             photoImgView.setImageBitmap(bitmap);
                         }
                     }, this::handleException);

@@ -117,7 +117,7 @@ public class MoodEventRepositoryTest {
         OnFailureListener failureListener = mock(OnFailureListener.class);
 
         // Call the method under test
-        repository.addMoodEvent(testMoodEvent, successListener, failureListener);
+        repository.addMoodEvent(testMoodEvent, null, null, successListener, failureListener);
 
         // Verify the moodEvent was added to Firestore
         verify(mockCollectionRef).add(any(MoodEvent.class));
