@@ -46,13 +46,13 @@ import java.util.Locale;
  */
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private final LruCache<String, Bitmap> imageCache =
             new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
                 protected int sizeOf(String key, Bitmap value) {
                     return value.getByteCount() / 1024;
                 }
             };
-
     private Spinner spinnerMood;
     private Spinner spinnerSocial;
     private CheckBox checkShareLocation;
@@ -61,7 +61,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private LocationController locationController;
     private ImageView photoImgView;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private Button updateButton, deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,41 +83,24 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             locationController = new LocationController(this);
         }
 
-    updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
+        updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
         // Get mood event to update
         MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
 
         // Set the Emotion spinner
-        spinnerMood = findViewById(R.id.spinnerMoodUpdate);
-        ArrayList<String> moodAdapterContent = new ArrayList<>();
-        for (Emotion emotion : Emotion.values()) {
-            moodAdapterContent.add(emotion.getText(this));
-        }
-        ArrayAdapter<String> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, moodAdapterContent);
-        moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMood.setAdapter(moodAdapter);
+        initViews();
 
+
+        makeEmotionSpinner();
         // Set social situation spinner
-        spinnerSocial = findViewById(R.id.spinnerSocialSituationUpdate);
-        ArrayList<String> socialSituationAdapterContent = new ArrayList<>();
-        socialSituationAdapterContent.add("None");
-        for (SocialSituation ss : SocialSituation.values()) {
-            socialSituationAdapterContent.add(ss.getText(this));
-        }
-        ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, socialSituationAdapterContent);
-        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSocial.setAdapter(socialAdapter);
+        makeSocialSpinner();
 
         // Grab the text explanation view as well as the date
         //https://developer.android.com/training/permissions/requesting
-        checkShareLocation = findViewById(R.id.checkBoxLocationUpdate);
-        moodTextEditText = findViewById(R.id.updateText);
-        privateCheckbox = findViewById(R.id.privacyCheckBoxUpdate);
-        Button updateButton = findViewById(R.id.UpdateMoodButton);
-        Button deleteButton = findViewById(R.id.deleteMoodButton);
 
         // Populate form with the mood event's data
+        assert moodEventToUpdateOrDelete != null;
         privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
 
         checkShareLocation.setChecked((moodEventToUpdateOrDelete.getLocation() != null));
@@ -173,6 +156,50 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete)); // If they click delete
     }
 
+    /***
+     * Ints the views
+     */
+
+    private void initViews() {
+        spinnerMood = findViewById(R.id.spinnerMoodUpdate);
+        spinnerSocial = findViewById(R.id.spinnerSocialSituationUpdate);
+        checkShareLocation = findViewById(R.id.checkBoxLocationUpdate);
+        moodTextEditText = findViewById(R.id.updateText);
+        privateCheckbox = findViewById(R.id.privacyCheckBoxUpdate);
+        updateButton = findViewById(R.id.UpdateMoodButton);
+        deleteButton = findViewById(R.id.deleteMoodButton);
+
+    }
+
+    /***
+     * Makes the emotional spinner
+     */
+    private void makeEmotionSpinner() {
+        ArrayList<String> moodAdapterContent = new ArrayList<>();
+        for (Emotion emotion : Emotion.values()) {
+            moodAdapterContent.add(emotion.getText(this));
+        }
+        ArrayAdapter<String> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, moodAdapterContent);
+        moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMood.setAdapter(moodAdapter);
+
+    }
+
+    /**
+     * Inits the social spinner
+     */
+    private void makeSocialSpinner() {
+        ArrayList<String> socialSituationAdapterContent = new ArrayList<>();
+        socialSituationAdapterContent.add("None");
+        for (SocialSituation ss : SocialSituation.values()) {
+            socialSituationAdapterContent.add(ss.getText(this));
+        }
+        ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, socialSituationAdapterContent);
+        socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSocial.setAdapter(socialAdapter);
+
+    }
+
 
     /**
      * Handles updating moods
@@ -212,6 +239,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
             });
         } else {
             // Update the mood event directly without retrieving location.
+            moodToUpdate.setLocation(null);
             updateOrDeleteMoodEventController.onUpdateMoodEvent(moodToUpdate, moodEvent -> {
                 Toast.makeText(this, "Mood Updated!", LENGTH_SHORT).show();
                 finish();
@@ -283,6 +311,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     /**
      * Handles exception by showing a Toast and logging it
+     *
      * @param e Exception to handle
      */
     private void handleException(Exception e) {
