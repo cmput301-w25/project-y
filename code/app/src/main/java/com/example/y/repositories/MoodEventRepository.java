@@ -137,6 +137,7 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
     protected boolean isNetworkAvailable(Context context) {
         if (context == null) return false;
         ConnectivityManager cm = getSystemService(context, ConnectivityManager.class);
+        assert cm != null;
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
@@ -300,29 +301,62 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
      */
     public void deleteMoodEvent(String id, Context context, OnSuccessListener<String> onSuccess, OnFailureListener onFailure) {
         DocumentReference docRef = moodEventRef.document(id);
-        docRef.get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        docRef.delete()
-                                .addOnSuccessListener(unused -> {
+        docRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                // Extract photo url
+                MoodEvent mood = doc.toObject(MoodEvent.class);
+                if (mood == null) {
+                    onFailure.onFailure(new Exception("Document is null"));
+                    return;
+                }
+                String photoUrl = mood.getPhotoURL();
 
-                                    // Remove cached image if it has one
-                                    if (MoodImageCache.getInstance().hasCachedImage(id)) {
-                                        MoodImageCache.getInstance().remove(id);
-                                    }
-
-                                    onSuccess.onSuccess(id);
-                                })
-                                .addOnFailureListener(e -> {
-                                    onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
-                                });
-                    } else {
-                        onFailure.onFailure(new Exception("Mood event document does not exist."));
+                // Delete the mood event
+                docRef.delete().addOnSuccessListener(unused1 -> {
+                    // Remove cached image if it has one
+                    if (MoodImageCache.getInstance().hasCachedImage(id)) {
+                        MoodImageCache.getInstance().remove(id);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    onFailure.onFailure(new Exception("Failed to get mood event document when trying to delete: " + e.getMessage()));
+
+                    // If url is not null and device is online, then delete image from storage
+                    if (photoUrl != null && isNetworkAvailable(context)) {
+                        deleteImageFromStorage(photoUrl, unused2 -> {
+                            onSuccess.onSuccess(id);
+                        }, onFailure);
+                    } else onSuccess.onSuccess(id);
+
+                }).addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to delete mood event document.", e));
                 });
+
+            } else {
+                onFailure.onFailure(new Exception("Mood event document does not exist."));
+            }
+
+        }).addOnFailureListener(e -> {
+            onFailure.onFailure(new Exception("Failed to get mood event document with id " + id + " when attempting to delete it.", e));
+        });
+        docRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                docRef.delete().addOnSuccessListener(unused -> {
+
+                    // Remove cached image if it has one
+                    if (MoodImageCache.getInstance().hasCachedImage(id)) {
+                        MoodImageCache.getInstance().remove(id);
+                    }
+
+                    onSuccess.onSuccess(id);
+                }).addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to delete mood event document: " + e.getMessage()));
+                });
+
+            } else {
+                onFailure.onFailure(new Exception("Mood event document does not exist."));
+            }
+
+        }).addOnFailureListener(e -> {
+            onFailure.onFailure(new Exception("Failed to get mood event document when trying to delete: " + e.getMessage()));
+        });
 
         if (!isNetworkAvailable(context)) {
             onSuccess.onSuccess(id);
@@ -584,6 +618,26 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
                 })
                 .addOnFailureListener(e -> {
                     onFailure.onFailure(new Exception("Failed to download image bytes"));
+                });
+    }
+
+    /**
+     * Deletes an image from firebase storage.
+     * @param url
+     *      URL of the image to delete.
+     * @param onSuccess
+     *      Success callback function.
+     * @param onFailure
+     *      Failure callback function.
+     */
+    private void deleteImageFromStorage(String url, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        FirebaseStorage
+                .getInstance()
+                .getReferenceFromUrl(url)
+                .delete()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(e -> {
+                    onFailure.onFailure(new Exception("Failed to delete file from storage. URL = " + url, e));
                 });
     }
 
