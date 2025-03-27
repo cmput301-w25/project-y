@@ -116,7 +116,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         TextView dateTextView = findViewById(R.id.dateUpdateMood);
         if (moodEventToUpdateOrDelete.getDateTime() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
-            dateTextView.setText("Mood Event scheduled for " + sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate()));
+            dateTextView.setText(String.format("Mood Event scheduled for %s", sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate())));
         }
 
         if (photoImgView != null) {
