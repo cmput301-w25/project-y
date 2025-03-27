@@ -144,7 +144,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
      * Sets up the photo display for the mood event
      */
     private void setUpPhotoDisplay() {
-        ImageView photoImgView = findViewById(R.id.photo);
+        ImageView photoImgView = findViewById(R.id.imageView);
         String photoURL = targetMood.getPhotoURL();
 
         // Hide photo view if mood has no photo
