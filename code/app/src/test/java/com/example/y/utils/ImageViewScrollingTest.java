@@ -72,5 +72,5 @@ public class ImageViewScrollingTest {
         assertEquals("getValue() should return the integer value from the tag", 1, imageViewScrolling.getValue());
     }
 
-    
+
 }
