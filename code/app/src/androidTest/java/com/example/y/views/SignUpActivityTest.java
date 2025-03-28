@@ -87,7 +87,8 @@ public class SignUpActivityTest {
     }
 
     @Test
-    public void checkEmptyPassword() {
+    public void checkEmptyPassword() throws InterruptedException {
+        Thread.sleep(2000);
         Matcher<View> password = withId(R.id.password);
         onView(password).check(matches(isDisplayed()));
         onView(password).perform(typeText("Tegen"));
@@ -96,7 +97,8 @@ public class SignUpActivityTest {
     }
 
     @Test
-    public void checkEmptyConfirmPassword() {
+    public void checkEmptyConfirmPassword() throws InterruptedException {
+        Thread.sleep(2000);
         Matcher<View> password = withId(R.id.confirmPassword);
         onView(password).check(matches(isDisplayed()));
         onView(password).perform(typeText("Tegen"));
@@ -107,7 +109,8 @@ public class SignUpActivityTest {
 
 
     @Test
-    public void checkEmailValidation() {
+    public void checkEmailValidation() throws InterruptedException {
+        Thread.sleep(2000);
         Matcher<View> ogEmail = withId(R.id.email);
         Matcher<View> cEmail = withId(R.id.confirm_email);
         onView(ogEmail).check(matches(isDisplayed()));
@@ -130,6 +133,7 @@ public class SignUpActivityTest {
 
     @Test
     public void checkPasswordValidation() throws InterruptedException {
+        Thread.sleep(2000);
         Matcher<View> password = withId(R.id.password);
         Matcher<View> cPassword = withId(R.id.confirmPassword);
         onView(password).check(matches(isDisplayed()));
