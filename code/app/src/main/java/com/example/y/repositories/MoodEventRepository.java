@@ -186,7 +186,15 @@ public class MoodEventRepository extends GenericRepository<MoodEventListener> {
 
             // Upload image if online
             if (isNetworkAvailable(context)) {
-                uploadAndAttachImage(uploadedMood, photoBitmap, onSuccess, onFailure);
+
+                // Upload image to storage and attach to mood
+                uploadAndAttachImage(uploadedMood, photoBitmap, uploadedMoodWithImage -> {
+
+                    // Update mood
+                    updateMoodEvent(uploadedMoodWithImage, context, onSuccess::onSuccess, onFailure);
+
+                }, onFailure);
+
                 return;
             }
 
