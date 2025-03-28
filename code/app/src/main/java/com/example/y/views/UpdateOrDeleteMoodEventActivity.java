@@ -69,20 +69,15 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    },
-                    LOCATION_PERMISSION_REQUEST_CODE
-            );
-        } else {
+        //suppress warning
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationController = new LocationController(this);
         }
+        else {
+        locationController = new LocationController(this);
+        }
+
 
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
