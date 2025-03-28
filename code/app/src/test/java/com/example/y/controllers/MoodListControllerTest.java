@@ -90,6 +90,8 @@ public class MoodListControllerTest {
 
         mocksessionmanager = new SessionManager(context);
         mocksessionmanager.saveSession(testUser);
+        when(mocksessionmanager.isLoggedIn()).thenReturn(true);
+        when(mocksessionmanager.getUsername()).thenReturn(testUser);
 
         when(mockCollectionRef.addSnapshotListener(any())).thenReturn(null);
 

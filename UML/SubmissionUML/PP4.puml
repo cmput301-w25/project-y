@@ -8,14 +8,25 @@ skinparam ranksep 100
 skinparam padding 5
 
 class FollowRequestsActivity {
-    controller : FollowRequestController
-    NoFollowRequests : TextView
+    - controller : FollowRequestController
+    - NoFollowRequests : TextView
     + setvisible()
     + setnotvisible()
     # onCreate(Bundle)
     # getActivityLayout() : int
 }
 FollowRequestsActivity --|> BaseActivity
+
+class MoodImageCache {
+    - {static} instance : MoodImageCache
+    - cache : HashMap<String, Bitmap>
+    - MoodImageCache()
+    + {static} getInstance() : MoodImageCache
+    + put(String, Bitmap)
+    + remove(String)
+    + getBitmap(String) : Bitmap
+    + hasCachedImage(String) : boolean
+}
 
 class MoodHistoryController {
     - poster : String
@@ -885,6 +896,7 @@ FollowRequestRepository --> "Notifies" FollowRequestListener
 
 MoodEventRepository --> "0..*" MoodEvent
 MoodEventRepository --> "Notifies" MoodEventListener
+MoodEventRepository --> MoodImageCache
 
 UserRepository --> "0..*" User
 UserRepository --> "Notifies" UserListener
@@ -906,6 +918,7 @@ MoodEventArrayAdapter --> MoodEventRepository
 MoodEventArrayAdapter --> "Shows" Emotion
 MoodEventArrayAdapter --> "Shows" SocialSituation
 MoodEventArrayAdapter --> FollowButton
+MoodEventArrayAdapter --> MoodImageCache
 
 SearchResultArrayAdapter o-- "0..*" FollowStatus
 SearchResultArrayAdapter --> "0..*" User
@@ -940,6 +953,7 @@ EnhancedMoodActivity --> "Shows" SocialSituation
 EnhancedMoodActivity --> GenericTextWatcher
 EnhancedMoodActivity --> "Launches" UserProfileActivity
 EnhancedMoodActivity --> "Launches" UpdateOrDeleteMoodEventActivity
+EnhancedMoodActivity --> MoodImageCache
 
 FollowingMoodEventListActivity o-- "1" FollowingMoodListController
 
@@ -981,6 +995,7 @@ UpdateOrDeleteMoodEventActivity o-- "1" UpdateOrDeleteMoodEventController
 UpdateOrDeleteMoodEventActivity o-- "1" LocationController
 UpdateOrDeleteMoodEventActivity --> "Shows and requests to update" MoodEvent
 UpdateOrDeleteMoodEventActivity --> "Launches" FollowingMoodEventListActivity
+UpdateOrDeleteMoodEventActivity --> MoodImageCache
 
 UserProfileActivity o-- "1" MoodListController
 UserProfileActivity o-- "1" FollowButton
