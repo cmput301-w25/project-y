@@ -6,14 +6,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,123 +45,67 @@ import java.util.Locale;
 public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-    private final LruCache<String, Bitmap> imageCache =
-            new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8) {
-                protected int sizeOf(String key, Bitmap value) {
-                    return value.getByteCount() / 1024;
-                }
-            };
-    private Spinner spinnerMood;
-    private Spinner spinnerSocial;
-    private CheckBox checkShareLocation;
+    private Spinner moodSpinner;
+    private Spinner socialSituationSpinner;
+    private CheckBox shareLocationCheckBox;
     private CheckBox privateCheckbox;
     private EditText moodTextEditText;
     private UpdateOrDeleteMoodEventController updateOrDeleteMoodEventController;
     private LocationController locationController;
-    private ImageView photoImgView;
-    private Button updateButton, deleteButton;
+    private MoodEvent targetMood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_or_delete);
 
-
         //suppress warning
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationController = new LocationController(this);
         }
         else {
-        locationController = new LocationController(this);
+            locationController = new LocationController(this);
         }
 
 
         updateOrDeleteMoodEventController = new UpdateOrDeleteMoodEventController(this);
 
         // Get mood event to update
-        MoodEvent moodEventToUpdateOrDelete = getIntent().getParcelableExtra("mood_event");
+        targetMood = getIntent().getParcelableExtra("mood_event");
+        assert targetMood != null;
 
-        // Set the Emotion spinner
-        initViews();
-
-
-        makeEmotionSpinner();
-        // Set social situation spinner
-        makeSocialSpinner();
-
-        // Grab the text explanation view as well as the date
-        //https://developer.android.com/training/permissions/requesting
-
-        // Populate form with the mood event's data
-        assert moodEventToUpdateOrDelete != null;
-        privateCheckbox.setChecked(moodEventToUpdateOrDelete.getIsPrivate());
-
-        checkShareLocation.setChecked((moodEventToUpdateOrDelete.getLocation() != null));
-
-        moodTextEditText.setText(moodEventToUpdateOrDelete.getText());
-        SocialSituation socialSituation = moodEventToUpdateOrDelete.getSocialSituation();
-        spinnerSocial.setSelection(socialSituation == null ? 0 : socialSituation.getIndex() + 1);
-        spinnerMood.setSelection(moodEventToUpdateOrDelete.getEmotion().getIndex());
-        String photoURL = moodEventToUpdateOrDelete.getPhotoURL();
-        photoImgView = findViewById(R.id.imageView);
-
-        initializeBorderColors();
-        TextView dateTextView = findViewById(R.id.dateUpdateMood);
-        if (moodEventToUpdateOrDelete.getDateTime() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
-            dateTextView.setText(String.format("Mood Event scheduled for %s", sdf.format(moodEventToUpdateOrDelete.getDateTime().toDate())));
-        }
-
-        if (photoImgView != null) {
-            if ((photoURL != null && !photoURL.isEmpty()) || MoodImageCache.getInstance().hasCachedImage(moodEventToUpdateOrDelete.getId())) {
-                // Set tag to track proper image association
-                photoImgView.setTag(photoURL);
-                photoImgView.setImageResource(R.drawable.mood);  // Temp placeholder
-                photoImgView.setVisibility(View.VISIBLE);
-
-                // Check image cache first
-                Bitmap cachedBitmap = imageCache.get(photoURL);
-                if (cachedBitmap != null) {
-                    photoImgView.setImageBitmap(cachedBitmap);
-                } else {
-                    MoodEventRepository.getInstance().downloadImage(this, moodEventToUpdateOrDelete, bitmap -> {
-                        // Cache downloaded image
-                        imageCache.put(moodEventToUpdateOrDelete.getId(), bitmap);
-
-                        // Only set image if tag matches current URL
-                        if (moodEventToUpdateOrDelete.getId().equals(photoImgView.getTag())) {
-                            photoImgView.setImageBitmap(bitmap);
-                        }
-                    }, this::handleException);
-                }
-            } else {
-                // Clear if there is no photo
-                photoImgView.setImageDrawable(null);
-                photoImgView.setVisibility(View.GONE);
-                photoImgView.setTag(null);
-            }
-        }
-
-
-        // Back button listener
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish()); // If they click the back button
-        updateButton.setOnClickListener(v -> onUpdateMoodEvent(moodEventToUpdateOrDelete)); // If they click update
-        deleteButton.setOnClickListener(v -> onDeleteMoodEvent(moodEventToUpdateOrDelete)); // If they click delete
-    }
-
-    /***
-     * Ints the views
-     */
-
-    private void initViews() {
-        spinnerMood = findViewById(R.id.spinnerMoodUpdate);
-        spinnerSocial = findViewById(R.id.spinnerSocialSituationUpdate);
-        checkShareLocation = findViewById(R.id.checkBoxLocationUpdate);
+        // Init views
+        moodSpinner = findViewById(R.id.spinnerMoodUpdate);
+        socialSituationSpinner = findViewById(R.id.spinnerSocialSituationUpdate);
+        shareLocationCheckBox = findViewById(R.id.checkBoxLocationUpdate);
         moodTextEditText = findViewById(R.id.updateText);
         privateCheckbox = findViewById(R.id.privacyCheckBoxUpdate);
-        updateButton = findViewById(R.id.UpdateMoodButton);
-        deleteButton = findViewById(R.id.deleteMoodButton);
 
+        // Initialize spinners
+        makeEmotionSpinner();
+        makeSocialSpinner();
+
+        // Populate form with the mood event's data
+        privateCheckbox.setChecked(targetMood.getIsPrivate());
+        shareLocationCheckBox.setChecked((targetMood.getLocation() != null));
+        moodTextEditText.setText(targetMood.getText());
+        SocialSituation socialSituation = targetMood.getSocialSituation();
+        socialSituationSpinner.setSelection(socialSituation == null ? 0 : socialSituation.getIndex() + 1);
+        moodSpinner.setSelection(targetMood.getEmotion().getIndex());
+        TextView dateTextView = findViewById(R.id.dateUpdateMood);
+        if (targetMood.getDateTime() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+            dateTextView.setText(String.format("Mood Event scheduled for %s", sdf.format(targetMood.getDateTime().toDate())));
+        }
+        initializeBorderColors();
+
+        // Set image
+        setUpPhotoDisplay();
+
+        // Back, update, and delete button listeners
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish()); // If they click the back button
+        findViewById(R.id.UpdateMoodButton).setOnClickListener(v -> onUpdateMoodEvent(targetMood)); // If they click update
+        findViewById(R.id.deleteMoodButton).setOnClickListener(v -> onDeleteMoodEvent(targetMood)); // If they click delete
     }
 
     /***
@@ -177,8 +118,7 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> moodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, moodAdapterContent);
         moodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMood.setAdapter(moodAdapter);
-
+        moodSpinner.setAdapter(moodAdapter);
     }
 
     /**
@@ -192,10 +132,28 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> socialAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, socialSituationAdapterContent);
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSocial.setAdapter(socialAdapter);
+        socialSituationSpinner.setAdapter(socialAdapter);
 
     }
 
+    /***
+     * Sets up the photo display for the mood event
+     */
+    private void setUpPhotoDisplay() {
+        ImageView photoImgView = findViewById(R.id.imageView);
+        String photoURL = targetMood.getPhotoURL();
+
+        // Hide photo view if mood has no photo
+        if ((photoURL == null || photoURL.isEmpty()) && !MoodImageCache.getInstance().hasCachedImage(targetMood.getId())) {
+            photoImgView.setVisibility(View.GONE);
+            return;
+        }
+
+        // Set photo otherwise
+        photoImgView.setVisibility(View.VISIBLE);
+        photoImgView.setImageResource(R.drawable.mood);  // Temporary placeholder image
+        MoodEventRepository.getInstance().downloadImage(this, targetMood, photoImgView::setImageBitmap, this::handleException);
+    }
 
     /**
      * Handles updating moods
@@ -204,20 +162,20 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
      */
     private void onUpdateMoodEvent(MoodEvent moodToUpdate) {
         // Set emotion
-        Emotion selectedEmotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
+        Emotion selectedEmotion = Emotion.values()[moodSpinner.getSelectedItemPosition()];
         moodToUpdate.setEmotion(selectedEmotion);
 
         // Set social situation
-        SocialSituation selectedSocialSituation = spinnerSocial.getSelectedItemPosition() == 0
+        SocialSituation selectedSocialSituation = socialSituationSpinner.getSelectedItemPosition() == 0
                 ? null
-                : SocialSituation.values()[spinnerSocial.getSelectedItemPosition() - 1];
+                : SocialSituation.values()[socialSituationSpinner.getSelectedItemPosition() - 1];
         moodToUpdate.setSocialSituation(selectedSocialSituation);
 
         // Set everything else
         moodToUpdate.setIsPrivate(privateCheckbox.isChecked());
         moodToUpdate.setText(moodTextEditText.getText().toString().trim());
 
-        if (checkShareLocation.isChecked()) {
+        if (shareLocationCheckBox.isChecked()) {
             // Get the current location asynchronously and then update the mood event.
             locationController.getCurrentLocation(location -> {
                 if (location != null) {
@@ -261,13 +219,13 @@ public class UpdateOrDeleteMoodEventActivity extends AppCompatActivity {
 
     private void initializeBorderColors() {
         // Set border to match the selected emotion in the spinner
-        Emotion emotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
+        Emotion emotion = Emotion.values()[moodSpinner.getSelectedItemPosition()];
         ScrollView border = findViewById(R.id.scrollView);
         border.setBackgroundColor(emotion.getColor(this));
 
         // Dynamically update the border color as the user selects different emotions
         Context context = this;
-        spinnerMood.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Emotion emotion = Emotion.values()[i];

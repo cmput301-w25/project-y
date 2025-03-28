@@ -98,14 +98,15 @@ public class AddMoodController {
             onFailure.onFailure(new Exception("Image cannot exceed 65,535 Bytes"));
             return;
         }
-        //      location
-        //          Not sure if this needs to be validated
 
         // Finally upload the mood
         try {
-            MoodEventRepository moodRepo = MoodEventRepository.getInstance();
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
-            moodRepo.addMoodEvent(mood, bitmap, context, onSuccess, onFailure);
+            // Upload bitmap if mood has photo
+            Bitmap bitmap = null;
+            if (photoUri != null) bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+
+            // Upload mood
+            MoodEventRepository.getInstance().addMoodEvent(mood, bitmap, context, onSuccess, onFailure);
         } catch (IOException e) {
             Log.e("Y ERROR", "Error converting URI to Bitmap", e);
         }
