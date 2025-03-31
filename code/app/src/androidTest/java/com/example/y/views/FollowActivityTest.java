@@ -61,6 +61,11 @@ public class FollowActivityTest {
     }
 
     @Test
+    public void assertTrue(){
+        assert true;
+    }
+    //@Test ESPRESSO TEST RECORDER SUCKS
+    @Test
     public void followActivityTest() throws InterruptedException {
 
         ViewInteraction appCompatEditText = onView(
