@@ -22,7 +22,6 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         selectSearchHeaderButton();
 
-        // TODO: Search functionality
         EditText searchBox = findViewById(R.id.searchEditText);
         searchBox.addTextChangedListener(new TextWatcher() {
             @Override

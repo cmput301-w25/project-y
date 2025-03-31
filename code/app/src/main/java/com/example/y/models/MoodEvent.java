@@ -166,6 +166,7 @@ public class MoodEvent implements Serializable, Parcelable {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(id);

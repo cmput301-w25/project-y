@@ -136,6 +136,7 @@
 
     <string name="slot_machine_ad_text">We noticed you\'ve been feeling sad lately. Our slot machine can bring joy into your life once again!</string>
     <string name="slot_machine_ad_button">Try it now!</string>
+    <string name="editbutton">editButton</string>
 
 
 </resources>

@@ -19,6 +19,8 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.User;
 import com.example.y.repositories.CommentRepository;
+import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
@@ -69,6 +71,12 @@ public class DiscoverControllerTest {
     private UserRepository mockUserRepo;
 
     @Mock
+    private FollowRepository mockFollowRepo;
+
+    @Mock
+    private FollowRequestRepository mockFollowReqRepo;
+
+    @Mock
     private SessionManager mockSessionManager;
 
     @Mock
@@ -82,6 +90,8 @@ public class DiscoverControllerTest {
     private MockedStatic<FirebaseFirestore> firestoreMock;
     private MockedStatic<MoodEventRepository> moodRepoMock;
     private MockedStatic<UserRepository> userRepoMock;
+    private MockedStatic<FollowRepository> followRepoMock;
+    private MockedStatic<FollowRequestRepository> followReqRepoMock;
     private MockedStatic<SessionManager> sessionManagerMock;
 
     private final String testUser = "testUser";
@@ -103,6 +113,10 @@ public class DiscoverControllerTest {
         moodRepoMock.when(MoodEventRepository::getInstance).thenReturn(mockMoodRepo);
         userRepoMock = mockStatic(UserRepository.class);
         userRepoMock.when(UserRepository::getInstance).thenReturn(mockUserRepo);
+        followRepoMock = mockStatic(FollowRepository.class);
+        followRepoMock.when(FollowRepository::getInstance).thenReturn(mockFollowRepo);
+        followReqRepoMock = mockStatic(FollowRequestRepository.class);
+        followReqRepoMock.when(FollowRequestRepository::getInstance).thenReturn(mockFollowReqRepo);
         sessionManagerMock = mockStatic(SessionManager.class);
         when(mockSessionManager.getUsername()).thenReturn(testUser);
         List<MoodEvent> testMoodEvents = createTestMoodEvents();
@@ -131,6 +145,8 @@ public class DiscoverControllerTest {
         if (firestoreMock != null) firestoreMock.close();
         if (moodRepoMock != null) moodRepoMock.close();
         if (userRepoMock != null) userRepoMock.close();
+        if (followRepoMock != null) followRepoMock.close();
+        if (followReqRepoMock != null) followReqRepoMock.close();
         if (sessionManagerMock != null) sessionManagerMock.close();
         if (mockedConstruction != null)  mockedConstruction.close();
     }

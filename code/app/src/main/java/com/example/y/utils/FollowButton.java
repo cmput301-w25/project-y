@@ -41,6 +41,8 @@ public class FollowButton extends AppCompatButton {
     }
 
     private void setStyles() {
+        setVisibility(View.VISIBLE);
+        setClickable(true);
         if (profileUser == null || followStatus == null) return;
 
         // Hide button if looking at your own profile

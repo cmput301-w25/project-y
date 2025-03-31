@@ -2,6 +2,8 @@ package com.example.y.views;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.location.Location;
@@ -15,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -69,7 +72,13 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
         // Initialize controllers.
         locationMoodController = new LocationMoodController(this);
-        locationController = new LocationController(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationController = new LocationController(this);
+        }
+        else {
+            locationController = new LocationController(this);
+        }
 
         // Set up the spinner with three options.
         spinnerOptions = findViewById(R.id.spinner_options);

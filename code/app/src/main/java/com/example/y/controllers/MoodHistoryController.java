@@ -1,21 +1,19 @@
 package com.example.y.controllers;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.FollowRepository;
 import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.HashMap;
 
 /**
- * Controller to display the mood history of a specific user
+ * Controller to display the mood history of a specific user.
  */
 public class MoodHistoryController extends MoodListController {
 
@@ -33,41 +31,27 @@ public class MoodHistoryController extends MoodListController {
         super(context);
         this.poster = poster;
 
-        MoodEventRepository moodEventRepo = MoodEventRepository.getInstance();
-        FollowRepository followRepo = FollowRepository.getInstance();
-        FollowRequestRepository followReqRepo = FollowRequestRepository.getInstance();
+        // Get all public mood events from poster
+        MoodEventRepository.getInstance().getAllPublicMoodEventsFrom(poster, allPublicMoods -> {
 
-        moodEventRepo.getAllPublicMoodEventsFrom(poster, allPublicMoods -> {
-
-            // Get hashmap, only one item
+            // Hashmap is not used but we define it as NEITHER by default
             HashMap<String, UserRepository.FollowStatus> followStatus = new HashMap<>();
             followStatus.put(poster, UserRepository.FollowStatus.NEITHER);
 
-            // Query for is following or did request, update hashmap accordingly
-            followRepo.isFollowing(session.getUsername(), poster, isF -> {
-                followReqRepo.didRequest(session.getUsername(), poster, didReq -> {
-
-                    // Update
-                    if (didReq) followStatus.put(poster, UserRepository.FollowStatus.REQUESTED);
-                    else if (isF) followStatus.put(poster, UserRepository.FollowStatus.FOLLOWING);
-
-                    // Initialize adapter
-                    initializeArrayAdapter(allPublicMoods, followStatus);
-                    moodAdapter.deactivateUsernames();
-                    onSuccess.onSuccess(null);
-
-                }, onFailure);
-            }, onFailure);
+            // Initialize array adapter with default follow status
+            initializeArrayAdapter(allPublicMoods, followStatus);
+            moodAdapter.deactivateUsernames();
+            onSuccess.onSuccess(null);
 
         }, onFailure);
     }
 
     /**
-     * Check if mood event is owned by user and is public
+     * Check if mood event is owned by user and is public.
      * @param mood
      *      Mood event to check for.
      * @return
-     *      True if mood event belongs to target user, else false
+     *      True if mood event belongs to target user, else false.
      */
     @Override
     public boolean doesBelongInOriginal(MoodEvent mood) {
@@ -75,11 +59,11 @@ public class MoodHistoryController extends MoodListController {
     }
 
     /**
-     * Checks if a poster's mood events are allowed to be displayed
+     * Checks if a poster's mood events are allowed to be displayed.
      * @param poster
      *      Username of poster to check for.
      * @return
-     *      Return True if target user, else it is false
+     *      Return True if target user, else it is false.
      */
     @Override
     public boolean isPosterAllowed(String poster) {
