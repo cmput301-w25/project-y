@@ -17,6 +17,8 @@ import android.content.SharedPreferences;
 
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
+import com.example.y.repositories.FollowRepository;
+import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
@@ -54,6 +56,10 @@ public class FollowControllerTest {
     @Mock
     private MoodEventRepository mockMoodRepo;
     @Mock
+    private FollowRepository mockFollowRepo;
+    @Mock
+    private FollowRequestRepository mockFollowReqRepo;
+    @Mock
     private UserRepository mockUserRepo;
     @Mock
     private SessionManager mockSessionManager;
@@ -69,6 +75,8 @@ public class FollowControllerTest {
     private MockedStatic<FirebaseApp> firebaseAppMock;
     private MockedStatic<FirebaseFirestore> firestoreMock;
     private MockedStatic<MoodEventRepository> moodRepoMock;
+    private MockedStatic<FollowRepository> followRepoMock;
+    private MockedStatic<FollowRequestRepository> followReqRepoMock;
     private MockedStatic<UserRepository> userRepoMock;
     private MockedStatic<SessionManager> sessionManagerMock;
     private MockedConstruction<SessionManager> mockedConstruction; // Declare here
@@ -89,6 +97,10 @@ public class FollowControllerTest {
         when(mockCollectionRef.addSnapshotListener(any())).thenReturn(null);
         moodRepoMock = mockStatic(MoodEventRepository.class);
         moodRepoMock.when(MoodEventRepository::getInstance).thenReturn(mockMoodRepo);
+        followRepoMock = mockStatic(FollowRepository.class);
+        followRepoMock.when(FollowRepository::getInstance).thenReturn(mockFollowRepo);
+        followReqRepoMock = mockStatic(FollowRequestRepository.class);
+        followReqRepoMock.when(FollowRequestRepository::getInstance).thenReturn(mockFollowReqRepo);
         userRepoMock = mockStatic(UserRepository.class);
         userRepoMock.when(UserRepository::getInstance).thenReturn(mockUserRepo);
         sessionManagerMock = mockStatic(SessionManager.class);
@@ -129,6 +141,8 @@ public class FollowControllerTest {
         if (firebaseAppMock != null) firebaseAppMock.close();
         if (firestoreMock != null) firestoreMock.close();
         if (moodRepoMock != null) moodRepoMock.close();
+        if (followRepoMock != null) followRepoMock.close();
+        if (followReqRepoMock != null) followReqRepoMock.close();
         if (userRepoMock != null) userRepoMock.close();
         if (sessionManagerMock != null) sessionManagerMock.close();
         if (mockedConstruction != null) mockedConstruction.close();
