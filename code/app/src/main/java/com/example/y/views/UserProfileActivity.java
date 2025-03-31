@@ -177,6 +177,7 @@ public class UserProfileActivity extends BaseActivity
                 filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
+        myMoodHistoryBtn.callOnClick();
 
         // Personal journal button click
         myPersonalJournalBtn.setOnClickListener(v -> {
