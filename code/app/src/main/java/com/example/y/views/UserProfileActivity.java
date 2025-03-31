@@ -21,6 +21,7 @@ import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
+import com.example.y.utils.MoodFilterView;
 import com.example.y.utils.MoodListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -39,7 +40,8 @@ public class UserProfileActivity extends BaseActivity
     private TextView followerCountTv;
     private MoodListView moodListView;
     private ImageButton backBtn;
-    
+    private MoodFilterView filterView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
@@ -89,18 +91,25 @@ public class UserProfileActivity extends BaseActivity
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(targetUser);
 
+        // Get filter
+        filterView = findViewById(R.id.filter);
+
         // Initialize MoodHistoryController to display this user’s public mood list
         moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new MoodHistoryController(this, targetUser, unused -> {
+
+            // Set adapter and initialize filter
             moodListView.setAdapter(controller.getMoodAdapter());
+            filterView.initializeFilter(controller);
+
+            // Initialize all things for my user profile
+            if (session.getUsername().equals(targetUser)) {
+                initMyProfile();
+            }
+
         }, error -> {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         });
-
-        // Initialize all things for my user profile
-        if (session.getUsername().equals(targetUser)) {
-            initMyProfile();
-        }
     }
 
     @Override
@@ -150,8 +159,8 @@ public class UserProfileActivity extends BaseActivity
         FloatingActionButton addMoodBtn = findViewById(R.id.addMoodBtn);
 
         // Show buttons and add button, hide back button
-        LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
-        moodListPickerLayout.setVisibility(ListView.VISIBLE);
+        LinearLayout myProfileSettings = findViewById(R.id.myProfileSettings);
+        myProfileSettings.setVisibility(ListView.VISIBLE);
         addMoodBtn.setVisibility(View.VISIBLE);
         followReqsBtn.setVisibility(View.VISIBLE);
         logOutBtn.setVisibility(View.VISIBLE);
@@ -169,6 +178,7 @@ public class UserProfileActivity extends BaseActivity
             // Use mood history controller journal controller
             controller = new MoodHistoryController(this, targetUser, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
+                filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
@@ -180,6 +190,7 @@ public class UserProfileActivity extends BaseActivity
             // Use personal journal controller
             controller = new PersonalJournalController(this, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
+                filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
