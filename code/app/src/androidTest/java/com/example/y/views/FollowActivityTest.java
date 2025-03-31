@@ -41,8 +41,28 @@ public class FollowActivityTest {
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+
     @Test
-    public void followActivityTest() {
+    public void followActivityTest() throws InterruptedException {
+
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.username),
                         childAtPosition(
@@ -72,7 +92,7 @@ public class FollowActivityTest {
                                 3),
                         isDisplayed()));
         materialButton.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatImageButton = onView(
                 allOf(withId(R.id.btnSearch), withContentDescription("Search"),
                         childAtPosition(
@@ -83,7 +103,7 @@ public class FollowActivityTest {
                                 2),
                         isDisplayed()));
         appCompatImageButton.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.searchEditText),
                         childAtPosition(
@@ -93,7 +113,7 @@ public class FollowActivityTest {
                                 0),
                         isDisplayed()));
         appCompatEditText3.perform(replaceText("testUser234"), closeSoftKeyboard());
-
+        Thread.sleep(2000);
         ViewInteraction followButton = onView(
                 allOf(withId(R.id.searchFollowBtn), withText("Follow"),
                         childAtPosition(
@@ -113,7 +133,7 @@ public class FollowActivityTest {
                                 4),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.logOutBtn), withText("Log Out"),
                         childAtPosition(
@@ -123,7 +143,7 @@ public class FollowActivityTest {
                                 4),
                         isDisplayed()));
         materialButton2.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.username),
                         childAtPosition(
@@ -153,7 +173,7 @@ public class FollowActivityTest {
                                 3),
                         isDisplayed()));
         materialButton3.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withId(R.id.btnUserProfile), withContentDescription("User Profile"),
                         childAtPosition(
@@ -164,7 +184,7 @@ public class FollowActivityTest {
                                 4),
                         isDisplayed()));
         appCompatImageButton3.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.followReqBtn), withText("Requests"),
                         childAtPosition(
@@ -174,14 +194,14 @@ public class FollowActivityTest {
                                 3),
                         isDisplayed()));
         materialButton4.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction textView = onView(
                 allOf(withId(R.id.username), withText("testUser123"),
                         withParent(allOf(withId(R.id.followReqView),
                                 withParent(withId(R.id.listviewFollowRequests)))),
                         isDisplayed()));
         textView.check(matches(withText("testUser123")));
-
+        Thread.sleep(2000);
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.acceptBtn), withText("Accept"),
                         childAtPosition(
@@ -190,7 +210,7 @@ public class FollowActivityTest {
                                 1),
                         isDisplayed()));
         materialButton5.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.EmptyFollowRequests), withText("No Follow Requests"),
                         withParent(withParent(withId(R.id.content))),
@@ -217,7 +237,7 @@ public class FollowActivityTest {
                                 4),
                         isDisplayed()));
         materialButton6.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatEditText6 = onView(
                 allOf(withId(R.id.username),
                         childAtPosition(
@@ -247,7 +267,7 @@ public class FollowActivityTest {
                                 3),
                         isDisplayed()));
         materialButton7.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatImageButton5 = onView(
                 allOf(withId(R.id.btnSearch), withContentDescription("Search"),
                         childAtPosition(
@@ -258,7 +278,7 @@ public class FollowActivityTest {
                                 2),
                         isDisplayed()));
         appCompatImageButton5.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatEditText8 = onView(
                 allOf(withId(R.id.searchEditText),
                         childAtPosition(
@@ -291,24 +311,7 @@ public class FollowActivityTest {
                                 2),
                         isDisplayed()));
         followButton2.perform(click());
-    }
+        Thread.sleep(2000);
 
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
     }
 }
