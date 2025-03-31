@@ -9,12 +9,12 @@
         android:id="@+id/current_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/cherry" />
+        android:src="@drawable/cry" />
 
     <ImageView
         android:id="@+id/next_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/orange" />
+        android:src="@drawable/happy" />
 
 </FrameLayout>
