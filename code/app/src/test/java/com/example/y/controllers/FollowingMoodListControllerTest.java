@@ -1,8 +1,14 @@
 package com.example.y.controllers;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,7 +16,6 @@ import android.content.SharedPreferences;
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.UserRepository;
-import com.example.y.services.SessionManager;
 import com.example.y.utils.MoodEventListFilter;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
