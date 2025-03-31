@@ -13,7 +13,7 @@
 
 ## Project Description
 ***Y*** is an Android App designed to assist university students or staff in seeing a clearer picture of their trials and tribulations as they navigate their academic careers. 
-Given the predominant rise of mobile apps, we made an easy, user-friendly solution. Users can create a "mood event" for a current or future date. From there, users attach the emotion they/will feel, the social situation, and why they might feel that way. Users can keep their mood events in private journals or publicly share them. Users can follow other users, where their followers will appear in the follower's feed and where they can add comments to help support their peers. 
+Given the rise of mobile apps, we created an easy, user-friendly solution. Users can create a "mood event" for a current or future date. From there, they attach the emotion they/will feel, the social situation, and why they might feel that way. Users can keep their mood events in private journals or publicly share them with their followers or the world. 
 
 
 
