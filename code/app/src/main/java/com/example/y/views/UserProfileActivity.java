@@ -155,8 +155,8 @@ public class UserProfileActivity extends BaseActivity
         FloatingActionButton addMoodBtn = findViewById(R.id.addMoodBtn);
 
         // Show buttons and add button, hide back button
-        LinearLayout moodListPickerLayout = findViewById(R.id.moodListPicker);
-        moodListPickerLayout.setVisibility(ListView.VISIBLE);
+        LinearLayout myProfileSettings = findViewById(R.id.myProfileSettings);
+        myProfileSettings.setVisibility(ListView.VISIBLE);
         addMoodBtn.setVisibility(View.VISIBLE);
         followReqsBtn.setVisibility(View.VISIBLE);
         logOutBtn.setVisibility(View.VISIBLE);
