@@ -40,7 +40,8 @@ public class UserProfileActivity extends BaseActivity
     private TextView followerCountTv;
     private MoodListView moodListView;
     private ImageButton backBtn;
-    
+    private MoodFilterView filterView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize activity
@@ -90,18 +91,25 @@ public class UserProfileActivity extends BaseActivity
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(targetUser);
 
+        // Get filter
+        filterView = findViewById(R.id.filter);
+
         // Initialize MoodHistoryController to display this user’s public mood list
         moodListView = findViewById(R.id.listviewMoodEvents);
         controller = new MoodHistoryController(this, targetUser, unused -> {
+
+            // Set adapter and initialize filter
             moodListView.setAdapter(controller.getMoodAdapter());
+            filterView.initializeFilter(controller);
+
+            // Initialize all things for my user profile
+            if (session.getUsername().equals(targetUser)) {
+                initMyProfile();
+            }
+
         }, error -> {
             Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         });
-
-        // Initialize all things for my user profile
-        if (session.getUsername().equals(targetUser)) {
-            initMyProfile();
-        }
     }
 
     @Override
@@ -143,10 +151,6 @@ public class UserProfileActivity extends BaseActivity
     private void initMyProfile() {
         selectProfileHeaderButton();
 
-        // Get filter
-        MoodFilterView filterView = findViewById(R.id.filter);
-        filterView.setVisibility(View.VISIBLE);
-
         // Get buttons
         Button myMoodHistoryBtn = findViewById(R.id.myHistoryBtn);
         Button myPersonalJournalBtn = findViewById(R.id.myPersonalJournalBtn);
@@ -177,7 +181,6 @@ public class UserProfileActivity extends BaseActivity
                 filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
-        myMoodHistoryBtn.callOnClick();
 
         // Personal journal button click
         myPersonalJournalBtn.setOnClickListener(v -> {
@@ -187,6 +190,7 @@ public class UserProfileActivity extends BaseActivity
             // Use personal journal controller
             controller = new PersonalJournalController(this, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
+                filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
