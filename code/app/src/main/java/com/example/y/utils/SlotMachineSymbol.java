@@ -8,12 +8,12 @@ import com.example.y.R;
 public enum SlotMachineSymbol {
 
     // TODO: Insert actual drawables
-    BAR(R.drawable.happy1),
-    SEVEN(R.drawable.confusion1),
-    ORANGE(R.drawable.anger1),
-    LEMON(R.drawable.cry1),
-    TRIPLE(R.drawable.seven1),
-    WATERMELON(R.drawable.surprised1);
+    BAR(R.drawable.happy),
+    SEVEN(R.drawable.confusion),
+    ORANGE(R.drawable.anger),
+    LEMON(R.drawable.cry),
+    TRIPLE(R.drawable.seven),
+    WATERMELON(R.drawable.surprised);
 
     private final int image;
 
