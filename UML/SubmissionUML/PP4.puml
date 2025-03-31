@@ -7,6 +7,17 @@ skinparam nodesep 100
 skinparam ranksep 100
 skinparam padding 5
 
+class MoodFilterView{
+    - controller: MoodListController
+    + initializeFilter(MoodListController)
+    - initializeLayout(Context)
+    - initializeMinDateFilter()
+    - initializeMaxDateFilter()
+    - initializeEmotionSpinner()
+    - initializeReasonWhyKeywordFilter()
+    - showDatePickerDialog(Timestamp, DatePickerDialog.OnDateSetListener)
+}
+
 class FollowRequestsActivity {
     - controller : FollowRequestController
     - NoFollowRequests : TextView
@@ -713,11 +724,7 @@ class MoodListActivity {
     # moodListView : MoodListView
     - slotMachineAdView : View
     # onCreate(Bundle)
-    - initializeMinDateFilter()
-    - initializeMaxDateFilter()
-    - initializeEmotionSpinner()
-    - initializeReasonWhyKeywordFilter()
-    - showDatePickerDialog(Timestamp, DatePickerDialog.OnDateSetListener)
+    # onControllerInitialized()
     + showSlotMachineAd(boolean)
     # getActivityLayout() : int
     # handleException(Exception)
@@ -981,6 +988,7 @@ MoodAddActivity --> "Launches" FollowingMoodEventListActivity
 
 MoodListActivity o-- "1" MoodListController
 MoodListActivity o-- "1" MoodListView
+MoodListActivity --> MoodFilterView
 
 SearchActivity o-- "1" SearchController
 
@@ -1003,7 +1011,10 @@ UserProfileActivity o-- "1" MoodListView
 UserProfileActivity --> "Launches" MoodAddActivity
 UserProfileActivity --> "Launches" LoginActivity
 UserProfileActivity --> "Launches" FollowRequestsActivity
+UserProfileActivity --> MoodFilterView
 
+MoodFilterView --> FollowButton
+MoodFilterView o-- MoodListController
 
 ' Notes '
 note left of GenericRepository : All repositories\ninteract with the\nFirestore database.
