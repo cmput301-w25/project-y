@@ -21,6 +21,7 @@ import com.example.y.repositories.FollowRequestRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.example.y.utils.FollowButton;
+import com.example.y.utils.MoodFilterView;
 import com.example.y.utils.MoodListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -142,6 +143,10 @@ public class UserProfileActivity extends BaseActivity
     private void initMyProfile() {
         selectProfileHeaderButton();
 
+        // Get filter
+        MoodFilterView filterView = findViewById(R.id.filter);
+        filterView.setVisibility(View.VISIBLE);
+
         // Get buttons
         Button myMoodHistoryBtn = findViewById(R.id.myHistoryBtn);
         Button myPersonalJournalBtn = findViewById(R.id.myPersonalJournalBtn);
@@ -169,6 +174,7 @@ public class UserProfileActivity extends BaseActivity
             // Use mood history controller journal controller
             controller = new MoodHistoryController(this, targetUser, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
+                filterView.initializeFilter(controller);
             }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
