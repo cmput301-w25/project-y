@@ -20,9 +20,8 @@ public class FollowRepository extends GenericRepository<FollowListener> {
 
     private static FollowRepository instance;  // Singleton instance
     public static final String FOLLOW_COLLECTION = "follows";
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private  CollectionReference followsRef = db.collection(FOLLOW_COLLECTION);
-
+    private final FirebaseFirestore db;
+    private final CollectionReference followsRef;
 
     /**
      * Listens for follows being added or deleted.
@@ -45,10 +44,37 @@ public class FollowRepository extends GenericRepository<FollowListener> {
         void onFollowDeleted(String followerUsername, String followedUsername);
     }
 
+    private FollowRepository() {
+        db = FirebaseFirestore.getInstance();
+        enableOfflinePersistence(db);
+        followsRef = db.collection(FOLLOW_COLLECTION);
+        startListening();
+    }
+
+    /**
+     * @param firestore
+     *      Firestore db instance.
+     */
+    private FollowRepository(FirebaseFirestore firestore) {
+        db = firestore;
+        followsRef = db.collection(FOLLOW_COLLECTION);
+        startListening();
+    }
+
+    /**
+     * Gets singleton instance of this repository
+     * @return
+     *      Instance of FollowRepository
+     */
+    public static synchronized FollowRepository getInstance() {
+        if (instance == null) instance = new FollowRepository();
+        return instance;
+    }
+
     /**
      * Initialize the follows snapshot listener
      */
-    private FollowRepository() {
+    private void startListening() {
         // Listen for real-time updates and notify all listeners
         followsRef.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
@@ -75,24 +101,6 @@ public class FollowRepository extends GenericRepository<FollowListener> {
     }
 
     /**
-     * Gets singleton instance of this repository
-     * @return
-     *      Instance of FollowRepository
-     */
-    public static synchronized FollowRepository getInstance() {
-        if (instance == null) instance = new FollowRepository();
-        return instance;
-    }
-
-
-
-    private FollowRepository(FirebaseFirestore firestore) {
-        db = firestore;
-        followsRef = db.collection(FOLLOW_COLLECTION );
-    }
-
-
-    /**
      * Updates the singleton instance with a new db
      * @param firestore
      *      Testing db instance.
@@ -100,7 +108,6 @@ public class FollowRepository extends GenericRepository<FollowListener> {
     public static void setInstanceForTesting(FirebaseFirestore firestore) {
         instance = new FollowRepository(firestore);
     }
-
 
     /**
      * Adds a follow record to the database.

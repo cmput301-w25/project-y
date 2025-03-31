@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.models.SocialSituation;
 import com.example.y.services.SessionManager;
+import com.example.y.utils.GenericTextWatcher;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -40,6 +42,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Form to post a new mood event.
+ */
 public class MoodAddActivity extends AppCompatActivity {
 
     private static final String TAG = "MoodAddActivity";
@@ -48,7 +53,7 @@ public class MoodAddActivity extends AppCompatActivity {
     private Spinner spinnerMood;
     private CheckBox checkShareLocation;
     private EditText etReasonWhyText;
-    private EditText datePicked;
+    private TextView datePicked;
     private Uri selectedImageUri;
     private CheckBox privateCheckBox;
     private Button btnSubmit;
@@ -64,36 +69,19 @@ public class MoodAddActivity extends AppCompatActivity {
         setContentView(R.layout.add_mood);
         session = new SessionManager(this);
         addMoodController = new AddMoodController(this);
+        locationController = new LocationController(this);
 
         // Initialize (image) buttons
-        btnInsertImage = findViewById(R.id.btnInsertImage);
-        btnSubmit = findViewById(R.id.btnSubmit);
-        btnSubmit.setClickable(true);
 
-        // Instantiate LocationController early in onCreate to register the launcher before RESUMED.
-        locationController = new LocationController(this);
         // Initialize views
-        spinnerMood = findViewById(R.id.spinnerMood);
-        checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        privateCheckBox = findViewById(R.id.privacyCheckBox);
-        checkShareLocation = findViewById(R.id.checkboxShareLocation);
-        etReasonWhyText = findViewById(R.id.etReasonWhyText);
-        datePicked = findViewById(R.id.datePickerAddMood);
-        datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
 
-        // Configure mood spinner adapter
-        ArrayList<String> spinnerContent = new ArrayList<>();
-        for (Emotion emotion : Emotion.values()) {
-            spinnerContent.add(emotion.getText(this));
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerContent);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMood.setAdapter(adapter);
-
-
+        initViews();
+        makeEmotionSpinner();
         initializeBorderColors();
         makeSocialSpinner();
 
+        etReasonWhyText.addTextChangedListener(new GenericTextWatcher(etReasonWhyText, "Reason Why Error","Reason Why"));
+        datePicked.setOnClickListener(view -> showDatePickerDialog(datePicked));
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         btnInsertImage.setOnClickListener(v -> images());
 
@@ -115,11 +103,9 @@ public class MoodAddActivity extends AppCompatActivity {
                 moodDateTime = new Timestamp(date);
             } catch (ParseException e) {
                 btnSubmit.setClickable(true);
-                e.printStackTrace();
                 Toast.makeText(this, "Invalid date format", LENGTH_SHORT).show();
             }
 
-            // Populate mood event
             MoodEvent newMood = new MoodEvent();
             newMood.setPosterUsername(session.getUsername());
             newMood.setDateTime(moodDateTime);
@@ -154,6 +140,39 @@ public class MoodAddActivity extends AppCompatActivity {
 
     }
 
+    /***
+     * Inits the views
+     */
+    private void initViews(){
+        btnInsertImage = findViewById(R.id.btnInsertImage);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        btnSubmit.setClickable(true);
+
+        spinnerMood = findViewById(R.id.spinnerMood);
+        checkShareLocation = findViewById(R.id.checkboxShareLocation);
+        privateCheckBox = findViewById(R.id.privacyCheckBox);
+        checkShareLocation = findViewById(R.id.checkboxShareLocation);
+        etReasonWhyText = findViewById(R.id.etReasonWhyText);
+        datePicked = findViewById(R.id.datePickerAddMood);
+    }
+
+    /***
+     * Sets up the emotions spinner
+     */
+    private void makeEmotionSpinner(){
+        // Configure mood spinner adapter
+        ArrayList<String> spinnerContent = new ArrayList<>();
+        for (Emotion emotion : Emotion.values()) {
+            spinnerContent.add(emotion.getText(this));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerContent);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMood.setAdapter(adapter);
+    }
+
+    /**
+     * Initializes the border colours given by the value in the emotion spinner
+     */
     private void initializeBorderColors() {
         // Set border to match the selected emotion in the spinner
         Emotion emotion = Emotion.values()[spinnerMood.getSelectedItemPosition()];
@@ -180,7 +199,7 @@ public class MoodAddActivity extends AppCompatActivity {
      *
      * @param datePicked Edit text of our date picker.
      */
-    private void showDatePickerDialog(EditText datePicked) {
+    private void showDatePickerDialog(TextView datePicked) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -278,5 +297,4 @@ public class MoodAddActivity extends AppCompatActivity {
     }
 
 }
-
 

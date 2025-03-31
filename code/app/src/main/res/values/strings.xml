@@ -73,7 +73,7 @@
     <string name="date_and_time">Date and Time</string>
     <string name="emoticon">Emoticon</string>
     <string name="alone">Alone</string>
-    <string name="reason">Reason</string>
+    <string name="reason_why_text">Reason why text</string>
     <string name="mood_photo">Mood photo</string>
     <string name="location">Location</string>
     <string name="confrim_password">Confrim Password</string>
@@ -133,6 +133,10 @@
         <item>With a crowd</item>
 
     </string-array>
+
+    <string name="slot_machine_ad_text">We noticed you\'ve been feeling sad lately. Our slot machine can bring joy into your life once again!</string>
+    <string name="slot_machine_ad_button">Try it now!</string>
+    <string name="editbutton">editButton</string>
 
 
 </resources>

@@ -13,9 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.y.R;
 import com.example.y.controllers.SignUpController;
-import com.example.y.services.AuthManager;
 import com.example.y.utils.GenericTextWatcher;
 
+/**
+ * Page where user can create a new account.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private SignUpController signUpController;
@@ -34,7 +36,6 @@ public class SignUpActivity extends AppCompatActivity {
         // init vars
 
         signUpController = new SignUpController(this);
-        new AuthManager(this);
 
         nameField = findViewById(R.id.name);
         usernameField = findViewById(R.id.username);

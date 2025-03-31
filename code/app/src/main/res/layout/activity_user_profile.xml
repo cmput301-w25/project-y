@@ -1,83 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
+    <!-- Original layout content -->
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:orientation="vertical" >
+        android:layout_height="match_parent" >
 
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="8dp"
-            android:layout_marginStart="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/back"
-            android:scaleType="fitCenter"
-            android:src="@drawable/left_arrow"
-            app:tint="@color/black" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:padding="8dp"
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="8dp"
+                android:layout_marginStart="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/back"
+                android:scaleType="fitCenter"
+                android:src="@drawable/left_arrow"
+                app:tint="@color/black" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Username"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@id/profileFollowButton"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/followerCount"
-                app:layout_constraintTop_toTopOf="parent"/>
+                android:orientation="horizontal" >
 
-            <TextView
-                android:id="@+id/followerCount"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@id/profileFollowButton"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/followerCount"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/followerCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 followers"
+                    app:layout_constraintTop_toBottomOf="@id/tvUsername"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_margin="4dp" />
+
+                <com.example.y.utils.FollowButton
+                    android:id="@+id/profileFollowButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingVertical="15dp"
+                    android:paddingHorizontal="20dp"
+                    android:textSize="16sp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="false"
+                    android:text="@string/follow"
+                    android:layout_gravity="end"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/follow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/tvUsername"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/followReqBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/logOutBtn"
+                    app:layout_constraintLeft_toRightOf="@id/tvUsername"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:cornerRadius="5dp"
+                    android:backgroundTint="@color/button"
+                    android:layout_marginHorizontal="4dp"
+                    android:text="Requests" />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/logOutBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/followReqBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:cornerRadius="5dp"
+                    android:backgroundTint="@color/button"
+                    android:layout_marginHorizontal="4dp"
+                    android:text="Log Out" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/moodListPicker"
+                android:visibility="gone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="0 followers"
-                app:layout_constraintTop_toBottomOf="@id/tvUsername"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_margin="4dp" />
+                android:orientation="horizontal" >
 
-            <com.example.y.utils.FollowButton
-                android:id="@+id/profileFollowButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingVertical="15dp"
-                android:paddingHorizontal="20dp"
-                android:textSize="16sp"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:clickable="false"
-                android:text="@string/follow"
-                android:layout_gravity="end"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/follow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/tvUsername"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <Button
+                    android:id="@+id/myHistoryBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mood History"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="@color/unselectedButton"
+                    app:cornerRadius="0dp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/myPersonalJournalBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Personal Journal"
+                    android:layout_marginRight="4dp"
+                    android:backgroundTint="@color/unselectedButton"
+                    app:cornerRadius="0dp"  />
 
-    </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     <!-- Mood list for the user -->
-    <ListView
+    <com.example.y.utils.MoodListView
         android:id="@+id/listviewMoodEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addMoodBtn"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/add"
+        android:backgroundTint="@color/addMood"
+        android:contentDescription="Mood add button"
+        app:elevation="8dp" />
+
+</FrameLayout>

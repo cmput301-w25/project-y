@@ -31,18 +31,21 @@ public class LocationController {
 
     private final Activity activity;
     private final FusedLocationProviderClient fusedLocationProviderClient;
-    private final ActivityResultLauncher<String> permissionLauncher;
+    private final ActivityResultLauncher<String[]> permissionLauncher;
     private LocationCallback locationCallback; // Stores callback while waiting for permission
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public LocationController(Activity activity) {
         this.activity = activity;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
 
-        // Register for the permission result using the Activity Result API.
+        // Register for the permission result using the Activity Result API for multiple permissions.
         permissionLauncher = ((ComponentActivity) activity).registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    if (isGranted) {
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    Boolean fineLocationGranted = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
+                    Boolean coarseLocationGranted = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+                    if (Boolean.TRUE.equals(fineLocationGranted) || Boolean.TRUE.equals(coarseLocationGranted)) {
                         fetchLocationInternal();
                     } else {
                         Toast.makeText(activity, "Location permission denied", Toast.LENGTH_SHORT).show();
@@ -61,19 +64,27 @@ public class LocationController {
      */
     public void getCurrentLocation(LocationCallback callback) {
         this.locationCallback = callback;
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+
+        boolean fineGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+        boolean coarseGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        if (fineGranted || coarseGranted) {
             fetchLocationInternal();
         } else {
-            // Request the location permission.
-            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            // Request both permissions simultaneously.
+            permissionLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
         }
     }
 
     /**
      * Internal method that actually fetches the location.
      */
-
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @SuppressLint("MissingPermission")
     private void fetchLocationInternal() {
         fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)

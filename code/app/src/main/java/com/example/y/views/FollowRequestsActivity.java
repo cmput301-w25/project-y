@@ -9,11 +9,13 @@ import android.widget.Toast;
 import com.example.y.R;
 import com.example.y.controllers.FollowRequestController;
 
+/**
+ * Shows a list of follow requests the logged in user can accept or decline.
+ */
 public class FollowRequestsActivity extends BaseActivity {
 
     FollowRequestController controller;
     TextView NoFollowRequests;
-
 
     public void setvisible() {
         NoFollowRequests.setVisibility(View.VISIBLE);
@@ -27,18 +29,16 @@ public class FollowRequestsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         deselectAllHeaderButtons();
+
         ListView reqListView = findViewById(R.id.listviewFollowRequests);
         NoFollowRequests = findViewById(R.id.EmptyFollowRequests);
+
         controller = new FollowRequestController(this, unused -> {
             reqListView.setAdapter(controller.getAdapter());
         }, e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        controller.onActivityStop();
+        // Back btn
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
     @Override

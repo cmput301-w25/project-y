@@ -1,20 +1,14 @@
 package com.example.y.controllers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
 
 import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
-import com.example.y.repositories.MoodEventRepository;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 public class AddMoodControllerTest {
 
@@ -85,7 +79,7 @@ public class AddMoodControllerTest {
         mockMoodEvent.setText("a".repeat(201)); // 201 characters (should fail)
         try {
             addMoodController.onSubmitMood(mockMoodEvent, null, m -> {}, e -> {
-                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 200 characters", e.getMessage());
+                assertEquals("Wrong error: " + e.getMessage(), "Reason why text length must be at most 200 characters!", e.getMessage());
             });
         } catch (Exception e) {
             fail("Mood submitted when reason is of length > 200");
