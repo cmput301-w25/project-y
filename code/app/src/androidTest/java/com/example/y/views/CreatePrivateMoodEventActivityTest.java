@@ -18,7 +18,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
-
 import static java.lang.Thread.sleep;
 
 import android.view.View;
@@ -41,16 +40,38 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Random;
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class Createprivatemoodeventactivity {
-
+public class CreatePrivateMoodEventActivityTest {
+    //TODO: make it so that incase it crashes, it has a unique mood event, as well add thread.sleep() when the activity changes so that it doesn't get cooked by a race condition
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+    Random rand = new Random();
+    int x = rand.nextInt(100);
     @Test
-    public void vreateprivatemoodeventactivity() throws InterruptedException {
+    public void privateMoodActivityTest() throws InterruptedException {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.username),
                         childAtPosition(
@@ -171,6 +192,8 @@ public class Createprivatemoodeventactivity {
                                 1),
                         isDisplayed()));
         floatingActionButton.perform(click());
+        sleep(2000);
+
 
         ViewInteraction appCompatEditText10 = onView(
                 allOf(withId(R.id.etReasonWhyText),
@@ -179,7 +202,7 @@ public class Createprivatemoodeventactivity {
                                         withClassName(is("android.widget.LinearLayout")),
                                         0),
                                 1)));
-        appCompatEditText10.perform(scrollTo(), replaceText("personal"), closeSoftKeyboard());
+        appCompatEditText10.perform(scrollTo(), replaceText("personal"+x), closeSoftKeyboard());
 
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.privacyCheckBox), withText("Private"),
@@ -190,6 +213,7 @@ public class Createprivatemoodeventactivity {
                                                 5)),
                                 0)));
         materialCheckBox.perform(scrollTo(), click());
+        Thread.sleep(2000);
 
         ViewInteraction materialTextView = onView(
                 allOf(withId(R.id.datePickerAddMood),
@@ -219,7 +243,7 @@ public class Createprivatemoodeventactivity {
                                 0),
                         isDisplayed()));
         materialButton3.perform(click());
-
+        sleep(2000);
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withId(R.id.btnUserProfile), withContentDescription("User Profile"),
                         childAtPosition(
@@ -241,12 +265,12 @@ public class Createprivatemoodeventactivity {
                                 1),
                         isDisplayed()));
         materialButton4.perform(click());
-
+        sleep(2000);
         ViewInteraction textView = onView(
-                allOf(withId(R.id.text), withText("personal"),
+                allOf(withId(R.id.text), withText("personal"+x),
                         withParent(withParent(withId(R.id.border))),
                         isDisplayed()));
-        textView.check(matches(withText("personal")));
+        textView.check(matches(withText("personal"+x)));
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.username), withText("testUser123"),
@@ -263,7 +287,7 @@ public class Createprivatemoodeventactivity {
         linearLayout.perform(click());
 
         ViewInteraction appCompatImageButton3 = onView(
-                allOf(withId(R.id.editMenuIcon), withContentDescription("Back"),
+                allOf(withId(R.id.editMenuIcon), withContentDescription("editButton"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.border),
@@ -310,24 +334,5 @@ public class Createprivatemoodeventactivity {
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
                         isDisplayed()));
         textView3.check(matches(withText("testUser123")));
-    }
-
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
     }
 }
