@@ -59,7 +59,7 @@ public class SearchActivityTest {
     }
 
     @Test
-    public void testTypingInSearchEditText() {
+    public void testTypingInSearchEditText() throws InterruptedException {
         // Launch the SearchActivity
         ActivityScenario<SearchActivity> scenario = ActivityScenario.launch(SearchActivity.class);
         scenario.onActivity(activity -> {
@@ -72,7 +72,7 @@ public class SearchActivityTest {
             );
             listView.setAdapter(adapter);
         });
-
+        Thread.sleep(5000);
 
         onView(withId(R.id.searchEditText))
                 .perform(typeText("testUser"), closeSoftKeyboard());
