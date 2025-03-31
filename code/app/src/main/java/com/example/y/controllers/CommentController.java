@@ -14,16 +14,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
+/**
+ * Handles comment adding and viewing for the enhanced mood activity.
+ */
 public class CommentController implements CommentRepository.CommentListener {
-    private String commenter;
-    private Context context;
+
+    private final String commenter;
+    private final Context context;
     private CommentArrayAdapter commentArrayAdapter;
     private ArrayList<Comment> commentsList;
-    private MoodEvent moodEventToComment;
-    ;
-
-    public CommentController() {
-    }
+    private final MoodEvent moodEventToComment;
 
     /***
      * Constructor for CommentController
@@ -54,7 +54,6 @@ public class CommentController implements CommentRepository.CommentListener {
         if (comment.getMoodEventId().equals(moodEventToComment.getId())) {
             Log.d("CommentController", "Comment added: " + comment.getText());
             Log.d("CommentController", "Comment list size: " + commentsList.size());
-
 
             notifyAdapter();
         }
@@ -89,8 +88,8 @@ public class CommentController implements CommentRepository.CommentListener {
         comment.setText(commentText);
         comment.setPosterUsername(commenter);
         commentsList.add(comment);
-        CommentRepository.getInstance().addComment(comment, addedComment -> {
-        }, e -> {
+        CommentRepository.getInstance().addComment(comment, addedComment -> {}, e -> {
+            Log.e("Y ERROR", e.getMessage(), e);
         });
     }
 }

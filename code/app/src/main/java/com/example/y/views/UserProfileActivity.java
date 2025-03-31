@@ -169,9 +169,7 @@ public class UserProfileActivity extends BaseActivity
             // Use mood history controller journal controller
             controller = new MoodHistoryController(this, targetUser, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
-            }, error -> {
-                Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            });
+            }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
         // Personal journal button click
@@ -182,9 +180,7 @@ public class UserProfileActivity extends BaseActivity
             // Use personal journal controller
             controller = new PersonalJournalController(this, unused -> {
                 moodListView.setAdapter(controller.getMoodAdapter());
-            }, error -> {
-                Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            });
+            }, error -> Toast.makeText(UserProfileActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
         // Add mood button click

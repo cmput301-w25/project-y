@@ -1,245 +1,197 @@
 package com.example.y.controllers;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.example.y.controllers.LocationMoodController;
+import com.example.y.models.Emotion;
 import com.example.y.models.MoodEvent;
 import com.example.y.repositories.MoodEventRepository;
 import com.example.y.repositories.UserRepository;
 import com.example.y.services.SessionManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Arrays;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = Config.NONE)  // Prevent Robolectric from looking for a manifest file
 public class LocationMoodControllerTest {
 
-    private Activity testActivity;
-    private Context context;
+    private Context mockContext;
+    private SessionManager mockSession;
+    private UserRepository mockUserRepo;
+    private MoodEventRepository mockMoodRepo;
     private LocationMoodController controller;
-
-    // These mocks will be returned when the controller calls getInstance()
-    @Mock
-    private UserRepository mockUserRepoInstance;
-    @Mock
-    private MoodEventRepository mockMoodEventRepoInstance;
-
-    // Keep static mocks open so that they intercept calls in the constructor
-    private MockedStatic<UserRepository> mockedUserRepo;
-    private MockedStatic<MoodEventRepository> mockedMoodRepo;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        // Create a real Activity instance using Robolectric.
-        testActivity = Robolectric.buildActivity(Activity.class).create().get();
-        context = testActivity;
+        // Stub the Context to provide SharedPreferences.
+        mockContext = mock(Context.class);
+        SharedPreferences mockSharedPrefs = mock(SharedPreferences.class);
+        SharedPreferences.Editor mockEditor = mock(SharedPreferences.Editor.class);
+        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPrefs);
+        when(mockSharedPrefs.edit()).thenReturn(mockEditor);
+        // Stub editor methods to return the editor.
+        when(mockEditor.putString(anyString(), anyString())).thenReturn(mockEditor);
+        when(mockEditor.putBoolean(anyString(), anyBoolean())).thenReturn(mockEditor);
+        // Stub SharedPreferences to simulate a logged-in user.
+        when(mockSharedPrefs.getBoolean("isLoggedIn", false)).thenReturn(true);
+        when(mockSharedPrefs.getString("username", "N/A")).thenReturn("testUser");
 
-        // Manually initialize Firebase with dummy options.
-        if (FirebaseApp.getApps(context).isEmpty()) {
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setApplicationId("1:1234567890:android:abcdef") // dummy app id
-                    .setApiKey("fakeApiKey")
-                    .setProjectId("fakeProjectId")
-                    .build();
-            FirebaseApp.initializeApp(context, options);
+        // Create a real SessionManager with the stubbed context.
+        mockSession = new SessionManager(mockContext);
+        // (saveSession() isn't strictly needed because our stubs override getBoolean and getString)
+        // mockSession.saveSession("testUser");
+
+        // Create a mocked FirebaseFirestore that returns non-null collection references.
+        FirebaseFirestore mockFirestore = mock(FirebaseFirestore.class);
+        CollectionReference mockUsersRef = mock(CollectionReference.class);
+        when(mockFirestore.collection(UserRepository.USER_COLLECTION)).thenReturn(mockUsersRef);
+        when(mockUsersRef.addSnapshotListener(any(EventListener.class))).thenReturn(null);
+        CollectionReference mockMoodEventsRef = mock(CollectionReference.class);
+        when(mockFirestore.collection(MoodEventRepository.MOOD_EVENT_COLLECTION)).thenReturn(mockMoodEventsRef);
+        when(mockMoodEventsRef.addSnapshotListener(any(EventListener.class))).thenReturn(null);
+
+        // Initialize repository singletons with the mocked FirebaseFirestore.
+        UserRepository.setInstanceForTesting(mockFirestore);
+        MoodEventRepository.setInstanceForTesting(mockFirestore);
+
+        // Create mocks for the repositories to be injected later.
+        mockUserRepo = mock(UserRepository.class);
+        mockMoodRepo = mock(MoodEventRepository.class);
+
+        // Instantiate the controller.
+        controller = new LocationMoodController(mockContext);
+
+        // Inject our mocks into the controller’s private fields via reflection.
+        try {
+            java.lang.reflect.Field sessionField = LocationMoodController.class.getDeclaredField("session");
+            sessionField.setAccessible(true);
+            sessionField.set(controller, mockSession);
+
+            java.lang.reflect.Field userRepoField = LocationMoodController.class.getDeclaredField("userRepo");
+            userRepoField.setAccessible(true);
+            userRepoField.set(controller, mockUserRepo);
+
+            java.lang.reflect.Field moodRepoField = LocationMoodController.class.getDeclaredField("moodEventRepo");
+            moodRepoField.setAccessible(true);
+            moodRepoField.set(controller, mockMoodRepo);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to inject mocks", e);
         }
-
-        // Initialize SharedPreferences so that SessionManager returns a valid username.
-        context.getSharedPreferences("session", Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean("isLoggedIn", true)
-                .putString("username", "testUser")
-                .commit();
-
-        // Open static mocks before constructing the controller.
-        mockedUserRepo = mockStatic(UserRepository.class);
-        mockedUserRepo.when(UserRepository::getInstance).thenReturn(mockUserRepoInstance);
-
-        mockedMoodRepo = mockStatic(MoodEventRepository.class);
-        mockedMoodRepo.when(MoodEventRepository::getInstance).thenReturn(mockMoodEventRepoInstance);
-
-        // Now, when the LocationMoodController constructor calls getInstance(),
-        // it will receive our test doubles instead of running the real initialization.
-        controller = new LocationMoodController(context);
     }
 
-    @After
-    public void tearDown() {
-        // Close static mocks after tests.
-        if (mockedUserRepo != null) {
-            mockedUserRepo.close();
-        }
-        if (mockedMoodRepo != null) {
-            mockedMoodRepo.close();
-        }
-    }
-
-    /**
-     * Test getMoodEventsWithLocation:
-     * Provide a list of mood events (some with a non-null GeoPoint, some with null).
-     * Verify that only those with a non-null location are returned.
-     */
     @Test
     public void testGetMoodEventsWithLocation() {
-        ArrayList<MoodEvent> allEvents = new ArrayList<>();
-        MoodEvent eventWithLocation1 = new MoodEvent();
-        eventWithLocation1.setLocation(new GeoPoint(37.4219983, -122.084));
-        eventWithLocation1.setPosterUsername("user1");
-
-        MoodEvent eventWithLocation2 = new MoodEvent();
-        eventWithLocation2.setLocation(new GeoPoint(37.4220, -122.085));
-        eventWithLocation2.setPosterUsername("user2");
-
-        MoodEvent eventWithoutLocation = new MoodEvent();
+        // Prepare a mix of mood events: one with a non-null location and one without.
+        MoodEvent eventWithLocation = new MoodEvent("1", Timestamp.now(), "user1", Timestamp.now(), Emotion.HAPPINESS);
+        eventWithLocation.setLocation(new GeoPoint(10.0, 20.0));
+        MoodEvent eventWithoutLocation = new MoodEvent("2", Timestamp.now(), "user2", Timestamp.now(), Emotion.SADNESS);
         eventWithoutLocation.setLocation(null);
-        eventWithoutLocation.setPosterUsername("user3");
+        ArrayList<MoodEvent> allEvents = new ArrayList<>(Arrays.asList(eventWithLocation, eventWithoutLocation));
 
-        allEvents.add(eventWithLocation1);
-        allEvents.add(eventWithoutLocation);
-        allEvents.add(eventWithLocation2);
-
-        // Stub getAllPublicMoodEvents on our mock repository.
+        // Stub the repository method to simulate fetching all public mood events.
         doAnswer(invocation -> {
-            OnSuccessListener<ArrayList<MoodEvent>> successListener = invocation.getArgument(0);
-            successListener.onSuccess(allEvents);
+            OnSuccessListener<ArrayList<MoodEvent>> onSuccess = invocation.getArgument(0);
+            onSuccess.onSuccess(allEvents);
             return null;
-        }).when(mockMoodEventRepoInstance).getAllPublicMoodEvents(any(OnSuccessListener.class), any(OnFailureListener.class));
+        }).when(mockMoodRepo).getAllPublicMoodEvents(any(OnSuccessListener.class), any(OnFailureListener.class));
 
-        AtomicReference<ArrayList<MoodEvent>> capturedResult = new AtomicReference<>();
-        controller.getMoodEventsWithLocation(capturedResult::set, e -> {
-            throw new RuntimeException("Failure callback should not be called");
-        });
+        final ArrayList<MoodEvent>[] resultHolder = new ArrayList[1];
+        controller.getMoodEventsWithLocation(new OnSuccessListener<ArrayList<MoodEvent>>() {
+            @Override
+            public void onSuccess(ArrayList<MoodEvent> moodEvents) {
+                resultHolder[0] = moodEvents;
+            }
+        }, e -> fail("Should not fail"));
 
-        ArrayList<MoodEvent> result = capturedResult.get();
-        assert result != null;
-        assert result.size() == 2;
-        assert result.contains(eventWithLocation1);
-        assert result.contains(eventWithLocation2);
+        assertNotNull("Result should not be null", resultHolder[0]);
+        // Only the event with a non-null location should be returned.
+        assertEquals("Only one event with location should be returned", 1, resultHolder[0].size());
+        assertEquals(eventWithLocation, resultHolder[0].get(0));
     }
 
-    /**
-     * Test getMoodEventsWithLocationAndFollowed:
-     * Simulate that the logged-in user (testUser) follows "user1" and "user2".
-     * Provide mood events with locations posted by various users.
-     * Verify that only events posted by followed users are returned.
-     */
     @Test
     public void testGetMoodEventsWithLocationAndFollowed() {
-        ArrayList<String> followingList = new ArrayList<>();
-        followingList.add("user1");
-        followingList.add("user2");
+        // Prepare a mood event from a followed user.
+        MoodEvent followedEvent = new MoodEvent("3", Timestamp.now(), "followedUser", Timestamp.now(), Emotion.HAPPINESS);
+        followedEvent.setLocation(new GeoPoint(15.0, 25.0));
+        ArrayList<MoodEvent> followedEvents = new ArrayList<>(Arrays.asList(followedEvent));
 
-        ArrayList<MoodEvent> allEvents = new ArrayList<>();
-        MoodEvent event1 = new MoodEvent();
-        event1.setLocation(new GeoPoint(37.4219983, -122.084));
-        event1.setPosterUsername("user1");
-
-        MoodEvent event2 = new MoodEvent();
-        event2.setLocation(new GeoPoint(37.4220, -122.085));
-        event2.setPosterUsername("user3"); // not followed
-
-        MoodEvent event3 = new MoodEvent();
-        event3.setLocation(new GeoPoint(37.4221, -122.086));
-        event3.setPosterUsername("user2");
-
-        allEvents.add(event1);
-        allEvents.add(event2);
-        allEvents.add(event3);
-
-        // Stub getFollowing on our user repository mock.
+        // Stub the UserRepository method for fetching followed public mood events with location.
         doAnswer(invocation -> {
-            String usernameArg = invocation.getArgument(0);
-            OnSuccessListener<ArrayList<String>> successListener = invocation.getArgument(1);
-            assert "testUser".equals(usernameArg);
-            successListener.onSuccess(followingList);
+            String username = invocation.getArgument(0);
+            assertEquals("testUser", username);
+            OnSuccessListener<ArrayList<MoodEvent>> onSuccess = invocation.getArgument(1);
+            onSuccess.onSuccess(followedEvents);
             return null;
-        }).when(mockUserRepoInstance).getFollowing(anyString(), any(OnSuccessListener.class), any(OnFailureListener.class));
+        }).when(mockUserRepo).getFollowedPublicMoodEventsWithLocation(anyString(), any(OnSuccessListener.class), any(OnFailureListener.class));
 
-        // Stub getAllPublicMoodEvents on our mood event repository mock.
-        doAnswer(invocation -> {
-            OnSuccessListener<ArrayList<MoodEvent>> successListener = invocation.getArgument(0);
-            successListener.onSuccess(allEvents);
-            return null;
-        }).when(mockMoodEventRepoInstance).getAllPublicMoodEvents(any(OnSuccessListener.class), any(OnFailureListener.class));
+        final ArrayList<MoodEvent>[] resultHolder = new ArrayList[1];
+        controller.getMoodEventsWithLocationAndFollowed(new OnSuccessListener<ArrayList<MoodEvent>>() {
+            @Override
+            public void onSuccess(ArrayList<MoodEvent> moodEvents) {
+                resultHolder[0] = moodEvents;
+            }
+        }, e -> fail("Should not fail"));
 
-        AtomicReference<ArrayList<MoodEvent>> capturedResult = new AtomicReference<>();
-        controller.getMoodEventsWithLocationAndFollowed(capturedResult::set, e -> {
-            throw new RuntimeException("Failure callback should not be called");
-        });
-
-        ArrayList<MoodEvent> result = capturedResult.get();
-        assert result != null;
-        // Only event1 (user1) and event3 (user2) should be returned.
-        assert result.size() == 2;
-        assert result.contains(event1);
-        assert result.contains(event3);
+        assertNotNull("Result should not be null", resultHolder[0]);
+        assertEquals("Only one followed event should be returned", 1, resultHolder[0].size());
+        assertEquals(followedEvent, resultHolder[0].get(0));
     }
 
-    /**
-     * Test getMoodEventWithin5kmFromUser:
-     * Provide a list of mood events with locations and a user location.
-     * Verify that only events within 5 km are returned.
-     */
     @Test
     public void testGetMoodEventWithin5kmFromUser() {
-        Location userLocation = new Location("dummy");
-        userLocation.setLatitude(37.4220);
-        userLocation.setLongitude(-122.0840);
+        // Set up a user location (latitude = 0, longitude = 0)
+        Location userLocation = new Location("");
+        userLocation.setLatitude(0);
+        userLocation.setLongitude(0);
 
-        ArrayList<MoodEvent> allEvents = new ArrayList<>();
-        MoodEvent closeEvent = new MoodEvent();
-        closeEvent.setLocation(new GeoPoint(37.4221, -122.0841));
-        closeEvent.setPosterUsername("user1");
+        // Create two mood events:
+        // One event is within 5 km (small offset) and one far away.
+        MoodEvent eventWithin = new MoodEvent("4", Timestamp.now(), "userA", Timestamp.now(), Emotion.HAPPINESS);
+        eventWithin.setLocation(new GeoPoint(0.01, 0.01));
+        MoodEvent eventOutside = new MoodEvent("5", Timestamp.now(), "userB", Timestamp.now(), Emotion.SADNESS);
+        eventOutside.setLocation(new GeoPoint(1.0, 1.0)); // Far away
+        ArrayList<MoodEvent> events = new ArrayList<>(Arrays.asList(eventWithin, eventOutside));
 
-        MoodEvent farEvent = new MoodEvent();
-        farEvent.setLocation(new GeoPoint(37.0, -122.0));
-        farEvent.setPosterUsername("user2");
-
-        allEvents.add(closeEvent);
-        allEvents.add(farEvent);
-
+        // Stub the UserRepository method to return these events.
         doAnswer(invocation -> {
-            OnSuccessListener<ArrayList<MoodEvent>> successListener = invocation.getArgument(0);
-            successListener.onSuccess(allEvents);
+            String username = invocation.getArgument(0);
+            assertEquals("testUser", username);
+            OnSuccessListener<ArrayList<MoodEvent>> onSuccess = invocation.getArgument(1);
+            onSuccess.onSuccess(events);
             return null;
-        }).when(mockMoodEventRepoInstance).getAllPublicMoodEvents(any(OnSuccessListener.class), any(OnFailureListener.class));
+        }).when(mockUserRepo).getLatestUniqueMoodEventPerUser(anyString(), any(OnSuccessListener.class), any(OnFailureListener.class));
 
-        AtomicReference<ArrayList<MoodEvent>> capturedResult = new AtomicReference<>();
-        controller.getMoodEventWithin5kmFromUser(userLocation, capturedResult::set, e -> {
-            throw new RuntimeException("Failure callback should not be called");
-        });
+        final ArrayList<MoodEvent>[] resultHolder = new ArrayList[1];
+        controller.getMoodEventWithin5kmFromUser(userLocation, new OnSuccessListener<ArrayList<MoodEvent>>() {
+            @Override
+            public void onSuccess(ArrayList<MoodEvent> moodEvents) {
+                resultHolder[0] = moodEvents;
+            }
+        }, e -> fail("Should not fail"));
 
-        ArrayList<MoodEvent> result = capturedResult.get();
-        assert result != null;
-        // Only the closeEvent should be within 5 km.
-        assert result.size() == 1;
-        assert result.contains(closeEvent);
+        assertNotNull("Result should not be null", resultHolder[0]);
+        // Only the event within 5 km should be returned.
+        assertEquals("Only one event within 5km should be returned", 1, resultHolder[0].size());
+        assertEquals(eventWithin, resultHolder[0].get(0));
     }
 }

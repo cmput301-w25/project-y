@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,15 +26,22 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Generic activity that handles a list of mood events.
+ */
 public class MoodListActivity extends BaseActivity {
 
     protected MoodListController controller;
     protected MoodListView moodListView;
+    private View slotMachineAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         moodListView = findViewById(R.id.listviewMoodEvents);
+
+        // Inflate the slot machine ad
+        slotMachineAdView = getLayoutInflater().inflate(R.layout.slot_machine_ad, moodListView, false);
 
         // Filter functionality
         initializeMinDateFilter();
@@ -61,18 +69,20 @@ public class MoodListActivity extends BaseActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 Timestamp minDate = new Timestamp(calendar.getTime());
 
-                // Only set if date is smaller than max date
+                // Only set if date is smaller than or equal to max date
                 Timestamp maxDateTime = controller.getFilter().getMaxDateTime();
-                if (maxDateTime == null || minDate.compareTo(maxDateTime) < 0) {
-                    controller.getFilter().setMinDateTime(minDate);
-                    controller.saveFilter();
-
-                    // Update button text
-                    SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
-                    minDateBtn.setText(displayFormat.format(calendar.getTime()));
-                } else {
+                if (maxDateTime != null && minDate.compareTo(maxDateTime) > 0) {
                     Toast.makeText(this, "Min date must be smaller than max date", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Update filter
+                controller.getFilter().setMinDateTime(minDate);
+                controller.saveFilter();
+
+                // Update button text
+                SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+                minDateBtn.setText(displayFormat.format(calendar.getTime()));
             });
         });
     }
@@ -96,18 +106,20 @@ public class MoodListActivity extends BaseActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 Timestamp maxDate = new Timestamp(calendar.getTime());
 
-                // Only set if date is larger than min date
+                // Only set if date is larger than or equal to min date
                 Timestamp minDateTime = controller.getFilter().getMinDateTime();
-                if (minDateTime == null || maxDate.compareTo(minDateTime) > 0) {
-                    controller.getFilter().setMaxDateTime(maxDate);
-                    controller.saveFilter();
-
-                    // Update button text
-                    SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
-                    maxDateBtn.setText(displayFormat.format(calendar.getTime()));
-                } else {
+                if (minDateTime != null && maxDate.compareTo(minDateTime) < 0) {
                     Toast.makeText(this, "Max date must be larger than min date", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Update filter
+                controller.getFilter().setMaxDateTime(maxDate);
+                controller.saveFilter();
+
+                // Update button text
+                SimpleDateFormat displayFormat = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+                maxDateBtn.setText(displayFormat.format(calendar.getTime()));
             });
         });
     }
@@ -190,6 +202,21 @@ public class MoodListActivity extends BaseActivity {
         dateDialog.show();
     }
 
+    /**
+     * Adds/removes the ad from the array adapter
+     * @param show
+     *      Boolean
+     */
+    public void showSlotMachineAd(boolean show) {
+        if (show) {
+            if (moodListView.getHeaderViewsCount() == 0) {
+                moodListView.addHeaderView(slotMachineAdView);
+            }
+        } else {
+            moodListView.removeHeaderView(slotMachineAdView);
+        }
+    }
+
     @Override
     protected int getActivityLayout() {
         return R.layout.mood_list_view;
@@ -197,6 +224,15 @@ public class MoodListActivity extends BaseActivity {
 
     protected void handleException(Exception e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("Y ERROR", e.getMessage(), e);
+    }
+
+    public View getSlotMachineAdView() {
+        return slotMachineAdView;
+    }
+
+    public MoodListView getMoodListView() {
+        return moodListView;
     }
 
 }

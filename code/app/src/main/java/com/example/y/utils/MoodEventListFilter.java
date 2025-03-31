@@ -30,14 +30,6 @@ public class MoodEventListFilter {
         sharedLocation = false;
     }
 
-    public MoodEventListFilter(Timestamp minDateTime, Timestamp maxDateTime, Emotion emotion, String reasonWhyTextKeyword, boolean sharedLocation) {
-        this.minDateTime = minDateTime;
-        this.maxDateTime = maxDateTime;
-        this.emotion = emotion;
-        this.reasonWhyTextKeyword = reasonWhyTextKeyword;
-        this.sharedLocation = sharedLocation;
-    }
-
     /**
      * Copies and applies filter to a mood event list.
      * It is recommended not to override the unfiltered list.
@@ -67,11 +59,11 @@ public class MoodEventListFilter {
      */
     public boolean wouldBeFiltered(MoodEvent mood) {
         return
-                (minDateTime != null && mood.getDateTime().compareTo(minDateTime) < 0) ||
-                (maxDateTime != null && mood.getDateTime().compareTo(maxDateTime) > 0) ||
+                (minDateTime != null && mood.getDateTime().getSeconds() - minDateTime.getSeconds() < 0) ||
+                (maxDateTime != null && mood.getDateTime().getSeconds() - maxDateTime.getSeconds() > 0) ||
                 (emotion != null && mood.getEmotion() != emotion) ||
                 (reasonWhyTextKeyword != null && mood.getText() != null &&!(mood.getText().toLowerCase().contains(reasonWhyTextKeyword.toLowerCase()))) ||
-                (mood.getText() == null) || (sharedLocation == true && mood.getLocation() == null);
+                (mood.getText() == null) || (sharedLocation && mood.getLocation() == null);
     }
 
     public Timestamp getMinDateTime() { return minDateTime; }

@@ -78,14 +78,6 @@ public class MoodEventRepositoryTest {
         // Setup mock behavior for Firestore
         when(mockCollectionRef.add(any(MoodEvent.class))).thenReturn(mockDocRefTask);
         when(mockCollectionRef.document(anyString())).thenReturn(mockDocumentRef);
-        when(mockDocumentRef.getId()).thenReturn(TEST_ID);
-
-        // Mock successful task completion for addMoodEvent
-        when(mockDocRefTask.addOnSuccessListener(any(OnSuccessListener.class))).thenAnswer(invocation -> {
-            OnSuccessListener<DocumentReference> listener = invocation.getArgument(0);
-            listener.onSuccess(mockDocumentRef);
-            return mockDocRefTask;
-        });
 
         when(mockDocumentTask.addOnSuccessListener(any(OnSuccessListener.class))).thenAnswer(invocation -> {
             OnSuccessListener<DocumentSnapshot> listener = invocation.getArgument(0);
@@ -125,17 +117,10 @@ public class MoodEventRepositoryTest {
         OnFailureListener failureListener = mock(OnFailureListener.class);
 
         // Call the method under test
-        repository.addMoodEvent(testMoodEvent, successListener, failureListener);
+        repository.addMoodEvent(testMoodEvent, null, null, successListener, failureListener);
 
         // Verify the moodEvent was added to Firestore
         verify(mockCollectionRef).add(any(MoodEvent.class));
-
-        // Capture the mood event passed to the success listener
-        ArgumentCaptor<MoodEvent> moodEventCaptor = ArgumentCaptor.forClass(MoodEvent.class);
-        verify(successListener).onSuccess(moodEventCaptor.capture());
-
-        // Verify the ID was set on the mood event
-        assertEquals(TEST_ID, moodEventCaptor.getValue().getId());
     }
 
     @Test

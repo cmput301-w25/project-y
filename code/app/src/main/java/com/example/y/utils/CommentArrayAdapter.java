@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * Array adapter for comments under the enhanced mood activity.
+ */
 public class CommentArrayAdapter extends ArrayAdapter<Comment> {
     private final Context context;
     private final ArrayList<Comment> commentsForMoodEvent;

@@ -95,7 +95,12 @@ public class LocationMoodController {
     public void getMoodEventWithin5kmFromUser(Location userLocation,
                                               OnSuccessListener<ArrayList<MoodEvent>> onSuccess,
                                               OnFailureListener onFailure) {
-        moodEventRepo.getAllPublicMoodEvents(moodEvents -> {
+
+        //get the username of the current session user
+        final String username = session.getUsername();
+
+        /* get the all the public moods of the users the user follows */
+        userRepo.getLatestUniqueMoodEventPerUser(username, moodEvents -> {
             ArrayList<MoodEvent> eventsWithin5km = new ArrayList<>();
             for (MoodEvent mood : moodEvents) {
                 if (mood.getLocation() != null && isWithin5km(mood, userLocation)) {

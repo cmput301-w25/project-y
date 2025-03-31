@@ -2,7 +2,6 @@ package com.example.y.controllers;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.y.models.Follow;
 import com.example.y.models.MoodEvent;
@@ -11,7 +10,6 @@ import com.example.y.repositories.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,7 +20,7 @@ public class FollowingMoodListController extends MoodListController {
     private final HashMap<String, Integer> moodCount;
 
     /**
-     * Initializes the controller and fetches the 3 most recet public mood events from users that the logged-in user is following.
+     * Initializes the controller and fetches the 3 most recent public mood events from users that the logged-in user is following.
      * @param context   The context.
      * @param onSuccess Callback for successful initialization.
      * @param onFailure Callback for initialization failure.
@@ -54,7 +52,7 @@ public class FollowingMoodListController extends MoodListController {
         }, onFailure);
     }
 
-    private boolean isFollowing(String username) {
+    protected boolean isFollowing(String username) {
         return moodCount.containsKey(username);
     }
 
@@ -70,7 +68,7 @@ public class FollowingMoodListController extends MoodListController {
      * @return
      *      True if the mood was inserted in the original list (it may not have been inserted in the filtered list though), false otherwise.
      */
-    private boolean insertInMoodLists(MoodEvent mood) {
+    protected boolean insertInMoodLists(MoodEvent mood) {
         if (!isFollowing(mood.getPosterUsername())) return false;
         if (mood.getIsPrivate() == null) {
             Log.e("Y ERROR", mood + " has isPrivate = null");
@@ -132,7 +130,7 @@ public class FollowingMoodListController extends MoodListController {
      * @return
      *      true if the mood event was removed from both lists, does not guarantee that another mood event was added in its place.
      */
-    private boolean removeFromMoodLists(String id) {
+    protected boolean removeFromMoodLists(String id) {
         // Remove from original mood list if it exists
         MoodEvent mood = null;
         for (int i = 0; i < originalMoodEventList.size(); i++) {
@@ -183,6 +181,11 @@ public class FollowingMoodListController extends MoodListController {
         if (insertInMoodLists(newMoodEvent)) {
             Log.e("Y DEBUG", "`onMoodEventAdded`: Mood event from " + newMoodEvent.getPosterUsername() + " added!\n");
         }
+
+        // Check if user is now sad
+        if (session.getUsername().equals(newMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     @Override
@@ -195,6 +198,11 @@ public class FollowingMoodListController extends MoodListController {
         if (removeFromMoodLists(updatedMoodEvent.getId())) {
             Log.e("Y DEBUG", "`onMoodEventUpdated`: Mood event from " + updatedMoodEvent.getPosterUsername() + " removed!");
         }
+
+        // Check if user is now sad
+        if (session.getUsername().equals(updatedMoodEvent.getPosterUsername())) {
+            checkIfSlotMachineAdShouldShow();
+        }
     }
 
     @Override
@@ -202,6 +210,9 @@ public class FollowingMoodListController extends MoodListController {
         if (removeFromMoodLists(deletedId)) {
             Log.e("Y DEBUG", "`onMoodEventDeleted`: Mood event removed!");
         }
+
+        // Check if user is now sad
+        checkIfSlotMachineAdShouldShow();
     }
 
     @Override

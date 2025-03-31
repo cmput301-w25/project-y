@@ -14,6 +14,9 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.example.y.R;
 import com.example.y.services.SessionManager;
 
+/**
+ * Handles the menu buttons. An activity can extend this class to have the menu.
+ */
 public abstract class BaseActivity extends AppCompatActivity {
 
     private Drawable MOOD_FOLLOWING_LIST_UNSELECTED;
@@ -91,7 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             SessionManager session = new SessionManager(this);
             Intent intent = new Intent(this, UserProfileActivity.class);
             intent.putExtra("user", session.getUsername());
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
     }
