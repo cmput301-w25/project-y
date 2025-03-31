@@ -121,6 +121,7 @@ public class UpdateAndDeleteTest {
                                 4),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        Thread.sleep(2000);
 
         ViewInteraction floatingActionButton = onView(
                 allOf(withId(R.id.addMoodBtn), withContentDescription("Mood add button"),
@@ -131,6 +132,7 @@ public class UpdateAndDeleteTest {
                                 1),
                         isDisplayed()));
         floatingActionButton.perform(click());
+        Thread.sleep(2000);
 
         ViewInteraction appCompatEditText6 = onView(
                 allOf(withId(R.id.etReasonWhyText),
@@ -195,6 +197,7 @@ public class UpdateAndDeleteTest {
                                 1)))
                 .atPosition(0);
         linearLayout.perform(click());
+        Thread.sleep(2000);
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withId(R.id.editMenuIcon), withContentDescription("editButton"),
@@ -250,7 +253,7 @@ public class UpdateAndDeleteTest {
                                 1)))
                 .atPosition(0);
         linearLayout2.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withId(R.id.editMenuIcon), withContentDescription("editButton"),
                         childAtPosition(
@@ -260,7 +263,7 @@ public class UpdateAndDeleteTest {
                                 2),
                         isDisplayed()));
         appCompatImageButton3.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.deleteMoodButton), withText("Delete this mood"),
                         childAtPosition(
@@ -271,6 +274,7 @@ public class UpdateAndDeleteTest {
                                 1),
                         isDisplayed()));
         materialButton5.perform(click());
+        Thread.sleep(2000);
 
 
 
@@ -297,6 +301,7 @@ public class UpdateAndDeleteTest {
                                 4),
                         isDisplayed()));
         materialButton6.perform(click());
+
     }
 
     private static Matcher<View> childAtPosition(

@@ -16,7 +16,6 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static java.lang.Thread.sleep;
 
-import android.graphics.Movie;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +37,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +67,7 @@ public class TestingLoggingInandOut {
         CollectionReference users = db.collection("users");
         User testUser = new User("testUser123","testing","Tegen TestUser","test@gmail.com", Timestamp.now());
         users.document().set(testUser);
-        sleep(500);
+        sleep(2000);
     }
 
     @Test
@@ -123,7 +120,7 @@ public class TestingLoggingInandOut {
                                 4),
                         isDisplayed()));
         appCompatImageButton.perform(click());
-
+        Thread.sleep(2000);
         ViewInteraction textView = onView(
                 allOf(withId(R.id.tvUsername), withText("testUser123"),
                         withParent(withParent(IsInstanceOf.instanceOf(android.widget.LinearLayout.class))),
@@ -135,7 +132,7 @@ public class TestingLoggingInandOut {
                         withParent(withParent(IsInstanceOf.instanceOf(android.widget.LinearLayout.class))),
                         isDisplayed()));
         textView2.check(matches(withText("testUser123")));
-
+        Thread.sleep(2000);
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.logOutBtn), withText("Log Out"),
                         childAtPosition(
