@@ -87,7 +87,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                 new String[]{
                         "All Mood Events with Location",
                         "Followed Mood Events with Location",
-                        "All Mood Events within 5 kms"
+                        "Recent Followed Mood Events within 5 kms"
                 });
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOptions.setAdapter(adapter);

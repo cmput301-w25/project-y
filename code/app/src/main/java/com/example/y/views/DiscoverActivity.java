@@ -16,7 +16,7 @@ public class DiscoverActivity extends MoodListActivity {
 
         // Initialize controller
         controller = new DiscoverController(this, unused -> {
-            moodListView.setAdapter(controller.getMoodAdapter());
+            onControllerInitialized();
         }, this::handleException);
     }
 

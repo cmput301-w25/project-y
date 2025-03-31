@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:src="@drawable/mood"
+        android:src="@drawable/advert"
         android:contentDescription="Ad photo" />
 
     <com.google.android.material.button.MaterialButton
